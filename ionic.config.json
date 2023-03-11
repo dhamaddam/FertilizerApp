@@ -1,0 +1,7 @@
+{
+  "name": "fertilizerApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
