@@ -1,0 +1,295 @@
+<ion-header [translucent]="true">
+    <ion-toolbar mode="md">
+        <ion-title>
+            Keragaan Tanaman
+        </ion-title>
+        <ion-buttons slot="start">
+            <ion-menu-button autoHide="true"></ion-menu-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+
+    <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
+        <div *ngIf="isLoading" class="ion-text-center alignSpinner">
+            <ion-spinner color="primary"></ion-spinner>
+        </div>
+        <p class="text-center">{{formTitle}}</p>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-label class="ctm-font" position="stacked">Pilih Perusahaan</ion-label>
+                            <ion-select formControlName="company" placeholder="Pilih Perusahaan" (ionChange)="handleCompany($event)">
+                                <ion-select-option *ngFor="let company of allCompany" value="{{company?.id}}">{{company?.nama_perusahaan}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-label class="ctm-font" position="stacked">Pilih Kebun</ion-label>
+                            <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                                <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.nama_kebun}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-label class="ctm-font" position="stacked">Pilih Afdelling</ion-label>
+                            <ion-select placeholder="Pilih Afdelling" formControlName="afdelling">
+                                <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.nama}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Nomor Blok</ion-label>
+                    <ion-item>
+                        <ion-input type="text" formControlName="nomor_blok"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Nomor KCD</ion-label>
+                    <ion-item>
+                        <ion-input type="text" formControlName="nomor_kcd"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Tanggal</ion-label>
+                    <ion-item>
+                        <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                        </ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-button size="small" expand="full" shape="round" color="success">Keragaan Tanaman</ion-button>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2"> Pertumbuhan</ion-label>
+                    <ion-item>
+                        <ion-select formControlName="pertumbuhan" class="ctm-font-2" placeholder="Pertumbuhan">
+                            <ion-select-option value="apples">Jagur</ion-select-option>
+                            <ion-select-option value="oranges">Kerdil</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2"> Indeks Luas Daun </ion-label>
+                    <ion-item>
+                        <ion-textarea class="ctm-font-2" formControlName="index_luas_daun" placeholder="Type something here"></ion-textarea>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-button class="ctm-button-subtitle" color="warning" size="small">Defisiensi Hara Tanaman Baru </ion-button>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">N: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="n">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+
+                <ion-col>
+                    <ion-label class="ctm-font-2">P: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="p">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">K: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="k">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Ca: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="ca">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Mg: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="mg">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+
+                    <ion-label class="ctm-font-2">C: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="c">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Fe: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="fe">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Mn: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="mn">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+
+                <ion-col>
+                    <ion-label class="ctm-font-2">Zn : </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="zn">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Cu: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="cu">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Ph: </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="ph">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Ker. Tanaman </ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="keragaan_tanaman">
+                            <ion-select-option value="1">Berat</ion-select-option>
+                            <ion-select-option value="2">Sedang</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">B. Konservasi</ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="bangunan_konservasi">
+                            <ion-select-option value="1">Tapak Kuda</ion-select-option>
+                            <ion-select-option value="2">Teras</ion-select-option>
+                            <ion-select-option value="3">Ringan</ion-select-option>
+                            <ion-select-option value="4">Tapak Timbun</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Peng. Gulma</ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="penanggulan_gulma">
+                            <ion-select-option value="1">Bagus</ion-select-option>
+                            <ion-select-option value="2">Rusak</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+
+                <ion-col>
+                    <ion-label class="ctm-font-2">Topografi</ion-label>
+                    <ion-item class="ctm-font-2">
+                        <ion-select formControlName="topografi">
+                            <ion-select-option value="1">Bagus</ion-select-option>
+                            <ion-select-option value="2">Rusak</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-button type="submit" expand="full" color="primary" shape="round" expand="block">Simpan</ion-button>
+                </ion-col>
+                <ion-col>
+                    <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+</ion-content>

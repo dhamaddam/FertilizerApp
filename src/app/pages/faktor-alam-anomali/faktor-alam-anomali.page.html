@@ -1,0 +1,168 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Faktor Alam & Anomali</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+    <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
+        <p class="text-center">{{formTitle}}</p>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-select formControlName="company" placeholder="Pilih Perusahaan" (ionChange)="handleCompany($event)">
+                                <ion-select-option *ngFor="let company of allCompany" value="{{company?.id}}">{{company?.nama_perusahaan}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                                <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.nama_kebun}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-select formControlName="afdelling" placeholder="Pilih Afdelling">
+                                <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.nama}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Nomor Blok</ion-label>
+                    <ion-item>
+                        <ion-input type="text" formControlName="nomor_blok"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Nomor KCD</ion-label>
+                    <ion-item>
+                        <ion-input type="text" formControlName="nomor_kcd"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Tanggal</ion-label>
+                    <ion-item>
+                        <ion-item>
+                            <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                            </ion-input>
+                        </ion-item>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+        </ion-grid>
+
+
+        <ion-button size="small" expand="full" shape="round" color="success">Faktor Alam & Anomali</ion-button>
+        <ion-button class="ctm-button-subtitle" color="warning" size="small">Serangan Hama</ion-button>
+
+        <ion-grid>
+            <ion-row class="ion-align-items-start">
+                <ion-col>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_kumbang_tanduk"></ion-checkbox>
+                        <ion-label>Kumbang Tanduk</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_ulat_kantong"></ion-checkbox>
+                        <ion-label>Ulat Kantong</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_tikus"></ion-checkbox>
+                        <ion-label>Tikus</ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_kupu_kupu"></ion-checkbox>
+                        <ion-label>Kupu-kupu</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_ulat_api"></ion-checkbox>
+                        <ion-label>Ulat Api</ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-button class="ctm-button-subtitle" color="warning" size="small">Serangan Penyakit</ion-button>
+        <ion-grid>
+            <ion-row class="ion-align-items-start">
+                <ion-col>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_grs_kuning"></ion-checkbox>
+                        <ion-label>Grs Kuning</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_bsk_pkl_batang"></ion-checkbox>
+                        <ion-label>B.Pkl Batang</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_bsk_kuncup"></ion-checkbox>
+                        <ion-label>Busuk Kuncup</ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_grs_kuning2"></ion-checkbox>
+                        <ion-label>Grs Kuning</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_grs_kuning3"></ion-checkbox>
+                        <ion-label>B.Pkl batang</ion-label>
+                    </ion-item>
+                    <ion-item class="ctm-font-2">
+                        <ion-checkbox slot="start" formControlName="option_grs_kuning4"></ion-checkbox>
+                        <ion-label>Busuk Kuncup</ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-button class="ctm-button-subtitle center" color="warning" size="small">Cuaca & Iklim</ion-button>
+
+        <ion-grid>
+            <ion-row class="ion-align-items-start">
+                <ion-col>
+                    <ion-label class="ctm-font-2">Curah Hujan</ion-label>
+                    <ion-item>
+                        <ion-input type="text" formControlName="curah_hujan"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Hari Hujan</ion-label>
+                    <ion-item>
+                        <ion-input type="text" formControlName="hari_hujan"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-button type="submit" expand="full" color="primary" shape="round" expand="block">Simpan</ion-button>
+                </ion-col>
+                <ion-col>
+                    <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+</ion-content>

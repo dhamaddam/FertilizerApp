@@ -1,20 +1,27 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar color="primary">
+        <ion-title>Fertilize</ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+    <ion-item>
+        <ion-label position="floating"> Name </ion-label>
+        <ion-input type="text" [(ngModel)]="person.name"></ion-input>
+    </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+    <ion-item>
+        <ion-label position="floating"> Age </ion-label>
+        <ion-input type="number" [(ngModel)]="person.age"> </ion-input>
+    </ion-item>
+
+    <div id="container">
+        <ion-button expand="full" (click)="loadPerson()">Load Person</ion-button>
+        <ion-button expand="full" (click)="savePerson()"> Save Person</ion-button>
+
+        <ion-button expand="full" (click)="openDetails()">Open Details</ion-button>
+    </div>
+
+
+
 </ion-content>

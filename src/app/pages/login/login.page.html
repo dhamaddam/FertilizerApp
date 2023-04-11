@@ -1,0 +1,34 @@
+<ion-content class="ion-padding">
+
+    <div class="logo ion-text-center ion-margin">
+        <img src="../assets/logo-PPKS.png" class="center" style="width: 10%; margin:0 auto !important;">
+    </div>
+    <h5 class="ion-text-center ion-margin">Silahkan masuk untuk melanjutkan.</h5>
+
+    <form (ngSubmit)="login()" [formGroup]="myForm" class="ion-margin">
+        <div class="input-group">
+            <ion-item lines="none" class="ion-no-lines" class="item-background-color">
+                <ion-label position="stacked">EMAIL</ion-label>
+                <ion-input type="email" placeholder="email" formControlName="email"></ion-input>
+                <ion-icon style="padding-top: 8px" name="person-outline" color="primary" slot="end"></ion-icon>
+            </ion-item>
+        </div>
+        <div class="input-group">
+            <ion-item lines="none" class="item-background-color">
+                <ion-label position="stacked">Password</ion-label>
+                <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password"></ion-input>
+                <ion-icon style="padding-top: 10px" [name]="passwordIcon" (click)="toggleShow()" color="primary" slot="end"></ion-icon>
+            </ion-item>
+        </div>
+        <ion-button type="submit" class="btnsaja" shape="round" expand="block" [disabled]="!myForm.valid">Masuk</ion-button>
+    </form>
+
+
+    <ion-card *ngIf="result">
+        <ion-card-content> <img [src]="result" /></ion-card-content>
+    </ion-card>
+    <!-- <ion-list center>
+        <ion-button center routerLink='/menu/first' (onclick)="login()">Masuk</ion-button>
+        <p class="forgotPsswd"><a href="">Lupa Kata Sandi ?</a></p>
+    </ion-list> -->
+</ion-content>
