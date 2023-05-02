@@ -15,7 +15,7 @@ jobs:
             $RELEASE_KEY_ALIAS $RELEASE_KEY_PASSWORD $RELEASE_KEYSTORE $RELEASE_STORE_PASSWORD > keystore.properties
       - run:
           name: Decode Android key storeS
-          command: echo $KEYSTORE | base64 -d | tee keystore app/keystore > /dev/null
+          command: echo $KEYSTORE | base64 -d | tee keystore android/keystore > /dev/null
       - run:
           name: Create Google Play Key
           command: echo $GPLAY_SERVICE_ACCOUNT_KEY_JSON | base64 -d | tee google-play-key.json /home/circleci/project/google-play-key.json > /dev/null
