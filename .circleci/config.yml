@@ -35,15 +35,15 @@ jobs:
             - ~/.android/cache
       - run:
           name: Run Build
-          command: ./gradlew build
+          command: ./android/gradlew build
       - store_artifacts: 
-          path: app/build/reports
+          path: android/app/build/reports
           destination: reports
       - run:
           name: Run TestsN
-          command: ./gradlew lint test
+          command: ./android/gradlew lint test
       - store_test_results:
-          path: app/build/test-results
+          path: android/app/build/test-results
       - run:
           name: Install fastlane first
           command: bundle install
