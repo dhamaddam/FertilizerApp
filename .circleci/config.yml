@@ -18,10 +18,10 @@ jobs:
           command: echo $KEYSTORE | base64 -d | tee keystore android/keystore > /dev/null
       - run:
           name: Create Google Play Key
-          command: echo $GPLAY_SERVICE_ACCOUNT_KEY_JSON | base64 -d | tee google-play-key.json /home/circleci/project/google-play-key.json > /dev/null
+          command: echo $GPLAY_SERVICE_ACCOUNT_KEY_JSON | base64 -d | tee google-play-key.json /android/google-play-key.json > /dev/null
       - run:
           name : Check google-play-key
-          command: cat /home/circleci/project/google-play-key.json
+          command: cat /home/circleci/project/android/google-play-key.json
       - run:
           name: Chmod permissions
           command: sudo chmod +x ./android/gradlew
