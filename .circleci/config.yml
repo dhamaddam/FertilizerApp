@@ -24,10 +24,10 @@ jobs:
           command: cat /home/circleci/project/google-play-key.json
       - run:
           name: Chmod permissions
-          command: sudo chmod +x ./gradlew
+          command: sudo chmod +x ./android/gradlew
       - run:
           name: Download Dependencies
-          command: ./gradlew androidDependencies
+          command: ./android/gradlew androidDependencies
       - save_cache:
           key: 'android-orb-v1-{{ epoch }}'
           paths:
