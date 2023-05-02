@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http'
 
-
 //for database Local
 import {IonicStorageModule} from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';

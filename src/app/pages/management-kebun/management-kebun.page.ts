@@ -7,6 +7,7 @@ import { ManagementKebunService } from 'src/app/services/management-kebun/manage
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
 import * as moment from 'moment';
 import { ManagementKebun } from 'src/app/models/management-kebun.model';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-management-kebun',
@@ -25,11 +26,16 @@ export class ManagementKebunPage implements OnInit {
   allKebunSubs: Subscription = new Subscription;
   allAfdelling : any[] = [];
   allAfdellingSubs: Subscription = new Subscription;
+
   allPengendalianGulma : any[] = [];
   allPengendalianGulmaSubs: Subscription = new Subscription; 
+  allManagementKebun : any[] = [];
+  allManagementKebunSubs: Subscription = new Subscription; 
+ 
   isSubmitted : boolean = false;
   today: any = moment().format("YYYY-MM-DD");
   
+  managementKebunSub: Subscription  = new Subscription; ;
   // form : FormsModule;
   
   currentAfdelling = undefined;
@@ -105,12 +111,24 @@ export class ManagementKebunPage implements OnInit {
           this.allPengendalianGulma = this.allPengendalianGulma.concat(result);
         }
       });
+
+      this.allManagementKebunSubs = this.managementKebunServices.alldataManagementKebun.subscribe( result => {
+        if (result instanceof Array){
+          console.log('result allManagementKebun',result)
+          this.allManagementKebun = result;
+        } else {
+          this.allManagementKebun = this.allManagementKebun.concat(result);
+        }
+      })
       this.getAllData();
   }
 
 
   toggleSubmit() {
     this.isSubmitted = !this.isSubmitted;
+  }
+  lihatData(){
+    console.log("lihat data",this.allManagementKebun.length)
   }
 
   async getAllData(){    
@@ -121,6 +139,7 @@ export class ManagementKebunPage implements OnInit {
       await this.companyServices.getKebun();
       await this.companyServices.getPerusahaan();
       await this.managementKebunServices.getPengendalianGulma();
+      await this.managementKebunServices.getManagementKebunData();
      
       this.isLoading = false;
       this.global.hideLoader();
@@ -181,15 +200,23 @@ export class ManagementKebunPage implements OnInit {
     this.isLoading = true;
     this.global.showLoader();
     console.log(this.myForm.value)
-    this.placeData(this.myForm.value)
+    console.log('isi storage ',this.allManagementKebun)
+    if(this.allManagementKebun != null){
+      console.log('save kebun to local')
+      await this.managementKebunServices.saveManagementKebunLocal(this.myForm.value)
+      this.getAllData();
+    } else {
+    }
+    // this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
   }
-
+  
   ngOnDestroy() {
     if(this.allCompanySubs) this.allCompanySubs.unsubscribe();
     if(this.allKebunSubs) this.allKebunSubs.unsubscribe();
     if(this.allAfdellingSubs) this.allAfdellingSubs.unsubscribe();
     if(this.allPengendalianGulmaSubs) this.allPengendalianGulmaSubs.unsubscribe();
+    if(this.allManagementKebunSubs) this.allManagementKebunSubs.unsubscribe();
   }
 }

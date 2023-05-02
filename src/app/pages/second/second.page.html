@@ -8,121 +8,113 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-    <p class="text-center">Form Isian Parameter Keragaan Lahan</p>
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <ion-list>
+    <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim {{allKondisiLahan.length}} Data Tersimpan</ion-button>
+    <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
+        <p class="text-center">{{formTitle}}</p>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-select formControlName="company" placeholder="Pilih Perusahaan" (ionChange)="handleCompany($event)">
+                                <ion-select-option *ngFor="let company of allCompany" value="{{company?.id}}">{{company?.nama_perusahaan}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                                <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.nama_kebun}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-list>
+                        <ion-item>
+                            <ion-select formControlName="afdelling" placeholder="Pilih Afdelling">
+                                <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.nama}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Nomor Blok</ion-label>
                     <ion-item>
-                        <ion-select placeholder="Pilih Perusahaan">
-                            <ion-select-option value="apples">Apples</ion-select-option>
-                            <ion-select-option value="oranges">Oranges</ion-select-option>
-                            <ion-select-option value="bananas">Bananas</ion-select-option>
-                        </ion-select>
+                        <ion-input type="text" formControlName="nomor_blok"></ion-input>
                     </ion-item>
-                </ion-list>
-            </ion-col>
-            <ion-col>
-                <ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-label class="ctm-font-2">Nomor KCD</ion-label>
                     <ion-item>
-                        <ion-select placeholder="Pilih Kebun">
-                            <ion-select-option value="apples">Apples</ion-select-option>
-                            <ion-select-option value="oranges">Oranges</ion-select-option>
-                            <ion-select-option value="bananas">Bananas</ion-select-option>
-                        </ion-select>
+                        <ion-input type="text" formControlName="nomor_kcd"></ion-input>
                     </ion-item>
-                </ion-list>
-            </ion-col>
-            <ion-col>
-                <ion-list>
+                </ion-col>
+                <ion-col>
+                    <ion-label>Tanggal</ion-label>
                     <ion-item>
-                        <ion-select placeholder="Pilih Afdelling">
-                            <ion-select-option value="apples">Apples</ion-select-option>
-                            <ion-select-option value="oranges">Oranges</ion-select-option>
-                            <ion-select-option value="bananas">Bananas</ion-select-option>
-                        </ion-select>
+                        <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                        </ion-input>
                     </ion-item>
-                </ion-list>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <ion-label class="ctm-font-2">Nomor Blok</ion-label>
-                <ion-item>
-                    <ion-input></ion-input>
-                </ion-item>
-            </ion-col>
-            <ion-col>
-                <ion-label class="ctm-font-2">Nomor KCD</ion-label>
-                <ion-item>
-                    <ion-input></ion-input>
-                </ion-item>
-            </ion-col>
-            <ion-col>
-                <ion-label>Tanggal</ion-label>
-                <ion-item>
-                    <ion-datetime-button datetime="datetime"></ion-datetime-button>
-                    <ion-modal [keepContentsMounted]="true">
-                        <ng-template>
-                            <ion-datetime id="datetime"></ion-datetime>
-                        </ng-template>
-                    </ion-modal>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
 
-    <ion-button size="small" expand="full" shape="round" color="success">Keragaan Kondisi Lahan</ion-button>
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <ion-item>
-                    <ion-label class="ctm-font" position="stacked">Elevasi</ion-label>
-                    <ion-input class="ctm-font" placeholder="Elevasi"></ion-input>
-                </ion-item>
-            </ion-col>
-            <ion-col>
-                <ion-item>
-                    <ion-label class="ctm-font" position="stacked">Topografi</ion-label>
-                    <ion-input class="ctm-font" placeholder="Topografi"></ion-input>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col>
-                <ion-item>
-                    <ion-label class="ctm-font" position="stacked">Kemiringan Lereng</ion-label>
-                    <ion-input class="ctm-font" placeholder="Kemiringan Lereng"></ion-input>
-                </ion-item>
-            </ion-col>
-            <ion-col>
-                <ion-item>
-                    <ion-label class="ctm-font" position="stacked">Teras</ion-label>
-                    <ion-input class="ctm-font" placeholder="Teras"></ion-input>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col>
-                <ion-item>
-                    <ion-label class="ctm-font" position="stacked">Saluran Irigasi</ion-label>
-                    <ion-input class="ctm-font" placeholder="Saluran Irigasi"></ion-input>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+        <ion-button size="small" expand="full" shape="round" color="success">Keragaan Kondisi Lahan</ion-button>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Elevasi</ion-label>
+                        <ion-input type="text" formControlName="elevasi" class="ctm-font" placeholder="Elevasi"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Topografi</ion-label>
+                        <ion-input type="text" formControlName="topografi" class="ctm-font" placeholder="Topografi"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Kemiringan Lereng</ion-label>
+                        <ion-input type="text" formControlName="kemiringan_lereng" class="ctm-font" placeholder="Kemiringan Lereng"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Teras</ion-label>
+                        <ion-input type="text" formControlName="teras" class="ctm-font" placeholder="Teras"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Saluran Irigasi</ion-label>
+                        <ion-input type="text" formControlName="saluran_irigasi" class="ctm-font" placeholder="Saluran Irigasi"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
 
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <ion-button expand="full" color="primary" shape="round">Simpan</ion-button>
-            </ion-col>
-            <ion-col>
-                <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-button type="submit" expand="full" color="primary" shape="round">Simpan</ion-button>
+                </ion-col>
+                <ion-col>
+                    <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
 </ion-content>

@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
+    <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim {{allManagementKebun.length}} Data Tersimpan</ion-button>
     <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
 
         <div *ngIf="isLoading" class="ion-text-center alignSpinner">
