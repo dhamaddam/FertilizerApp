@@ -52,7 +52,7 @@ export class PerusahaanService {
   
   async getPerusahaan(){
     try {
-      let perusahaan : any = this.api.getPerusahaanUPJKP().then( async (res : any) => {
+      let perusahaan : any = this.api.getPerusahaan().then( async (res : any) => {
         const data = JSON.parse(res)
         console.log(data.data)
         await this._allCompany.next(data.data)

@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { IonicSelectableComponent } from 'ionic-selectable';
 import { NavigationExtras, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { KondisiLahanService } from 'src/app/services/kondisi-lahan/kondisi-lahan.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { Port } from 'src/app/models/port';
+
+portsSubscription: Subscription;
 
 @Component({
   selector: 'app-second',
@@ -31,6 +37,7 @@ export class SecondPage implements OnInit {
   allKondisiLahanSubs : Subscription = new Subscription; 
 
   today: any = moment().format("YYYY-MM-DD");
+  portsSubscription: any;
   
   
   constructor(
@@ -75,7 +82,7 @@ export class SecondPage implements OnInit {
       kebun: ['', ],
       company: ['', ],
       afdelling:['',],
-      nomor_blok: ['', [Validators.required, Validators.minLength(6)]],
+      nomor_blok: ['', []],
   
       elevasi: ['', ],
       topografi: ['', ],
@@ -124,7 +131,6 @@ export class SecondPage implements OnInit {
 
       this.allKondisiLahanSubs = this.kondisiLahanServices.alldataKondisiLahan.subscribe( result => {
         if (result instanceof Array){
-          console.log('result allManagementKebun',result)
           this.allKondisiLahan = result;
         } else {
           this.allKondisiLahan = this.allKondisiLahan.concat(result);
@@ -147,15 +153,18 @@ export class SecondPage implements OnInit {
     }, 1000);
   }
 
+  
   handleCompany (event : any){
+    console.log("Company", event.item.id)
     let currentKebun = this._allKebun
-    currentKebun = currentKebun.filter(x => x.id_perusahaan == event.detail.value);
+    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
     this.allKebun = currentKebun
    }
 
   handleKebun (event : any){
+    console.log("handle Kebun", event.detail.value)
     let currentAfdelling = this._allAfdelling
-    currentAfdelling = currentAfdelling.filter(x => x.id_kebun == event.detail.value);
+    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
     this.allAfdelling = currentAfdelling
   }
 
@@ -167,7 +176,6 @@ export class SecondPage implements OnInit {
     this.global.showLoader();
     console.log('isi storage ',this.allKondisiLahan)
     if(this.allKondisiLahan != null){
-      console.log('save lahan to local')
       await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
       this.getAllData();
     } else {
@@ -175,6 +183,80 @@ export class SecondPage implements OnInit {
     // this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
+  }
+
+  getPortsAsync(
+    page?: number,
+    size?: number,
+    timeout = 1000
+  ): Observable<Port[]> {
+    return new Observable<Port[]>((observer) => {
+      observer.next(this.getPorts(page, size));
+      observer.complete();
+    }).pipe(delay(timeout));
+  }
+
+  searchPorts(event: { component: IonicSelectableComponent; text: string }) {
+
+    let text = event.text.trim().toLowerCase();
+    console.log(event, 'isi text')
+    event.component.startSearch();
+
+    // Close any running subscription.
+    if (this.portsSubscription) {
+      this.portsSubscription.unsubscribe();
+    }
+
+    if (!text) {
+      // Close any running subscription.
+      if (this.portsSubscription) {
+        this.portsSubscription.unsubscribe();
+      }
+
+      event.component.items = [];
+      event.component.endSearch();
+      return;
+    }
+
+    this.portsSubscription = this.getPortsAsync().subscribe((ports) => {
+      // Subscription will be closed when unsubscribed manually.
+      if (this.portsSubscription.closed) {
+        return;
+      }
+
+      event.component.items = this.filterPorts(text);
+      event.component.endSearch();
+    });
+  }
+
+  filterPorts(text: string) {
+    const element = '0';
+    return this.allCompany.filter((element) => {
+      if (element.name && element.name.toLowerCase().indexOf(text) !== -1) {
+        return (
+          element.name.toLowerCase().indexOf(text) !== -1 ||
+          element.id.toLowerCase().indexOf(text) !== -1 ||
+          element.name.toLowerCase().indexOf(text) !== -1
+        );
+      }
+      else {
+        return 0
+      }
+
+
+    });
+  }
+  getPorts(page?: number, size?: number): Port[] {
+    let ports : any[] = [];
+    this.allCompany.forEach((port) => {
+      ports.push(port);
+    });
+
+    if (page && size) {
+      ports = ports.slice((page - 1) * size, (page - 1) * size + size);
+    }
+
+    return ports;
   }
 
   ngOnDestroy() {

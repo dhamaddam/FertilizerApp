@@ -12,6 +12,7 @@ import {IonicStorageModule} from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import * as cordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   declarations: [AppComponent],

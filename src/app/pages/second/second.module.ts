@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { SecondPageRoutingModule } from './second-routing.module';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 import { SecondPage } from './second.page';
 
@@ -14,7 +15,8 @@ import { SecondPage } from './second.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    SecondPageRoutingModule
+    SecondPageRoutingModule,
+    IonicSelectableModule
   ],
   declarations: [SecondPage]
 })

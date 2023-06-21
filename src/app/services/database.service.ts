@@ -20,42 +20,8 @@ key_updkp : any = '';
   ) {
     this.baseUrl = environment.baseUrl + '/api/v1/'
     this.key = environment.key
-    this.baseUrlUPDKP = environment.baseUrlUPDKP
     this.key_updkp = environment.key_updkp
-   }
-
-   getPerusahaan: Perusahaan[] = [
-    {
-      id: "e02",
-      name: "PT Buana Karya Bhakti",
-      uid: "12wefdefsdss"
-    },
-    {
-      id: "e001",
-      name: "PT Cinta Raja",
-      uid: "12we212fdss"
-    },
-    {
-      id: "e02",
-      name: "PT Bumi Mulia Makmur Lestari",
-      uid: "12w21efdss"
-    },
-    {
-      id: "e012",
-      name: "PT Parasawita",
-      uid: "1212wefdefsdss"
-    },
-    {
-      id: "e0021",
-      name: "PT Sinar Riau Palm Oil",
-      uid: "12w12efdss"
-    },
-    {
-      id: "6",
-      name: "PT Perkebunan Nusantara III (Persero)",
-      uid: "12212wefdss"
-    },
-  ]; 
+  }
 
   getAfdelling : any[] =[
     {
@@ -243,21 +209,22 @@ key_updkp : any = '';
   }
 
   getKebun() {
-    
+    let params = {
+      'id_kebun' : '',
+    };
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'api_key': this.key_updkp
+        'key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.get(this.baseUrlUPDKP+'getKebun', httpHeader).subscribe(result => {
+      this.http.post(this.baseUrl+'plantations/get', params, httpHeader).subscribe(result => {
         console.log(JSON.stringify(result));
         resolve(JSON.stringify(result))
       },
         err => {
-            console.log(err)
             if (err.status == 400) {
               alert("BAD REQUEST!");
             } else if (err.status == 401) { 
@@ -265,8 +232,9 @@ key_updkp : any = '';
             } else if (err.status == 404) { 
               alert("error NotFound");
             } else {
-              reject();
+              console.log(err)
             }
+            reject(err)
         })
     })
   }
@@ -298,6 +266,40 @@ key_updkp : any = '';
     })
   }
 
+  getPerusahaan(){
+
+    let params = {
+      'id_kebun' : '',
+    };
+    
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'companies/get',params, httpHeader).subscribe(result => {
+        console.log(JSON.stringify(result));
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("error Code 401");
+            } else if (err.status == 404) { 
+              console.log("error NotFound");
+            } else {
+              console.log("error company", err)
+            }
+            reject();
+        })
+    })
+  }
+
   getAfdellingbyKebun(idKebun: any){
     console.log(idKebun)
     let params = {
@@ -311,7 +313,7 @@ key_updkp : any = '';
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'manajemen_kebun/get_afdeling_by_kebun', params, httpHeader).subscribe(result => {
+      this.http.post(this.baseUrl+'afdeling/get', params, httpHeader).subscribe(result => {
         console.log(JSON.stringify(result));
         resolve(JSON.stringify(result))
       },
