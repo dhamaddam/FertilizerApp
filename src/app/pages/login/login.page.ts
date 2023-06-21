@@ -61,7 +61,7 @@ export class LoginPage implements OnInit {
       this.global.showLoader();
       const val = await this.authServices.getId();
       if (val){
-        this.router.navigateByUrl('/menu/second', { replaceUrl: true });
+        this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
       }
     } catch (error) {
       console.log(error)

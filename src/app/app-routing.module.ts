@@ -13,8 +13,8 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'tabs',
-    pathMatch: 'full'
+    redirectTo: '/menu/dashboard',
+    pathMatch:'full'
   },
   {
     path: 'list',
@@ -72,6 +72,18 @@ const routes: Routes = [
   {
     path: 'management-kebun',
     loadChildren: () => import('./pages/management-kebun/management-kebun.module').then( m => m.ManagementKebunPageModule)
+  },
+  {
+    path: 'keragaan-tanah',
+    loadChildren: () => import('./pages/keragaan-tanah/keragaan-tanah.module').then( m => m.KeragaanTanahPageModule)
+  },
+  {
+    path: 'keragaan-lahan',
+    loadChildren: () => import('./pages/keragaan-lahan/keragaan-lahan.module').then( m => m.KeragaanLahanPageModule)
+  },
+  {
+    path: 'keragaan-tanaman',
+    loadChildren: () => import('./pages/keragaan-tanaman/keragaan-tanaman.module').then( m => m.KeragaanTanamanPageModule)
   },
 ];
 

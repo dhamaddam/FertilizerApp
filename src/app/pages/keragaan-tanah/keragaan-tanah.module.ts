@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { FaktorAlamAnomaliPageRoutingModule } from './faktor-alam-anomali-routing.module';
+import { KeragaanTanahPageRoutingModule } from './keragaan-tanah-routing.module';
 import { IonicSelectableModule } from 'ionic-selectable';
 
-import { FaktorAlamAnomaliPage } from './faktor-alam-anomali.page';
+import { KeragaanTanahPage } from './keragaan-tanah.page';
 
 @NgModule({
   imports: [
@@ -16,8 +16,8 @@ import { FaktorAlamAnomaliPage } from './faktor-alam-anomali.page';
     ReactiveFormsModule,
     IonicModule,
     IonicSelectableModule,
-    FaktorAlamAnomaliPageRoutingModule
+    KeragaanTanahPageRoutingModule
   ],
-  declarations: [FaktorAlamAnomaliPage]
+  declarations: [KeragaanTanahPage]
 })
-export class FaktorAlamAnomaliPageModule {}
+export class KeragaanTanahPageModule {}

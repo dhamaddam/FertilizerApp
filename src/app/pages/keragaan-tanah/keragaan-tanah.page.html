@@ -1,0 +1,266 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>{{ formTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
+      <p class="text-center">{{formTitle}}</p>
+      
+      <div *ngIf="isLoading" class="ion-text-center alignSpinner">
+        <ion-spinner color="primary"></ion-spinner>
+    </div>
+    <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-list>
+                      <ion-item>
+                          <ionic-selectable item-content placeholder="Pilih Perusahaan" formControlName="company" itemValueField="id" itemTextField="name" [items]="allCompany" (onSelect)="handleCompany($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
+                              <ng-template ionicSelectableItemTemplate let-port="item" let-isPortSelected="isItemSelected">
+                                  {{port.name}} - {{port.id}}
+                              </ng-template>
+                          </ionic-selectable>
+                      </ion-item>
+                  </ion-list>
+              </ion-col>
+              <ion-col>
+                  <ion-list>
+                      <ion-item>
+                          <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                              <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.name}}</ion-select-option>
+                          </ion-select>
+                      </ion-item>
+                  </ion-list>
+              </ion-col>
+              <ion-col>
+                  <ion-list>
+                      <ion-item>
+                          <ion-select formControlName="afdelling" placeholder="Pilih Afdelling">
+                              <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.name}}</ion-select-option>
+                          </ion-select>
+                      </ion-item>
+                  </ion-list>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Nomor Blok</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="nomor_blok"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Nomor KCD</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="nomor_kcd"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-label>Tanggal</ion-label>
+                  <ion-item>
+                      <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                      </ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+
+    <ion-button size="small" expand="full" shape="round" color="success">Keragaan Tanah</ion-button>
+    <ion-button class="ctm-button-subtitle" color="warning" size="small">1. Jenis Tanah</ion-button>
+    
+    <ion-grid>
+        <ion-row class="ion-align-items-start">
+            <ion-col>
+                <ion-label class="ctm-button-subtitle"> Jenis Tanah </ion-label>
+                <ion-select placeholder="Pilih Jenis Tanah" formControlName="jenis_tanah">
+                    <ion-select-option *ngFor="let jenisTanah of allJenisTanah" value="{{jenisTanah?.id}}">{{jenisTanah?.name}}</ion-select-option>
+                </ion-select>
+            </ion-col>
+            <ion-col>
+                <ion-label class="ctm-button-subtitle"> Kategori Tanah </ion-label>
+                <ion-select placeholder="Kategori Tanah" formControlName="kategori_tanah">
+                    <ion-select-option *ngFor="let kategoriTanah of allKategoriTanah" value="{{kategoriTanah?.id}}">{{kategoriTanah?.name}}</ion-select-option>
+                </ion-select>
+
+                <br/>
+
+                <ion-label class="ctm-button-subtitle"> Kematangan </ion-label>
+                <ion-textarea formControlName="kematangan" placeholder="Type something here"></ion-textarea>
+
+                <br />
+                <ion-label class="ctm-button-subtitle"> Tata Kelola Air </ion-label>
+                <ion-textarea formControlName="tata_kelola_air" placeholder="Type something here"></ion-textarea>
+
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label>N: </ion-label>
+                    <ion-input formControlName="unsur_n"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>P: </ion-label>
+                    <ion-input formControlName="unsur_p"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>K: </ion-label>
+                    <ion-input formControlName="unsur_k"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Ca: </ion-label>
+                    <ion-input formControlName="unsur_ca"></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Mg: </ion-label>
+                    <ion-input formControlName="unsur_mg"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>C: </ion-label>
+                    <ion-input formControlName="unsur_c"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Fe: </ion-label>
+                    <ion-input formControlName="unsur_fe"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Mn: </ion-label>
+                    <ion-input formControlName="unsur_mn"></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Zn : </ion-label>
+                    <ion-input formControlName="unsur_zn"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Cu: </ion-label>
+                    <ion-input formControlName="unsur_cu"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Ph: </ion-label>
+                    <ion-input formControlName="unsur_ph"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col></ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label position="stacked">Bahan Organik </ion-label>
+                    <ion-input placeholder="Bahan Organik" formControlName="bahan_organik"></ion-input>
+                </ion-item>
+            </ion-col>
+
+            <ion-col>
+                <ion-item>
+                    <ion-label position="stacked"> Salinitas </ion-label>
+                    <ion-input placeholder="Salinitas" formControlName="salinitas"></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-button class="ctm-button-subtitle" color="warning" size="small">3. Sifat Fisik Tanah</ion-button>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Bulk Density</ion-label>
+                        <ion-input class="ctm-font" placeholder="Bulk Density" formControlName="bulk_density"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Water Holding Cap.</ion-label>
+                        <ion-input class="ctm-font" placeholder="Water Holding Capacity" formControlName="water_holding_capacity"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">M. Strength</ion-label>
+                        <ion-input class="ctm-font" placeholder="Mechanical Strength" formControlName="mechanical_strength"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label position="stacked" class="ctm-font">Hydraulic Conduc.</ion-label>
+                        <ion-input class="ctm-font" placeholder="Hydraulic Conductivity" formControlName="hydraulic_conductivity"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label class="ctm-font" position="stacked">Electric Conduc.</ion-label>
+                        <ion-input class="ctm-font" placeholder="Electric Conductivity" formControlName="electric_conductivity"></ion-input>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label position="stacked" class="ctm-font">Kedalaman Solum</ion-label>
+                        <ion-input class="ctm-font" placeholder="Kedalaman Solum" formControlName="kedalaman_solum"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-button class="ctm-button-subtitle" color="warning" size="small">4. Kelembapan Tanah</ion-button>
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label position="stacked" class="ctm-font">Kelembapan Tanah</ion-label>
+                        <ion-input class="ctm-font" placeholder="Kelembapan Tanah" formControlName="kelembapan_tanah"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-button type="submit" expand="full" color="primary" shape="round">Simpan</ion-button>
+              </ion-col>
+              <ion-col>
+                  <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+              </ion-col>
+          </ion-row>
+          <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim {{allKategoriTanah.length}} Data Tersimpan</ion-button>
+      </ion-grid>
+  </form>
+</ion-content>

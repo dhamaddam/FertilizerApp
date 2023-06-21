@@ -1,94 +1,113 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { IonicSelectableComponent } from 'ionic-selectable';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
-import { Subscription } from 'rxjs';
-import { KondisiLahanService } from 'src/app/services/kondisi-lahan/kondisi-lahan.service';
 import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Port } from 'src/app/models/port';
-import { IonicSelectableComponent } from 'ionic-selectable';
+
+import { KeragaanTanahService } from 'src/app/services/keragaan-tanah/keragaan-tanah.service';
+
+portsSubscription: Subscription;
 
 
 @Component({
-  selector: 'app-faktor-alam-anomali',
-  templateUrl: './faktor-alam-anomali.page.html',
-  styleUrls: ['./faktor-alam-anomali.page.scss'],
+  selector: 'app-keragaan-tanah',
+  templateUrl: './keragaan-tanah.page.html',
+  styleUrls: ['./keragaan-tanah.page.scss'],
 })
-export class FaktorAlamAnomaliPage implements OnInit {
-  
-  myForm : any;
-  formTitle = "Form Isian Parameter Faktor Alam & Anomali";
-  today: any = moment().format("YYYY-MM-DD");
-  isLoading: boolean = false;
+export class KeragaanTanahPage implements OnInit {
 
-  _allKebun : any[] = [];
+  formTitle = "Form Isian Parameter Keragaan Tanah";
+
+  myForm : any;
+  isLoading: boolean = false;
   _allAfdelling : any[] = [];
+  _allKebun : any[] = [];
   allCompany : any[] = [];
   allCompanySubs: Subscription = new Subscription;
   allKebun : any[] = [];
   allKebunSubs: Subscription = new Subscription;
   allAfdelling : any[] = [];
   allAfdellingSubs: Subscription = new Subscription;
+  allJenisTanah : any[] = [];
+  allJenisTanahSubs: Subscription = new Subscription; 
 
-  allKondisiLahan : any[] = [];
-  allKondisiLahanSubs : Subscription = new Subscription; 
+  allKategoriTanah : any[] = [];
+  allKategoriTanahSubs: Subscription = new Subscription; 
 
+  isSubmitted : boolean = false;
+  today: any = moment().format("YYYY-MM-DD");
   portsSubscription: any;
-  
 
   constructor(
     private fb: FormBuilder,
-    private global : GlobalService, 
+    private router:Router,
+    private global : GlobalService,
     private companyServices: PerusahaanService,
-    private kondisiLahanServices : KondisiLahanService   
-  
+    private keragaanTanahServices : KeragaanTanahService   
   ) { }
 
   ngOnInit() {
-    this.myForm = this.fb.group({ 
+
+    this.myForm = this.fb.group({
       tanggal: [this.today, [Validators.required]],
-      afdelling: ['', ],
-      company: ['', ],
+      nomor_kcd: ['', [Validators.required]],
       kebun: ['', ],
-      nomor_blok: ['', ],
-      nomor_kcd: ['', ],
-      option_grs_kuning: false,
-      option_kumbang_tanduk: false,
-      option_ulat_kantong: false,
-      option_tikus: false,
-      option_kupu_kupu: false,
-      option_ulat_api: false,
-      option_bsk_pkl_batang: false,
-      option_bsk_kuncup: false,
-      option_grs_kuning2: false,
-      option_grs_kuning3: false,
-      option_grs_kuning4: false,
-      curah_hujan: ['', ],
-      hari_hujan: ['', ],
+      company: ['', ],
+      afdelling:['',],
+      nomor_blok: ['', [Validators.required, Validators.minLength(6)]],
+      tata_kelola_air:['',],
+      kematangan:['',],
+      kategori_tanah:['',],
+      unsur_n:['',],
+      unsur_p:['',],
+      unsur_k:['',],
+      unsur_ca:['',],
+      unsur_mg:['',],
+      unsur_c:['',],
+      unsur_fe:['',],
+      unsur_mn:['',],
+      unsur_zn:['',],
+      unsur_cu:['',],
+      unsur_ph:['',],
+      bahan_organik:['',],
+      salinitas:['',],
+      jenis_tanah:['',],
+      bulk_density:['',],
+      water_holding_capacity:['',],
+      mechanical_strength:['',],
+      hydraulic_conductivity:['',],
+      electric_conductivity:['',],
+      kedalaman_solum:['',],
+      kelembapan_tanah:['',],
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
       {
-        console.log('company :', company);
         if (company instanceof Array){
           this.allCompany = company;
         } else {
-            this.allCompany = this.allCompany.concat(company);
+          this.allCompany = this.allCompany.concat(company);
         }
       });
+    
       this.allKebunSubs = this.companyServices.allKebun.subscribe(kebun => {
         if (kebun instanceof Array){
           this.allKebun = kebun;
           this._allKebun = kebun
-        } else{
+        } else {
           this.allKebun = this.allKebun.concat(kebun);
           this._allKebun = this._allKebun.concat(kebun);
-        }
+         }
       });
 
       this.allAfdellingSubs = this.companyServices.allAfdelling.subscribe(afdelling => {
+        console.log("isi from manag kebun",afdelling)
         if (afdelling instanceof Array){
           this.allAfdelling = afdelling;
           this._allAfdelling = afdelling;
@@ -96,6 +115,23 @@ export class FaktorAlamAnomaliPage implements OnInit {
           this.allAfdelling = this.allAfdelling.concat(afdelling);
         }
       });
+
+      this.allJenisTanahSubs = this.keragaanTanahServices.allJenisTanah.subscribe(result => {
+        if (result instanceof Array){
+          this.allJenisTanah = result;
+        } else {
+          this.allJenisTanah = this.allJenisTanah.concat(result);
+        }
+      })
+
+      this.allKategoriTanahSubs = this.keragaanTanahServices.allKategoriTanah.subscribe( result => {
+        if (result instanceof Array){
+          this.allKategoriTanah = result;
+        } else {
+          this.allKategoriTanah = this.allJenisTanah.concat(result);
+        }
+      })
+
       this.getAllData();
   }
 
@@ -106,57 +142,40 @@ export class FaktorAlamAnomaliPage implements OnInit {
       await this.companyServices.getAfdelling();
       await this.companyServices.getKebun();
       await this.companyServices.getPerusahaan();
-      console.log(this.allCompany);
-      console.log(this.allKebun);
-      console.log(this.allAfdelling);
+      await this.keragaanTanahServices.getJenisTanah();
+      await this.keragaanTanahServices.getKategoriTanah();
+     
+    
       this.isLoading = false;
       this.global.hideLoader();
     }, 1000);
   }
+  saveData(){
+    this.isLoading = true;
+    this.global.showLoader();
+    console.log(this.myForm.value)
+    this.isLoading = false;
+    this.global.hideLoader();
+  }
 
   handleCompany (event : any){
+    console.log("Company", event.item.id)
     let currentKebun = this._allKebun
     currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
     this.allKebun = currentKebun
-  }
-  handleKebun (event : any){
+   }
+
+   handleKebun (event : any){
+    console.log("handle Kebun", event.detail.value)
     let currentAfdelling = this._allAfdelling
     currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
     this.allAfdelling = currentAfdelling
   }
 
   lihatData(){
-    console.log("lihat data",this.allKondisiLahan.length)
+    console.log("lihat data",this.allKategoriTanah.length)
   }
 
-  async saveData(){
-    this.isLoading = true;
-    this.global.showLoader();
-
-    console.log(
-        this.myForm.value.company,
-        this.myForm.value.kebun,
-        this.myForm.value.afdelling,
-        this.myForm.value.nomor_blok,
-        this.myForm.value.nomor_kcd,
-        this.myForm.value.tanggal,
-        this.myForm.get("option_grs_kuning").value,
-        this.myForm.get("option_kumbang_tanduk").value,
-        this.myForm.get("option_ulat_kantong").value,
-        this.myForm.get("option_kupu_kupu").value,
-        this.myForm.get("option_ulat_api").value,
-        this.myForm.get("option_bsk_pkl_batang").value,
-        this.myForm.get("option_bsk_kuncup").value,
-        this.myForm.get("option_grs_kuning2").value,
-        this.myForm.get("option_grs_kuning3").value,
-        this.myForm.get("option_grs_kuning4").value,
-        this.myForm.value.curah_hujan,
-        this.myForm.value.hari_hujan,
-      )
-
-      this.isLoading = false;
-      this.global.hideLoader();
-  }
 
   getPortsAsync(
     page?: number,
@@ -232,11 +251,12 @@ export class FaktorAlamAnomaliPage implements OnInit {
 
     return ports;
   }
+
   ngOnDestroy() {
     if(this.allCompanySubs) this.allCompanySubs.unsubscribe();
     if(this.allKebunSubs) this.allKebunSubs.unsubscribe();
     if(this.allAfdellingSubs) this.allAfdellingSubs.unsubscribe();
-    if(this.allKondisiLahanSubs) this.allKondisiLahanSubs.unsubscribe();
+    if(this.allJenisTanahSubs) this.allJenisTanahSubs.unsubscribe();
    }
 
 }

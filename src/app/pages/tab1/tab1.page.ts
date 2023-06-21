@@ -171,6 +171,6 @@ export class Tab1Page implements OnInit {
     if(this.allCompanySubs) this.allCompanySubs.unsubscribe();
     if(this.allKebunSubs) this.allKebunSubs.unsubscribe();
     if(this.allAfdellingSubs) this.allAfdellingSubs.unsubscribe();
-    if(this.allJenisTanah) this.allJenisTanahSubs.unsubscribe();
+    if(this.allJenisTanahSubs) this.allJenisTanahSubs.unsubscribe();
   }
 }

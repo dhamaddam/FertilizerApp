@@ -21,8 +21,18 @@ const routes: Routes = [
         loadChildren: () => import('../first/first.module').then( m => m.FirstPageModule)
       },
       {
-        path: 'second',
-        loadChildren: () => import('../second/second.module').then( m => m.SecondPageModule)
+        path: 'keragaan-tanah',
+        loadChildren: () => import('../keragaan-tanah/keragaan-tanah.module').then( m => m.KeragaanTanahPageModule)
+      },
+
+      {
+        path: 'keragaan-tanaman',
+        loadChildren: () => import('../keragaan-tanaman/keragaan-tanaman.module').then( m => m.KeragaanTanamanPageModule)
+      },
+
+      {
+        path: 'keragaan-lahan',
+        loadChildren: () => import('../keragaan-lahan/keragaan-lahan.module').then( m => m.KeragaanLahanPageModule)
       },
       {
         path: 'form-pengamatan',
@@ -45,7 +55,7 @@ const routes: Routes = [
   },
   {
     path:'',
-    redirectTo:'/menu/first',
+    redirectTo:'/login',
     pathMatch:'full'
   }
 ];

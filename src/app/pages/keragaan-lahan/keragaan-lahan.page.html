@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>{{ formTitle }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
+      
+    <div *ngIf="isLoading" class="ion-text-center alignSpinner">
+        <ion-spinner color="primary"></ion-spinner>
+    </div>
+    <p class="text-center">{{formTitle}}</p>
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-list>
+                      <ion-item>
+                          <ionic-selectable item-content placeholder="Pilih Perusahaan" formControlName="company" itemValueField="id" itemTextField="name" [items]="allCompany" (onSelect)="handleCompany($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
+                              <ng-template ionicSelectableItemTemplate let-port="item" let-isPortSelected="isItemSelected">
+                                  {{port.name}} - {{port.id}}
+                              </ng-template>
+                          </ionic-selectable>
+                      </ion-item>
+                  </ion-list>
+              </ion-col>
+              <ion-col>
+                  <ion-list>
+                      <ion-item>
+                          <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                              <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.name}}</ion-select-option>
+                          </ion-select>
+                      </ion-item>
+                  </ion-list>
+              </ion-col>
+              <ion-col>
+                  <ion-list>
+                      <ion-item>
+                          <ion-select formControlName="afdelling" placeholder="Pilih Afdelling">
+                              <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.name}}</ion-select-option>
+                          </ion-select>
+                      </ion-item>
+                  </ion-list>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Nomor Blok</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="nomor_blok"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Nomor KCD</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="nomor_kcd"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-label>Tanggal</ion-label>
+                  <ion-item>
+                      <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                      </ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+
+      <ion-button size="small" expand="full" shape="round" color="success">Keragaan Kondisi Lahan</ion-button>
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-item>
+                      <ion-label class="ctm-font" position="stacked">Elevasi</ion-label>
+                      <ion-input type="text" formControlName="elevasi" class="ctm-font" placeholder="Elevasi"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-item>
+                      <ion-label class="ctm-font" position="stacked">Topografi</ion-label>
+                      <ion-input type="text" formControlName="topografi" class="ctm-font" placeholder="Topografi"></ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+          <ion-row>
+              <ion-col>
+                  <ion-item>
+                      <ion-label class="ctm-font" position="stacked">Kemiringan Lereng</ion-label>
+                      <ion-input type="text" formControlName="kemiringan_lereng" class="ctm-font" placeholder="Kemiringan Lereng"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-item>
+                      <ion-label class="ctm-font" position="stacked">Teras</ion-label>
+                      <ion-input type="text" formControlName="teras" class="ctm-font" placeholder="Teras"></ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+          <ion-row>
+              <ion-col>
+                  <ion-item>
+                      <ion-label class="ctm-font" position="stacked">Saluran Irigasi</ion-label>
+                      <ion-input type="text" formControlName="saluran_irigasi" class="ctm-font" placeholder="Saluran Irigasi"></ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-button type="submit" expand="full" color="primary" shape="round">Simpan</ion-button>
+              </ion-col>
+              <ion-col>
+                  <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+              </ion-col>
+          </ion-row>
+          <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim {{allKondisiLahan.length}} Data Tersimpan</ion-button>
+      </ion-grid>
+  </form>
+</ion-content>

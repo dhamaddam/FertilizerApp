@@ -17,17 +17,17 @@ export class MenuPage implements OnInit {
     }, 
     {
       title : 'Tanah',
-      url: '/menu/first',
+      url: '/menu/keragaan-tanah',
       icon: 'globe-outline'
     }, 
     {
       title:'Kondisi Lahan',
-      url: '/menu/second',
+      url: '/menu/keragaan-lahan',
       icon: 'filter-outline'
     },
     {
       title:'Tanaman',
-      url: '/menu/form-pengamatan',
+      url: '/menu/keragaan-tanaman',
       icon: 'leaf-outline'
     },
     {

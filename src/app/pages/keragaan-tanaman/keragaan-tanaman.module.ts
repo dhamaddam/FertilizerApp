@@ -4,20 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { FaktorAlamAnomaliPageRoutingModule } from './faktor-alam-anomali-routing.module';
+import { KeragaanTanamanPageRoutingModule } from './keragaan-tanaman-routing.module';
 import { IonicSelectableModule } from 'ionic-selectable';
 
-import { FaktorAlamAnomaliPage } from './faktor-alam-anomali.page';
+import { KeragaanTanamanPage } from './keragaan-tanaman.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     IonicModule,
+    ReactiveFormsModule,
     IonicSelectableModule,
-    FaktorAlamAnomaliPageRoutingModule
+    KeragaanTanamanPageRoutingModule
   ],
-  declarations: [FaktorAlamAnomaliPage]
+  declarations: [KeragaanTanamanPage]
 })
-export class FaktorAlamAnomaliPageModule {}
+export class KeragaanTanamanPageModule {}

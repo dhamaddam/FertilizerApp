@@ -28,8 +28,8 @@ result : any = ''
 
       if(data.status == true){ 
         await loading.dismiss();
-        this.setUserData('deraderalulaa')
-        this.router.navigateByUrl('/menu/second', { replaceUrl: true });
+        this.setUserData(data)
+        this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
       }
       else if (data.status == false){
         this.router.navigateByUrl('/login', { replaceUrl: true });
