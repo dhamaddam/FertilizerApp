@@ -3,6 +3,7 @@ import { Chart } from "chart.js/auto";
 import { Subscription } from "rxjs";
 import { DashboardService } from "src/app/services/dashboard/dashboard.service";
 import { GlobalService } from "src/app/services/global/global.service";
+import colorLib from '@kurkle/color';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -42,6 +43,26 @@ export class DashboardPage implements AfterViewInit, OnInit{
   allProductivityChartSub : Subscription = new Subscription;
 
   productivityAges : any[] = []
+
+   CHART_COLORS = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+  };
+  
+   NAMED_COLORS = [
+    this.CHART_COLORS.red,
+    this.CHART_COLORS.orange,
+    this.CHART_COLORS.yellow,
+    this.CHART_COLORS.green,
+    this.CHART_COLORS.blue,
+    this.CHART_COLORS.purple,
+    this.CHART_COLORS.grey,
+  ];
 
   constructor(
     private global : GlobalService,
@@ -163,7 +184,10 @@ export class DashboardPage implements AfterViewInit, OnInit{
       });
     } 
   }
-
+  transparentize(value : any, opacity : any) {
+    var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+    return colorLib(value).alpha(alpha).rgbString();
+  }
   BarChartMethode(){
     let production_year : any[] = []
     let production_area : any[] = []
@@ -350,10 +374,26 @@ export class DashboardPage implements AfterViewInit, OnInit{
       },
     });
 
-    this.removeData(this.protasChart)
-    this.allProductionChart.forEach( result => {
-      this.addData(this.protasChart, result.name ,result.data)
+    var i : number = 0;
+    for(i = 0; i < this.protasChart.data.datasets.length; i++){
+      this.protasChart.data.datasets.pop();
+    }
+
+    this.allProductivityChart.forEach( result => {
+      const dsColor = this.namedColor(this.protasChart.data.datasets.length);
+      const newDataset = {
+        label: result.name,
+        backgroundColor: this.transparentize(dsColor, 0.5),
+        borderColor: dsColor,
+        data: result.data,
+        yAxisID: 'left-y-axis'
+      };
+      this.protasChart.data.datasets.push(newDataset);
     })
+  }
+
+  namedColor(index : any) {
+    return this.NAMED_COLORS[index % this.NAMED_COLORS.length];
   }
 
   plantProductionChartMethode(){
@@ -473,22 +513,10 @@ export class DashboardPage implements AfterViewInit, OnInit{
     }
   }
 
-  addData(chart: any, label : any, data : any) {
-
-    console.log("data add Data",data)
-    chart.data.labels.push(label);
-    console.log("data add Data",data)
-    chart.data.datasets.forEach((dataset : any) => {
-        dataset.data.push(data);
-    });
-    chart.update();
-  }
 
   removeData(chart : any) {
-      // chart.data.labels.pop();
-      
+    chart.data.labels.splice(-1, 1); // remove the label first
       chart.data.datasets.forEach((dataset : any) => {
-          console.log("i am in foreach",dataset)
           dataset.data.pop();
       });
       chart.update();
