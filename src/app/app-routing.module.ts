@@ -5,7 +5,7 @@ import { AuthGuard } from './guard/auth.guard';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule),
   },
   {
     path: 'menu',
@@ -21,19 +21,6 @@ const routes: Routes = [
     loadChildren: () => import('./list/list.module').then( m => m.ListPageModule)
   },
   {
-    path: 'tabs',
-    loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule),
-    canLoad: [AuthGuard]
-  },
-  {
-    path: 'tab1',
-    loadChildren: () => import('./pages/tab1/tab1.module').then( m => m.Tab1PageModule)
-  },
-  {
-    path: 'tab2',
-    loadChildren: () => import('./pages/tab2/tab2.module').then( m => m.Tab2PageModule)
-  },
-  {
     path: 'details',
     loadChildren: () => import('./pages/details/details.module').then( m => m.DetailsPageModule)
   },
@@ -42,24 +29,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/menu/menu.module').then( m => m.MenuPageModule)
   },
   {
-    path: 'first',
-    loadChildren: () => import('./pages/first/first.module').then( m => m.FirstPageModule)
-  },
-  {
-    path: 'second',
-    loadChildren: () => import('./pages/second/second.module').then( m => m.SecondPageModule)
-  },
-  {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'form-pengamatan',
-    loadChildren: () => import('./pages/form-pengamatan/form-pengamatan.module').then( m => m.FormPengamatanPageModule)
-  },
-  {
-    path: 'daftar-blok',
-    loadChildren: () => import('./pages/daftar-blok/daftar-blok.module').then( m => m.DaftarBlokPageModule)
   },
   {
     path: 'faktor-alam-anomali',
@@ -84,6 +55,30 @@ const routes: Routes = [
   {
     path: 'keragaan-tanaman',
     loadChildren: () => import('./pages/keragaan-tanaman/keragaan-tanaman.module').then( m => m.KeragaanTanamanPageModule)
+  },
+  {
+    path: 'dashboard-rekomendator',
+    loadChildren: () => import('./pages/dashboard-rekomendator/dashboard-rekomendator.module').then( m => m.DashboardRekomendatorPageModule)
+  },
+  {
+    path: 'view-keragaan-tanah',
+    loadChildren: () => import('./pages/view-keragaan-tanah/view-keragaan-tanah.module').then( m => m.ViewKeragaanTanahPageModule)
+  },
+  {
+    path: 'view-keragaan-tanaman',
+    loadChildren: () => import('./pages/view-keragaan-tanaman/view-keragaan-tanaman.module').then( m => m.ViewKeragaanTanamanPageModule)
+  },
+  {
+    path: 'view-management-kebun',
+    loadChildren: () => import('./pages/view-management-kebun/view-management-kebun.module').then( m => m.ViewManagementKebunPageModule)
+  },
+  {
+    path: 'view-keragaan-lahan',
+    loadChildren: () => import('./pages/view-keragaan-lahan/view-keragaan-lahan.module').then( m => m.ViewKeragaanLahanPageModule)
+  },
+  {
+    path: 'view-faktor-alam-anomali',
+    loadChildren: () => import('./pages/view-faktor-alam-anomali/view-faktor-alam-anomali.module').then( m => m.ViewFaktorAlamAnomaliPageModule)
   },
 ];
 

@@ -17,6 +17,41 @@ export class MenuPage implements OnInit {
     }, 
     {
       title : 'Tanah',
+      url: '/menu/view-keragaan-tanah',
+      icon: 'globe-outline'
+    }, 
+    {
+      title:'Kondisi Lahan',
+      url: '/menu/view-keragaan-lahan',
+      icon: 'filter-outline'
+    },
+    {
+      title:'Tanaman',
+      url: '/menu/view-keragaan-tanaman',
+      icon: 'leaf-outline'
+    },
+    {
+      title:'Faktor Alam & Anomali',
+      url: '/menu/view-faktor-alam-anomali',
+      icon: 'earth-outline'
+    },
+
+    {
+      title:'Manajemen Kebun',
+      url: '/menu/view-management-kebun',
+      icon: 'construct-outline'
+    }
+
+  ];
+
+  pages_rekomendator = [
+    {
+      title : 'Dashboard',
+      url: '/menu/dashboard-rekomendator',
+      icon: 'grid-outline'
+    }, 
+    {
+      title : 'Tanah',
       url: '/menu/keragaan-tanah',
       icon: 'globe-outline'
     }, 
@@ -40,23 +75,28 @@ export class MenuPage implements OnInit {
       title:'Manajemen Kebun',
       url: '/menu/management-kebun',
       icon: 'construct-outline'
-    },
-    {
-      title:'Form Isian Semua Parameter',
-      url: '/menu/daftar-blok',
-      icon:'file-tray-stacked-outline'
     }
 
   ];
 
-  constructor(private authService : AuthService,
+  constructor(private authServices : AuthService,
     private navCtrl: NavController) { }
 
   ngOnInit() {
+    
+  }
+
+  async check_login (){
+
+    const val = await this.authServices.getId();
+    if (val){
+     console.log("val result", val)
+    }
+
   }
 
   logout(){
-    this.authService.logout().then(() => {
+    this.authServices.logout().then(() => {
       this.navCtrl.navigateRoot('/login');
     }).catch( e => 
       { 

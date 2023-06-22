@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { ManagementKebunPageRoutingModule } from './management-kebun-routing.module';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 import { ManagementKebunPage } from './management-kebun.page';
 
@@ -13,6 +14,7 @@ import { ManagementKebunPage } from './management-kebun.page';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    IonicSelectableModule,
     IonicModule,
     ManagementKebunPageRoutingModule
   ],

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, delay } from 'rxjs';
 import { DatabaseService } from 'src/app/services/database.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { ManagementKebunService } from 'src/app/services/management-kebun/management-kebun.service';
@@ -8,6 +8,8 @@ import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.servic
 import * as moment from 'moment';
 import { ManagementKebun } from 'src/app/models/management-kebun.model';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { IonicSelectableComponent } from 'ionic-selectable';
+import { Port } from 'src/app/models/port';
 
 @Component({
   selector: 'app-management-kebun',
@@ -34,7 +36,7 @@ export class ManagementKebunPage implements OnInit {
  
   isSubmitted : boolean = false;
   today: any = moment().format("YYYY-MM-DD");
-  
+  portsSubscription: any;
   managementKebunSub: Subscription  = new Subscription; ;
   // form : FormsModule;
   
@@ -184,18 +186,14 @@ export class ManagementKebunPage implements OnInit {
   }
   handleCompany (event : any){
     let currentKebun = this._allKebun
-    currentKebun = currentKebun.filter(x => x.id_perusahaan == event.detail.value);
+    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
     this.allKebun = currentKebun
-    console.log("ion all kebun",this.allKebun)
-    console.log('ionChange fired with value: ' + event.detail.value);
   }
   handleKebun (event : any){
     let currentAfdelling = this._allAfdelling
-    currentAfdelling = currentAfdelling.filter(x => x.id_kebun == event.detail.value);
+    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
     this.allAfdelling = currentAfdelling
-    console.log("ion all kebun",this.allAfdelling)
-    console.log('ionChange fired with value: ' + event.detail.value);
-  }
+   }
   async saveData(){
     this.isLoading = true;
     this.global.showLoader();
@@ -210,6 +208,81 @@ export class ManagementKebunPage implements OnInit {
     // this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
+  }
+
+  getPortsAsync(
+    page?: number,
+    size?: number,
+    timeout = 1000
+  ): Observable<Port[]> {
+    return new Observable<Port[]>((observer) => {
+      observer.next(this.getPorts(page, size));
+      observer.complete();
+    }).pipe(delay(timeout));
+  }
+
+  searchPorts(event: { component: IonicSelectableComponent; text: string }) {
+
+    let text = event.text.trim().toLowerCase();
+    console.log(event, 'isi text')
+    event.component.startSearch();
+
+    // Close any running subscription.
+    if (this.portsSubscription) {
+      this.portsSubscription.unsubscribe();
+    }
+
+    if (!text) {
+      // Close any running subscription.
+      if (this.portsSubscription) {
+        this.portsSubscription.unsubscribe();
+      }
+
+      event.component.items = [];
+      event.component.endSearch();
+      return;
+    }
+
+    this.portsSubscription = this.getPortsAsync().subscribe((ports) => {
+      // Subscription will be closed when unsubscribed manually.
+      if (this.portsSubscription.closed) {
+        return;
+      }
+
+      event.component.items = this.filterPorts(text);
+      event.component.endSearch();
+    });
+  }
+
+  filterPorts(text: string) {
+    const element = '0';
+    return this.allCompany.filter((element) => {
+      if (element.name && element.name.toLowerCase().indexOf(text) !== -1) {
+        return (
+          element.name.toLowerCase().indexOf(text) !== -1 ||
+          element.id.toLowerCase().indexOf(text) !== -1 ||
+          element.name.toLowerCase().indexOf(text) !== -1
+        );
+      }
+      else {
+        return 0
+      }
+
+
+    });
+  }
+
+  getPorts(page?: number, size?: number): Port[] {
+    let ports : any[] = [];
+    this.allCompany.forEach((port) => {
+      ports.push(port);
+    });
+
+    if (page && size) {
+      ports = ports.slice((page - 1) * size, (page - 1) * size + size);
+    }
+
+    return ports;
   }
   
   ngOnDestroy() {

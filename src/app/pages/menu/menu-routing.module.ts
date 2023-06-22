@@ -17,10 +17,6 @@ const routes: Routes = [
         loadChildren: () => import('../management-kebun/management-kebun.module').then( m => m.ManagementKebunPageModule)
       },
       {
-        path: 'first',
-        loadChildren: () => import('../first/first.module').then( m => m.FirstPageModule)
-      },
-      {
         path: 'keragaan-tanah',
         loadChildren: () => import('../keragaan-tanah/keragaan-tanah.module').then( m => m.KeragaanTanahPageModule)
       },
@@ -34,22 +30,34 @@ const routes: Routes = [
         path: 'keragaan-lahan',
         loadChildren: () => import('../keragaan-lahan/keragaan-lahan.module').then( m => m.KeragaanLahanPageModule)
       },
-      {
-        path: 'form-pengamatan',
-        loadChildren: () => import('../form-pengamatan/form-pengamatan.module').then( m => m.FormPengamatanPageModule)
-      },
 
       {
         path: 'faktor-alam-anomali',
         loadChildren: () => import('../faktor-alam-anomali/faktor-alam-anomali.module').then( m => m.FaktorAlamAnomaliPageModule)
       },
       {
-        path: 'daftar-blok',
-        loadChildren: () => import('../daftar-blok/daftar-blok-routing.module').then( m => m.DaftarBlokPageRoutingModule)
+        path: 'dashboard-rekomendator',
+        loadChildren: () => import('../dashboard-rekomendator/dashboard-rekomendator.module').then( m => m.DashboardRekomendatorPageModule)
       },
       {
-        path: 'second/details',
-        loadChildren:() => import('../details/details.module').then( m => m.DetailsPageModule)
+        path: 'view-faktor-alam-anomali',
+        loadChildren: () => import('../view-faktor-alam-anomali/view-faktor-alam-anomali.module').then( m => m.ViewFaktorAlamAnomaliPageModule)
+      },
+      {
+        path: 'view-keragaan-lahan',
+        loadChildren:() => import('../view-keragaan-lahan/view-keragaan-lahan.module').then( m => m.ViewKeragaanLahanPageModule)
+      },
+      {
+        path: 'view-keragaan-tanah',
+        loadChildren:() => import('../view-keragaan-tanah/view-keragaan-tanah.module').then( m => m.ViewKeragaanTanahPageModule)
+      },
+      {
+        path: 'view-keragaan-tanaman',
+        loadChildren:() => import('../view-keragaan-tanaman/view-keragaan-tanaman.module').then( m => m.ViewKeragaanTanamanPageModule)
+      },
+      {
+        path: 'view-management-kebun',
+        loadChildren:() => import('../view-management-kebun/view-management-kebun.module').then( m => m.ViewManagementKebunPageModule)
       }
     ]
   },

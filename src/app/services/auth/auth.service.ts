@@ -28,8 +28,17 @@ result : any = ''
 
       if(data.status == true){ 
         await loading.dismiss();
-        this.setUserData(data)
-        this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
+        let result =  data.data
+        console.log("result", result)
+        this.setUserData(JSON.stringify(result))
+        if (result.role_id == 2){
+          this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
+        } else if (result.role_id == 3){
+          this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
+        } else {
+          this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
+        }
+       
       }
       else if (data.status == false){
         this.router.navigateByUrl('/login', { replaceUrl: true });
