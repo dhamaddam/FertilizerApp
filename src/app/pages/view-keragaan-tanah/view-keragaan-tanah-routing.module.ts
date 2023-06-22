@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
 import { ViewKeragaanTanahPage } from './view-keragaan-tanah.page';
 
 const routes: Routes = [
@@ -11,7 +11,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [CommonModule,RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
 export class ViewKeragaanTanahPageRoutingModule {}

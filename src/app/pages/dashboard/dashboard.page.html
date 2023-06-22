@@ -12,18 +12,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-    <ion-card>
-        <ion-card-header>
-            Bar Chart
-        </ion-card-header>
-        <ion-card-content>
-            <canvas #barCanvas></canvas>
-        </ion-card-content>
-    </ion-card>
+    
 
     <ion-card>
         <ion-card-header>
-            Doughnut Chart
+            Komposisi Tanaman
         </ion-card-header>
         <ion-card-content>
             <canvas #doughnutCanvas style="position: relative; height:20vh; width:40vw"></canvas>
@@ -32,10 +25,28 @@
 
     <ion-card>
         <ion-card-header>
-            Line Chart
+            Produksi Tanaman 5 Tahun Terakhir
         </ion-card-header>
         <ion-card-content>
-            <canvas #lineCanvas style="position: relative; height:20vh; width:40vw"></canvas>
+            <canvas #plantProductionCanvas></canvas>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Curah Hujan & Hari Hujan 5 Tahun Terakhir
+        </ion-card-header>
+        <ion-card-content>
+            <canvas #curahHariHujanCanvas></canvas>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Produktivitas (ton TBS / ha / tahun)
+        </ion-card-header>
+        <ion-card-content>
+            <canvas #protasCanvas style="position: relative; height:20vh; width:40vw"></canvas>
         </ion-card-content>
     </ion-card>
 
@@ -53,7 +64,7 @@
             Scatter Chart
         </ion-card-header>
         <ion-card-content>
-            <canvas #scatterCanvas style="position: relative; height:20vh; width:40vw"></canvas>
+            <canvas #barCanvas style="position: relative; height:20vh; width:40vw"></canvas>
         </ion-card-content>
     </ion-card>
 </ion-content>

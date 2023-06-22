@@ -23,6 +23,59 @@ key_updkp : any = '';
     this.key_updkp = environment.key_updkp
   }
 
+  getViewListContent : any[] = [
+    {
+        "name": "Will Smith",
+        "gender": "Male",
+        "country": "USA"
+    },
+    {
+        "name": "Jackline Joy",
+        "gender": "Female",
+        "country": "Sri Lanak"
+    },
+    {
+        "name": "Alu Arjun",
+        "gender": "Male",
+        "country": "Microsoft"
+    },
+    {
+        "name": "Kavitha Kumar",
+        "gender": "Female",
+        "country": "India"
+    },
+    {
+        "name": "John Snow",
+        "gender": "Male",
+        "country": "United Kingdom"
+    },
+    {
+        "name": "Priya kanana",
+        "gender": "Female",
+        "country": "India"
+    },
+    {
+        "name": "Shri Devi",
+        "gender": "Female",
+        "country": "Sri Lanka"
+    },
+    {
+        "name": "Richard Roy",
+        "gender": "Male",
+        "country": "France"
+    },
+    {
+        "name": "Sonu Nigam",
+        "gender": "Male",
+        "country": "India"
+    },
+    {
+        "name": "Priya Dutt",
+        "gender": "Female",
+        "country": "USA"
+    }
+]
+
   getAfdelling : any[] =[
     {
       id: "23",
@@ -269,7 +322,7 @@ key_updkp : any = '';
   getPerusahaan(){
 
     let params = {
-      'id_kebun' : '',
+      'plantation-id' : '',
     };
     
     const httpHeader = {
@@ -303,7 +356,7 @@ key_updkp : any = '';
   getAfdellingbyKebun(idKebun: any){
     console.log(idKebun)
     let params = {
-      'id_kebun' : idKebun,
+      'plantation_id' : idKebun,
     };
     const httpHeader = {
       headers: new HttpHeaders({
@@ -318,17 +371,16 @@ key_updkp : any = '';
         resolve(JSON.stringify(result))
       },
         err => {
-            console.log(err)
-            console.log(params)
             if (err.status == 400) {
-              alert("BAD REQUEST!");
+              console.log("BAD REQUEST!");
             } else if (err.status == 401) { 
-              alert("error Code 401");
+              console.log("error Code 401");
             } else if (err.status == 404) { 
-              alert("error NotFound");
+              console.log("error NotFound");
             } else {
-              reject();
+              console.log(params)
             }
+            reject(err);
         })
     })
   }
@@ -382,18 +434,175 @@ key_updkp : any = '';
         resolve(JSON.stringify(result))
       },
         err => {
-            // reject(err);
-            console.log(err)
             if (err.status == 400) {
-              alert("BAD REQUEST!");
+              console.log("BAD REQUEST!");
             } else if (err.status == 401) { 
-              alert("password incorect!");
+              console.log("password incorect!");
             } else if (err.status == 404) { 
-              alert("password or Username incorect!");
+              console.log("password or Username incorect!");
             } else {
-              reject();
+              console.log(err)
             }
+            reject(err);
         })
     })
+  }
+
+   // POST 
+   getProductionYear(plantation_id : any) {
+    let params = {
+      'plantation_id': plantation_id,
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/production_years', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+  }
+  //POST 
+  getCompositionChart(plantation_id : number, year : number) {
+    let params = {
+      'plantation_id': plantation_id,
+      'year' : year
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/plant_composition_chart_data', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+  }
+
+  //POST
+  getPlantProductionChart(plantation_id : number, year : number){
+    let params = {
+      'plantation_id': plantation_id,
+      'year' : year
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/plant_production_chart_data', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+  }
+
+  //POST 
+  getRainFall(plantation_id : number , year : number){
+    let params = {
+      'plantation_id': plantation_id,
+      'year' : year
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/rainfall_chart_data', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+
+  }
+
+  // getProtas
+  getProtas( plantation_id: number, year : number){
+    let params = {
+      'plantation_id': plantation_id,
+      'year' : year
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/productivity_chart_data', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+
   }
 }

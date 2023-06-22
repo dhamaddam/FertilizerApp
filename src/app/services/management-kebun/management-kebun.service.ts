@@ -17,7 +17,8 @@ export class ManagementKebunService {
 
   private _allPengendalianGulma = new BehaviorSubject<any>(null)
   private _afdellingbyKebun = new BehaviorSubject<any>(null)
-  
+  private _allContentDummy = new BehaviorSubject<any>(null)
+
   constructor(
     private api : DatabaseService,
     private storage : StorageService
@@ -26,6 +27,10 @@ export class ManagementKebunService {
   get allPengendalianGulma(){
     return this._allPengendalianGulma.asObservable();
   }
+
+  get allContentDummy(){
+    return this._allContentDummy.asObservable();
+ }
 
   get alldataManagementKebun() {
     return this._modelManagementKebun.asObservable();
@@ -82,8 +87,17 @@ export class ManagementKebunService {
     this._modelManagementKebun.next(null);
   }
 
-  saveManagementKebun(data : ManagementKebun[]){
+  getContentDummy(){
+    try {
+      let contentDummy : any[] = this.api.getViewListContent;
+      this._allContentDummy.next(contentDummy);
+    }catch (error){
+      console.log("getContentDummy",error);
+      throw(error)
+    }
+  }
 
+  saveManagementKebun(data : ManagementKebun[]){
     this.api.saveManagementKebun(data).then(async (params:any) => {
       console.log(params)
        if (params.status == true) {
@@ -94,5 +108,4 @@ export class ManagementKebunService {
        }
     })
   }
-
 }

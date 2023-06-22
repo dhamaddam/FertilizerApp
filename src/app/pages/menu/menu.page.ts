@@ -83,14 +83,22 @@ export class MenuPage implements OnInit {
     private navCtrl: NavController) { }
 
   ngOnInit() {
-    
+    this.check_login()
   }
 
   async check_login (){
 
     const val = await this.authServices.getId();
+    
     if (val){
-     console.log("val result", val)
+      let data = JSON.parse(val)
+
+      if (data.role_id == 2 ){ // rekomendator
+        this.pages = this.pages_rekomendator
+      } else {
+        this.pages = this.pages
+      }
+      
     }
 
   }

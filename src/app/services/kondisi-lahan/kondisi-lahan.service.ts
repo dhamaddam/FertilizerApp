@@ -13,6 +13,7 @@ export class KondisiLahanService {
   currentValue: any =[];
 
   private _modelKondisiLahan = new BehaviorSubject<any>(null);
+  private _allContentDummy = new BehaviorSubject<any>(null)
 
   constructor(
     private api : DatabaseService,
@@ -21,6 +22,20 @@ export class KondisiLahanService {
 
   get alldataKondisiLahan() {
     return this._modelKondisiLahan.asObservable();
+  }
+
+  get allContentDummy(){
+    return this._allContentDummy.asObservable();
+ }
+
+ getContentDummy(){
+    try {
+      let contentDummy : any[] = this.api.getViewListContent;
+      this._allContentDummy.next(contentDummy);
+    }catch (error){
+      console.log("getContentDummy",error);
+      throw(error)
+    }
   }
 
   async saveKondisiLahanLocal(data : any){

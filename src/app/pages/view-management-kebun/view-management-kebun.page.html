@@ -1,9 +1,33 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>view-management-kebun</ion-title>
+<ion-header [translucent]="true">
+  <ion-toolbar mode="md">
+      <ion-title>
+          {{ formTitle }} 
+      </ion-title>
+      <ion-buttons slot="start">
+          <ion-menu-button autoHide="true"></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <ion-grid [fixed]="true">
+    <ion-row>
+      <ion-col size ="2" >No</ion-col>
+      <ion-col>Name</ion-col>
+      <ion-col>Country</ion-col>
+      <ion-col>Aksi</ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid >
+    <ion-row *ngFor="let row of allContentDummy; index as i">
+      <ion-col size ="2">{{ i + 1 }}</ion-col>
+      <ion-col>{{ row?.name }}</ion-col>
+      <ion-col>{{ row?.country }}</ion-col>
+      <ion-col><ion-button fill="outline">Details</ion-button> </ion-col>
+   </ion-row>
+  </ion-grid>
 
 </ion-content>
