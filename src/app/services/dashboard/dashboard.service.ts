@@ -13,6 +13,8 @@ export class DashboardService {
   private _allPlantProduction = new BehaviorSubject<any>(null)
   private _allCurahhariHujan = new BehaviorSubject<any>(null)
   private _allProtas = new BehaviorSubject<any>(null)
+  private _allTotalBunch = new BehaviorSubject<any>(null)
+  private _allABW = new BehaviorSubject<any>(null)
 
   constructor(private api : DatabaseService) { }
 
@@ -31,6 +33,13 @@ export class DashboardService {
   }
   get allProtas(){
     return this._allProtas.asObservable();
+  }
+
+  get allTotalBunch(){
+    return this._allTotalBunch.asObservable();
+  }
+  get allABW(){
+    return this._allABW.asObservable();
   }
 
   async getCompositionChart(plantation_id : number, year : number){
@@ -89,6 +98,30 @@ export class DashboardService {
         const data = JSON.parse(params)
         console.log(data.data)
         await this._allProtas.next(data.data)
+      })
+    } catch (error) {
+      console.log(error)
+      throw(error)
+    }
+  }
+
+  async getAllTotalBunch(plantation_id: number, year : number) : Promise<any>{
+    try {
+      let protas : any = this.api.getTotalBunch(plantation_id, year).then( async (params : any) => {
+        const data = JSON.parse(params)
+        await this._allTotalBunch.next(data.data)
+      })
+    } catch (error) {
+      console.log(error)
+      throw(error)
+    }
+  }
+
+  async getAllABW(plantation_id: number, year : number) : Promise<any>{
+    try {
+      let protas : any = this.api.getAllABW(plantation_id, year).then( async (params : any) => {
+        const data = JSON.parse(params)
+        await this._allABW.next(data.data)
       })
     } catch (error) {
       console.log(error)

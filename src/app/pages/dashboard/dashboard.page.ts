@@ -12,18 +12,23 @@ import colorLib from '@kurkle/color';
 export class DashboardPage implements AfterViewInit, OnInit{
   @ViewChild("barCanvas") barCanvas: any;
   @ViewChild("doughnutCanvas") doughnutCanvas: any;
-  @ViewChild("protasCanvas") protasCanvas: any;
+  @ViewChild("TotalBunchDataCanvas") TotalBunchDataCanvas: any;
+  @ViewChild("AWBCanvas") AWBCanvas: any;
   @ViewChild("radarCanvas") radarCanvas: any;
+  @ViewChild("protasCanvas") protasCanvas : any;
   @ViewChild("plantProductionCanvas") plantProductionCanvas: any;
   @ViewChild("curahHariHujanCanvas") curahHariHujanCanvas : any;
   
   plantProductionChart: any;
+  awbChart : any;
+  TotalBunchChart : any;
   barChart: any;
   doughnutChart: any;
   lineChart: any;
   radarChart : any;
   curahHariHujanChart : any;
   protasChart : any ;
+  TotalBunchDataChart : any;
   isLoading: boolean = false;
 
   
@@ -42,7 +47,17 @@ export class DashboardPage implements AfterViewInit, OnInit{
   allProductivityChart : any[] = []
   allProductivityChartSub : Subscription = new Subscription;
 
+  allTotalBunchDataChart : any[] = []
+  allTotalBunchDataSub : Subscription = new Subscription;
+
+  allAWBSub : Subscription = new Subscription;
+  allAWBData : any[] = []
+  
+
   productivityAges : any[] = []
+  allAWBAges : any[] = []
+  allTotalBunchAges : any[] = []
+  totalBunchAges : any[] = []
 
    CHART_COLORS = {
     red: 'rgb(255, 99, 132)',
@@ -63,6 +78,8 @@ export class DashboardPage implements AfterViewInit, OnInit{
     this.CHART_COLORS.purple,
     this.CHART_COLORS.grey,
   ];
+
+  
 
   constructor(
     private global : GlobalService,
@@ -120,6 +137,25 @@ export class DashboardPage implements AfterViewInit, OnInit{
       }
     })
 
+    this.allTotalBunchDataSub = this.dashboarServices.allTotalBunch.subscribe(data => {
+      if (data instanceof Object){
+        this.allTotalBunchDataChart = data.total_bunch_per_trees
+        this.allTotalBunchAges = data.ages
+        this.jumlahTandanPohonPerTahunChartMethode()
+      } else {
+        this.allTotalBunchDataChart = this.allTotalBunchDataChart.concat(data)
+      }
+    })
+
+    this.allAWBSub = this.dashboarServices.allABW.subscribe(data => {
+      if (data instanceof Object){
+        this.allAWBData = data.awb
+        this.allAWBAges = data.ages
+        this.AWBChart()
+      } else {
+        this.allAWBData = this.allAWBData.concat(data)
+      }
+    })
     this.getAllData()
 
   }
@@ -131,8 +167,10 @@ export class DashboardPage implements AfterViewInit, OnInit{
       await this.dashboarServices.getProductionYear(79);
       await this.dashboarServices.getCompositionChart(79,2021);
       await this.dashboarServices.getPlantProduction(79,2021);
-      await this.dashboarServices.getCurahHariHujan(79,2021)
-      await this.dashboarServices.getAllProtas(79,2021)
+      await this.dashboarServices.getCurahHariHujan(79,2021);
+      await this.dashboarServices.getAllProtas(79,2021);
+      await this.dashboarServices.getAllTotalBunch(79,2021);
+      await this.dashboarServices.getAllABW(79,2021);
       this.isLoading = false;
       this.global.hideLoader();
     }, 1000);
@@ -248,42 +286,6 @@ export class DashboardPage implements AfterViewInit, OnInit{
       }
     });
   }
-  lineChartMethod() {
-    this.lineChart = new Chart(this.protasCanvas.nativeElement, {
-      type: 'line',
-      data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'],
-        datasets: [
-          {
-            data: [20, 50, 100, 75, 25, 0],
-            label: 'Left dataset',
-            yAxisID: 'left-y-axis'
-          },
-          {
-            data: [0.1, 0.5, 1.0, 2.0, 1.5, 0],
-            label: 'Right dataset',
-
-            // This binds the dataset to the right y axis
-            yAxisID: 'right-y-axis'
-          }
-        ]
-      },
-      options: {
-        scales: {
-          'left-y-axis': {
-              type: 'linear',
-              position: 'left'
-          },
-          'right-y-axis': {
-              type: 'linear',
-              position: 'right'
-          }
-        }
-      },
-      
-
-    });
-  }
 
   radarChartMethode(){
     const data = {
@@ -318,27 +320,30 @@ export class DashboardPage implements AfterViewInit, OnInit{
         pointHoverBorderColor: 'rgb(54, 162, 235)'
       }]
     };
-    this.radarChart = new Chart(this.radarCanvas.nativeElement,
-      {
-        type: 'radar',
-        data: data,
-        options: {
-          animations: {
-            tension: {
-              duration: 1000,
-              easing: 'linear',
-              from: 1,
-              to: 0,
-              loop: true
+    if(!this.TotalBunchChart){   
+      this.radarChart = new Chart(this.radarCanvas.nativeElement,
+        {
+          type: 'radar',
+          data: data,
+          options: {
+            animations: {
+              tension: {
+                duration: 1000,
+                easing: 'linear',
+                from: 1,
+                to: 0,
+                loop: true
+              }
+            },
+            elements: {
+              line: {
+                borderWidth: 3
+              }
             }
           },
-          elements: {
-            line: {
-              borderWidth: 3
-            }
-          }
-        },
-      });
+        });
+    }
+    
   }
 
   productivityChartMethode(){
@@ -351,28 +356,31 @@ export class DashboardPage implements AfterViewInit, OnInit{
       productivity_data.push(result.data) 
     });
 
-    this.protasChart = new Chart(this.protasCanvas.nativeElement, {
-      type: 'line',
-      data: {
-        labels: this.productivityAges,
-        datasets: [
-          {
-            data: productivity_data,
-            label: 'Left dataset',
-            yAxisID: 'left-y-axis'
-          },
-          
-        ]
-      },
-      options: {
-        scales: {
-          'left-y-axis': {
-              type: 'linear',
-              position: 'left'
-          },
-        }
-      },
-    });
+    if(!this.protasChart){
+      this.protasChart = new Chart(this.protasCanvas.nativeElement, {
+        type: 'line',
+        data: {
+          labels: this.productivityAges,
+          datasets: [
+            {
+              data: productivity_data,
+              label: 'Left dataset',
+              yAxisID: 'left-y-axis'
+            },
+            
+          ]
+        },
+        options: {
+          scales: {
+            'left-y-axis': {
+                type: 'linear',
+                position: 'left'
+            },
+          }
+        },
+      });
+    }
+    
 
     var i : number = 0;
     for(i = 0; i < this.protasChart.data.datasets.length; i++){
@@ -392,11 +400,119 @@ export class DashboardPage implements AfterViewInit, OnInit{
     })
   }
 
+  jumlahTandanPohonPerTahunChartMethode(){
+
+    let total_bunch_name : any [] = []
+    let total_bunch_data : any [] = []
+    this.allTotalBunchDataChart.forEach(result => {
+      total_bunch_name.push(result.name)
+      total_bunch_data.push(result.data) 
+    });
+
+    if(!this.TotalBunchChart){  
+      this.TotalBunchChart = new Chart(this.TotalBunchDataCanvas.nativeElement, {
+        type: 'line',
+        data: {
+          labels: this.allTotalBunchAges,
+          datasets: [
+            {
+              data: total_bunch_data,
+              label: 'Left dataset',
+              yAxisID: 'left-y-axis'
+            },
+            
+          ]
+        },
+        options: {
+          scales: {
+            'left-y-axis': {
+                type: 'linear',
+                position: 'left'
+            },
+          }
+        },
+      });
+    }
+    
+
+    var i : number = 0;
+    for(i = 0; i < this.TotalBunchChart.data.datasets.length; i++){
+      this.TotalBunchChart.data.datasets.pop();
+    }
+
+    this.allTotalBunchDataChart.forEach( result => {
+      const dsColor = this.namedColor(this.TotalBunchChart.data.datasets.length);
+      const newDataset = {
+        label: result.name,
+        backgroundColor: this.transparentize(dsColor, 0.5),
+        borderColor: dsColor,
+        data: result.data,
+        yAxisID: 'left-y-axis'
+      };
+      this.TotalBunchChart.data.datasets.push(newDataset);
+    })
+  }
+
+  AWBChart(){
+
+    let awb_name : any [] = []
+    let awb_bunch_data : any [] = []
+
+    this.allAWBData.forEach(result => {
+      awb_name.push(result.name)
+      awb_bunch_data.push(result.data) 
+    });
+
+    if(!this.awbChart){ 
+      this.awbChart = new Chart(this.AWBCanvas.nativeElement, {
+        type: 'line',
+        data: {
+          labels: this.allAWBAges,
+          datasets: [
+            {
+              data: awb_bunch_data,
+              label: 'Left dataset',
+              yAxisID: 'left-y-axis'
+            },
+            
+          ]
+        },
+        options: {
+          scales: {
+            'left-y-axis': {
+                type: 'linear',
+                position: 'left'
+            },
+          }
+        },
+      });
+    }
+    
+
+    var i : number = 0;
+    for(i = 0; i < this.awbChart.data.datasets.length; i++){
+      this.awbChart.data.datasets.pop();
+    }
+
+    this.allAWBData.forEach( result => {
+      const dsColor = this.namedColor(this.awbChart.data.datasets.length);
+      const newDataset = {
+        label: result.name,
+        backgroundColor: this.transparentize(dsColor, 0.5),
+        borderColor: dsColor,
+        data: result.data,
+        yAxisID: 'left-y-axis'
+      };
+      this.awbChart.data.datasets.push(newDataset);
+    })
+  }
+
   namedColor(index : any) {
     return this.NAMED_COLORS[index % this.NAMED_COLORS.length];
   }
 
   plantProductionChartMethode(){
+
     let production_year : any[] = []
     let production_area : any[] = []
     let production_ffb_target : any[] = []

@@ -574,7 +574,7 @@ key_updkp : any = '';
   }
 
   // getProtas
-  getProtas( plantation_id: number, year : number){
+  getProtas(plantation_id: number, year : number){
     let params = {
       'plantation_id': plantation_id,
       'year' : year
@@ -588,6 +588,71 @@ key_updkp : any = '';
 
     return new Promise((resolve, reject) => {
       this.http.post(this.baseUrl+'dashboards/productivity_chart_data', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+
+  }
+
+  //getTotalBunch
+  getTotalBunch(plantation_id: number, year : number){
+    let params = {
+      'plantation_id': plantation_id,
+      'year' : year
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/total_bunch_per_tree_chart_data', params, httpHeader).subscribe( result => {
+        resolve(JSON.stringify(result))
+      },
+        err => {
+            if (err.status == 400) {
+              console.log("BAD REQUEST!");
+            } else if (err.status == 401) { 
+              console.log("password incorect!");
+            } else if (err.status == 404) { 
+              console.log("password or Username incorect!");
+            } else {
+              console.log(err)
+            }
+            reject(err);
+        })
+    })
+  }
+
+  // getAllABW
+  getAllABW (plantation_id: number , year : number){
+    let params = {
+      'plantation_id': plantation_id,
+      'year' : year
+    };
+    const httpHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'key': this.key
+      })
+    };
+
+    return new Promise((resolve, reject) => {
+      this.http.post(this.baseUrl+'dashboards/abw_chart_data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
