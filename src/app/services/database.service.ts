@@ -274,7 +274,6 @@ key_updkp : any = '';
 
     return new Promise((resolve, reject) => {
       this.http.post(this.baseUrl+'plantations/get', params, httpHeader).subscribe(result => {
-        console.log(JSON.stringify(result));
         resolve(JSON.stringify(result))
       },
         err => {
@@ -301,7 +300,6 @@ key_updkp : any = '';
 
     return new Promise((resolve, reject) => {
       this.http.get(this.baseUrlUPDKP+'getPerusahaan', httpHeader).subscribe(result => {
-        console.log(JSON.stringify(result));
         resolve(JSON.stringify(result))
       },
         err => {
@@ -334,7 +332,6 @@ key_updkp : any = '';
 
     return new Promise((resolve, reject) => {
       this.http.post(this.baseUrl+'companies/get',params, httpHeader).subscribe(result => {
-        console.log(JSON.stringify(result));
         resolve(JSON.stringify(result))
       },
         err => {
@@ -367,7 +364,6 @@ key_updkp : any = '';
 
     return new Promise((resolve, reject) => {
       this.http.post(this.baseUrl+'afdeling/get', params, httpHeader).subscribe(result => {
-        console.log(JSON.stringify(result));
         resolve(JSON.stringify(result))
       },
         err => {
@@ -386,7 +382,6 @@ key_updkp : any = '';
   }
 
   saveManagementKebun(data : ManagementKebun[]){
-    console.log(data)
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -430,7 +425,6 @@ key_updkp : any = '';
     };
     return new Promise((resolve, reject) => {
       this.http.post(this.baseUrl+'login', params, httpHeader).subscribe( result => {
-        //console.log(res.data);
         resolve(JSON.stringify(result))
       },
         err => {

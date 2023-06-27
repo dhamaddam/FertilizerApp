@@ -46,7 +46,6 @@ export class DashboardService {
     try{
       let compositionData : any = this.api.getCompositionChart(plantation_id, year).then(async (params:any) => {
         const data = JSON.parse(params)
-        console.log("result in dashboard Services compositionData",data.data)
         await this._allCompositionChart.next(data.data)
       })
     } catch(error){
@@ -58,7 +57,6 @@ export class DashboardService {
     try{
       let productionYear : any = this.api.getProductionYear(plantation_id).then(async (params:any) => {
         const data = JSON.parse(params)
-        console.log(data.data)
         await this._allProductionYear.next(data.data)
       })
     } catch (error){
@@ -71,7 +69,6 @@ export class DashboardService {
     try {
       let plantProduction : any = this.api.getPlantProductionChart(plantation_id, year).then(async (params:any) => {
         const data = JSON.parse(params)
-        console.log(data.data)
         await this._allPlantProduction.next(data.data)
       })
     } catch (error){
@@ -96,7 +93,6 @@ export class DashboardService {
     try {
       let protas : any = this.api.getProtas(plantation_id, year).then( async (params : any) => {
         const data = JSON.parse(params)
-        console.log(data.data)
         await this._allProtas.next(data.data)
       })
     } catch (error) {
