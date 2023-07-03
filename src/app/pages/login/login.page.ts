@@ -40,7 +40,12 @@ export class LoginPage implements OnInit {
 
   }
   toggleShow() {
-
+    this.showPassword = !this.showPassword;
+    if (this.passwordIcon == 'eye-outline') {
+      this.passwordIcon = 'eye-off-outline'
+    } else {
+      this.passwordIcon = 'eye-outline';
+    }
   }
   
   async login() {

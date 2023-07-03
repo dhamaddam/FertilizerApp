@@ -36,6 +36,10 @@ export class ViewFaktorAlamAnomaliPage implements OnInit {
     this.getAllData()
   }
 
+  handleOption(event : any){
+    console.log("handle event", event)
+  }
+
   async getAllData (){
     this.isLoading = true;
     this.global.showLoader();

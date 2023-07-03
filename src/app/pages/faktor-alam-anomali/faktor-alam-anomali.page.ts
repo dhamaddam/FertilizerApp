@@ -9,19 +9,27 @@ import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Port } from 'src/app/models/port';
 import { IonicSelectableComponent } from 'ionic-selectable';
-
-
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { ActionSheetController, IonicModule } from '@ionic/angular';
+import { FaktorAlamAnomaliService } from 'src/app/services/faktor-alam-anomali/faktor-alam-anomali.service';
+import {DomSanitizer} from '@angular/platform-browser';
 @Component({
   selector: 'app-faktor-alam-anomali',
   templateUrl: './faktor-alam-anomali.page.html',
   styleUrls: ['./faktor-alam-anomali.page.scss'],
 })
+  
+
 export class FaktorAlamAnomaliPage implements OnInit {
   
   myForm : any;
   formTitle = "Form Isian Parameter Faktor Alam & Anomali";
   today: any = moment().format("YYYY-MM-DD");
   isLoading: boolean = false;
+
+  cover: any = '';
+  serangan_penyakit : any[] = [];
+  serangan_hama : any[] = [];
 
   _allKebun : any[] = [];
   _allAfdelling : any[] = [];
@@ -42,10 +50,14 @@ export class FaktorAlamAnomaliPage implements OnInit {
     private fb: FormBuilder,
     private global : GlobalService, 
     private companyServices: PerusahaanService,
-    private kondisiLahanServices : KondisiLahanService   
+    private faktoAlamAnomaliServices : FaktorAlamAnomaliService,
+    private util: GlobalService,
+    private actionSheetController: ActionSheetController,
+    public sanitizer: DomSanitizer
   
   ) { }
 
+  
   ngOnInit() {
     this.myForm = this.fb.group({ 
       tanggal: [this.today, [Validators.required]],
@@ -54,6 +66,11 @@ export class FaktorAlamAnomaliPage implements OnInit {
       kebun: ['', ],
       nomor_blok: ['', ],
       nomor_kcd: ['', ],
+      option_kumbang_tanduk_keterangan:['',],
+      option_kupu_kupu_keterangan:['',],
+      option_ulat_api_keterangan:['',],
+      option_tikus_keterangan:['',],
+      option_ulat_kantong_keterangan:['',],
       option_grs_kuning: false,
       option_kumbang_tanduk: false,
       option_ulat_kantong: false,
@@ -119,6 +136,105 @@ export class FaktorAlamAnomaliPage implements OnInit {
     currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
     this.allKebun = currentKebun
   }
+
+  async takePicture(namePicture : string, jenis_serangan : string) {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Choose from",
+      buttons: [{
+        text: "Camera",
+        icon: 'camera',
+        handler: () => {
+          console.log('camera clicked');
+          this.upload(CameraSource.Camera, namePicture, jenis_serangan );
+        }
+      }, {
+        text: "Gallery",
+        icon: 'images',
+        handler: () => {
+          console.log('gallery clicked');
+          this.upload(CameraSource.Photos, namePicture, jenis_serangan);
+        }
+      }, {
+        text: "Cancel",
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+
+    await actionSheet.present();
+  }
+  public getSantizeUrl(url : string) {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  async upload(source: CameraSource, namePicture : string, jenis_serangan: string) {
+    try {
+      const image = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        quality: 70,
+        // resultType: CameraResultType.Base64
+        resultType : CameraResultType.Uri
+      });
+      
+      console.log('image output', image);
+      const fileName = Date.now() + '.jpeg';
+      
+      const savedFileImage = {
+        nama : namePicture,
+        filepath: fileName,
+        webviewPath: image.webPath,
+      };
+
+      //serangan hama penyakit
+      if(jenis_serangan == "serangan_hama"){
+        this.serangan_hama.push(savedFileImage)
+        console.log("serangan hama", this.serangan_hama)
+      } else {
+        this.serangan_penyakit.push(savedFileImage)
+        console.log("serangan penyakit", this.serangan_hama)
+      }
+
+     
+      if (image && image.base64String) {
+        const blobData = this.b64toBlob(image.base64String, `image/${image.format}`);
+        // this.util.showLoader()
+        console.log("blobData", blobData);
+      }
+    } catch (error) {
+      console.log(error);
+      this.util.apiErrorHandler(error);
+    }
+  }
+
+  b64toBlob(b64Data: any, contentType = '', sliceSize = 512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+
+  handleOption (event : any, jenis_serangan: string){
+    const nama_serangga = event.srcElement.attributes.formcontrolname.value
+    console.log("handle Option",event.srcElement.attributes.formcontrolname.value)
+    this.takePicture(nama_serangga,jenis_serangan)
+  }
+
   handleKebun (event : any){
     let currentAfdelling = this._allAfdelling
     currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
@@ -133,25 +249,13 @@ export class FaktorAlamAnomaliPage implements OnInit {
     this.isLoading = true;
     this.global.showLoader();
 
+    // https://ionicframework.com/docs/angular/your-first-app/saving-photos
+    // this.faktoAlamAnomaliServices.saveFaktorAlamAnomaliLocal(this.myForm.value)
+    // https://devdactic.com/ionic-image-upload-capacitor
+    
     console.log(
-        this.myForm.value.company,
-        this.myForm.value.kebun,
-        this.myForm.value.afdelling,
-        this.myForm.value.nomor_blok,
-        this.myForm.value.nomor_kcd,
-        this.myForm.value.tanggal,
-        this.myForm.get("option_grs_kuning").value,
-        this.myForm.get("option_kumbang_tanduk").value,
-        this.myForm.get("option_ulat_kantong").value,
-        this.myForm.get("option_kupu_kupu").value,
-        this.myForm.get("option_ulat_api").value,
-        this.myForm.get("option_bsk_pkl_batang").value,
-        this.myForm.get("option_bsk_kuncup").value,
-        this.myForm.get("option_grs_kuning2").value,
-        this.myForm.get("option_grs_kuning3").value,
-        this.myForm.get("option_grs_kuning4").value,
-        this.myForm.value.curah_hujan,
-        this.myForm.value.hari_hujan,
+
+        this.myForm.value
       )
 
       this.isLoading = false;

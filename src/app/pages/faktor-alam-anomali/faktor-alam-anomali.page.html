@@ -82,27 +82,90 @@
             <ion-row class="ion-align-items-start">
                 <ion-col>
                     <ion-item class="ctm-font-2">
-                        <ion-checkbox slot="start" formControlName="option_kumbang_tanduk"></ion-checkbox>
+                            
+                        <ion-checkbox slot="start" formControlName="option_kumbang_tanduk" (ionChange)="handleOption($event,'serangan_hama')" ></ion-checkbox>
                         <ion-label>Kumbang Tanduk</ion-label>
+                        <ion-grid>
+                            <ion-col size="10"  *ngFor="let photo of serangan_hama">
+                                <ng-container [ngSwitch]="photo.nama">
+                                    <img  *ngSwitchCase="'option_kumbang_tanduk'" [src]="getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                    <ng-container *ngSwitchCase="'option_kumbang_tanduk'" [ngTemplateOutlet]="input_kumbang_tanduk"></ng-container>
+                                </ng-container>
+                            </ion-col>
+                        </ion-grid>  
                     </ion-item>
+                    
+                    <ng-template #input_kumbang_tanduk>
+                        <ion-input type="text" formControlName="option_kumbang_tanduk_keterangan"></ion-input>
+                    </ng-template>
+
                     <ion-item class="ctm-font-2">
-                        <ion-checkbox slot="start" formControlName="option_ulat_kantong"></ion-checkbox>
+                        <ion-checkbox slot="start" formControlName="option_ulat_kantong" (ionChange)="handleOption($event,'serangan_hama')"></ion-checkbox>
                         <ion-label>Ulat Kantong</ion-label>
+                        <ion-grid>
+                            <ion-col size="10"  *ngFor="let photo of serangan_hama">
+                                <ng-container [ngSwitch]="photo.nama">
+                                    <img  *ngSwitchCase="'option_ulat_kantong'" [src]="getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                    <ng-container *ngSwitchCase="'option_ulat_kantong'" [ngTemplateOutlet]="input_ulat_kantong"></ng-container>
+                                </ng-container>
+                            </ion-col>
+                        </ion-grid>  
                     </ion-item>
+
+                    <ng-template #input_ulat_kantong>
+                        <ion-input type="text" formControlName="option_ulat_kantong_keterangan"></ion-input>
+                    </ng-template>
+
                     <ion-item class="ctm-font-2">
-                        <ion-checkbox slot="start" formControlName="option_tikus"></ion-checkbox>
+                        <ion-checkbox slot="start" formControlName="option_tikus" (ionChange)="handleOption($event,'serangan_hama')"></ion-checkbox>
                         <ion-label>Tikus</ion-label>
+                        <ion-grid>
+                            <ion-col size="10"  *ngFor="let photo of serangan_hama">
+                                <ng-container [ngSwitch]="photo.nama">
+                                    <img  *ngSwitchCase="'option_tikus'" [src]="getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                    <ng-container *ngSwitchCase="'option_tikus'" [ngTemplateOutlet]="input_ulat_kantong"></ng-container>
+                                </ng-container>
+                            </ion-col>
+                        </ion-grid> 
                     </ion-item>
+                    <ng-template #input_option_tikus>
+                        <ion-input type="text" formControlName="option_tikus_keterangan"></ion-input>
+                    </ng-template>
                 </ion-col>
                 <ion-col>
                     <ion-item class="ctm-font-2">
-                        <ion-checkbox slot="start" formControlName="option_kupu_kupu"></ion-checkbox>
+                        <ion-checkbox slot="start" formControlName="option_kupu_kupu" (ionChange)="handleOption($event,'serangan_hama')"></ion-checkbox>
                         <ion-label>Kupu-kupu</ion-label>
+                        <ion-grid>
+                            <ion-col size="10"  *ngFor="let photo of serangan_hama">
+                                <ng-container [ngSwitch]="photo.nama">
+                                    <img  *ngSwitchCase="'option_kupu_kupu'" [src]="getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                    <ng-container *ngSwitchCase="'option_kupu_kupu'" [ngTemplateOutlet]="input_kupu_kupu"></ng-container>
+                                </ng-container>
+                            </ion-col>
+                        </ion-grid> 
                     </ion-item>
+
+                    <ng-template #input_kupu_kupu>
+                        <ion-input type="text" formControlName="option_kupu_kupu_keterangan"></ion-input>
+                    </ng-template>
+
                     <ion-item class="ctm-font-2">
-                        <ion-checkbox slot="start" formControlName="option_ulat_api"></ion-checkbox>
+                        <ion-checkbox slot="start" formControlName="option_ulat_api" (ionChange)="handleOption($event,'serangan_hama')"></ion-checkbox>
                         <ion-label>Ulat Api</ion-label>
+                        <ion-grid>
+                            <ion-col size="10"  *ngFor="let photo of serangan_hama">
+                                <ng-container [ngSwitch]="photo.nama">
+                                    <img  *ngSwitchCase="'option_ulat_api'" [src]="getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                    <ng-container *ngSwitchCase="'option_ulat_api'" [ngTemplateOutlet]="input_ulat_api"></ng-container>
+                                </ng-container>
+                            </ion-col>
+                        </ion-grid> 
                     </ion-item>
+
+                    <ng-template #input_ulat_api>
+                        <ion-input type="text" formControlName="option_ulat_api_keterangan"></ion-input>
+                    </ng-template>
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -114,6 +177,11 @@
                     <ion-item class="ctm-font-2">
                         <ion-checkbox slot="start" formControlName="option_grs_kuning"></ion-checkbox>
                         <ion-label>Grs Kuning</ion-label>
+                        <ion-row>
+                            <ion-col size="6" :key="photo" v-for="photo in photos">
+                              <ion-img :src="photo.webviewPath"></ion-img>
+                            </ion-col>
+                          </ion-row>
                     </ion-item>
                     <ion-item class="ctm-font-2">
                         <ion-checkbox slot="start" formControlName="option_bsk_pkl_batang"></ion-checkbox>
@@ -167,8 +235,9 @@
                 <ion-col>
                     <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
                 </ion-col>
-                <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim {{allKondisiLahan.length}} Data Tersimpan</ion-button>
             </ion-row>
+           
         </ion-grid>
     </form>
+    <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim {{allKondisiLahan.length}} Data Tersimpan</ion-button>
 </ion-content>
