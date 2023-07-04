@@ -4,7 +4,6 @@ import * as moment from 'moment';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
 import { Subscription } from 'rxjs';
-import { KondisiLahanService } from 'src/app/services/kondisi-lahan/kondisi-lahan.service';
 import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Port } from 'src/app/models/port';
@@ -156,14 +155,7 @@ export class FaktorAlamAnomaliPage implements OnInit {
           console.log('camera clicked');
           this.upload(CameraSource.Camera, namePicture, jenis_serangan );
         }
-      }, {
-        text: "Gallery",
-        icon: 'images',
-        handler: () => {
-          console.log('gallery clicked');
-          this.upload(CameraSource.Photos, namePicture, jenis_serangan);
-        }
-      }, {
+      },{
         text: "Cancel",
         icon: 'close',
         role: 'cancel',

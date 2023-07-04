@@ -135,13 +135,6 @@ export class KeragaanLahanPage implements OnInit {
           this.upload(CameraSource.Camera, jenis_serangan );
         }
       }, {
-        text: "Gallery",
-        icon: 'images',
-        handler: () => {
-          console.log('gallery clicked');
-          this.upload(CameraSource.Photos, jenis_serangan);
-        }
-      }, {
         text: "Cancel",
         icon: 'close',
         role: 'cancel',

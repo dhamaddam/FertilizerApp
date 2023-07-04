@@ -178,14 +178,7 @@ export class KeragaanTanahPage implements OnInit {
           console.log('camera clicked');
           this.upload(CameraSource.Camera, jenis_inputan );
         }
-      }, {
-        text: "Gallery",
-        icon: 'images',
-        handler: () => {
-          console.log('gallery clicked');
-          this.upload(CameraSource.Photos,jenis_inputan);
-        }
-      }, {
+      },  {
         text: "Cancel",
         icon: 'close',
         role: 'cancel',
