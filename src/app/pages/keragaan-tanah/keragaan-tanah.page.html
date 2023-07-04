@@ -87,20 +87,49 @@
                 <ion-select placeholder="Kategori Tanah" formControlName="kategori_tanah">
                     <ion-select-option *ngFor="let kategoriTanah of allKategoriTanah" value="{{kategoriTanah?.id}}">{{kategoriTanah?.name}}</ion-select-option>
                 </ion-select>
-
-                <br/>
-
-                <ion-label class="ctm-button-subtitle"> Kematangan </ion-label>
-                <ion-textarea formControlName="kematangan" placeholder="Type something here"></ion-textarea>
-
-                <br />
+            </ion-col>
+        </ion-row>
+        <ion-row class="ion-align-items-start">
+            <ion-col> 
                 <ion-label class="ctm-button-subtitle"> Tata Kelola Air </ion-label>
+                <button ion-button icon-only clear item-right (click)="handleTataKelolaAir($event,'tata_kelola_air')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                </button>
                 <ion-textarea formControlName="tata_kelola_air" placeholder="Type something here"></ion-textarea>
+                <ion-grid>
+                    <ion-col size="10"  *ngFor="let photo of tata_kelola_air">
+                        <ng-container [ngSwitch]="photo.nama">
+                            <img  *ngSwitchCase="'tata_kelola_air'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                            <ng-container *ngSwitchCase="'tata_kelola_air'" [ngTemplateOutlet]="input_tata_kelola_air"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid> 
+                <ng-template #input_tata_kelola_air>
+                    <ion-input type="text" formControlName="tata_kelola_air_keterangan"></ion-input>
+                </ng-template>
+            </ion-col>
+            <ion-col>
+                <ion-label class="ctm-button-subtitle"> Kematangan </ion-label>
+                <button ion-button icon-only clear item-right (click)="handleKematangan($event,'kematangan')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                </button>
+                <ion-textarea formControlName="kematangan" placeholder="Type something here"></ion-textarea>
+               
+                <ion-grid>
+                    <ion-col size="10"  *ngFor="let photo of kematangan">
+                        <ng-container [ngSwitch]="photo.nama">
+                            <img  *ngSwitchCase="'kematangan'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                            <ng-container *ngSwitchCase="'kematangan'" [ngTemplateOutlet]="input_kematangan"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid> 
 
+                <ng-template #input_kematangan>
+                    <ion-input type="text" formControlName="kematangan_keterangan"></ion-input>
+                </ng-template>
             </ion-col>
         </ion-row>
     </ion-grid>
-
     <ion-grid>
         <ion-row>
             <ion-col>
@@ -245,7 +274,12 @@
                 <ion-col>
                     <ion-item>
                         <ion-label position="stacked" class="ctm-font">Kelembapan Tanah</ion-label>
-                        <ion-input class="ctm-font" placeholder="Kelembapan Tanah" formControlName="kelembapan_tanah"></ion-input>
+                            <ion-select formControlName="kelembapan_tanah" placeholder="Kelembapan Tanah" (ionChange)="handleKelembapanTanah($event)">
+                                <ion-select-option value="1">Normal</ion-select-option>
+                                <ion-select-option value="2">Kering</ion-select-option>
+                                <ion-select-option value="3">Jenuh</ion-select-option>
+                            </ion-select>
+                        <ion-input class="ctm-font" placeholder="Kelembapan Tanah" formControlName="kelembapan_tanah_keterangan"></ion-input>
                     </ion-item>
                 </ion-col>
             </ion-row>

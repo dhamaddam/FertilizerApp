@@ -10,7 +10,9 @@ import { ManagementKebun } from 'src/app/models/management-kebun.model';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { Port } from 'src/app/models/port';
-
+import { ActionSheetController, IonicModule } from '@ionic/angular';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+  
 @Component({
   selector: 'app-management-kebun',
   templateUrl: './management-kebun.page.html',
@@ -34,6 +36,11 @@ export class ManagementKebunPage implements OnInit {
   allManagementKebun : any[] = [];
   allManagementKebunSubs: Subscription = new Subscription; 
  
+  pengendalian_gulma : any[] = []
+  pengelolaan_tanah_air : any[] = []
+  kualitas_tunasan : any[] = []
+  cadangan_buah : any[] = []
+
   isSubmitted : boolean = false;
   today: any = moment().format("YYYY-MM-DD");
   portsSubscription: any;
@@ -46,8 +53,9 @@ export class ManagementKebunPage implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private global : GlobalService,
+    public global : GlobalService,
     private companyServices: PerusahaanService,
+    private actionSheetController: ActionSheetController,
     private managementKebunServices : ManagementKebunService ) { }
 
   ngOnInit() {
@@ -65,7 +73,11 @@ export class ManagementKebunPage implements OnInit {
       kualitas_panen: ['', ],
       kualitas_jalan:['',],
       cadangan_buah:['',],
+      pengelolaan_tanah_air_keterangan : ['',],
       afdelling:['',],
+      pengendalian_gulma_keterangan : ['',],
+      cadangan_buah_keterangan : ['',],
+      kualitas_tunasan_keterangan : ['',],
       nomor_blok: ['', [Validators.required, Validators.minLength(6)]],
     });
 
@@ -131,6 +143,106 @@ export class ManagementKebunPage implements OnInit {
   }
   lihatData(){
     console.log("lihat data",this.allManagementKebun.length)
+  }
+  handleCamera(event : any, jenis_inputan : string){
+    console.log("event handle stress air",event)
+    this.takePicture(jenis_inputan)
+  }
+
+  async takePicture(jenis_serangan : string) {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Choose from",
+      buttons: [{
+        text: "Camera",
+        icon: 'camera',
+        handler: () => {
+          console.log('camera clicked');
+          this.upload(CameraSource.Camera, jenis_serangan );
+        }
+      }, {
+        text: "Gallery",
+        icon: 'images',
+        handler: () => {
+          console.log('gallery clicked');
+          this.upload(CameraSource.Photos, jenis_serangan);
+        }
+      }, {
+        text: "Cancel",
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+
+    await actionSheet.present();
+  }
+
+  async upload(source: CameraSource, jenis_inputan: string) {
+    try {
+      const image = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        quality: 70,
+        // resultType: CameraResultType.Base64
+        resultType : CameraResultType.Uri
+      });
+      
+      console.log('image output', image);
+      const fileName = Date.now() + '.jpeg';
+      
+      const savedFileImage = {
+        nama : jenis_inputan,
+        filepath: fileName,
+        webviewPath: image.webPath,
+      };
+
+      //serangan jenis inputan
+      if(jenis_inputan == "pengendalian_gulma"){
+        this.pengendalian_gulma.push(savedFileImage)
+        console.log("pengendalian_gulma", this.pengendalian_gulma)
+      } else if (jenis_inputan == "pengelolaan_tanah_air"){
+        this.pengelolaan_tanah_air.push(savedFileImage)
+        console.log("pengendalian_gulma", this.pengendalian_gulma)
+      } else if (jenis_inputan == "kualitas_tunasan") {
+        this.kualitas_tunasan.push(savedFileImage)
+        console.log("kualitas_tunasan", this.kualitas_tunasan)
+      } else if (jenis_inputan == "cadangan_buah"){
+        this.cadangan_buah.push(savedFileImage)
+        console.log("cadangan_buah", this.cadangan_buah)
+      }
+     
+
+     
+      if (image && image.base64String) {
+        const blobData = this.b64toBlob(image.base64String, `image/${image.format}`);
+        // this.util.showLoader()
+        console.log("blobData", blobData);
+      }
+    } catch (error) {
+      console.log(error);
+      this.global.apiErrorHandler(error);
+    }
+  }
+
+  b64toBlob(b64Data: any, contentType = '', sliceSize = 512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
   }
 
   async getAllData(){    

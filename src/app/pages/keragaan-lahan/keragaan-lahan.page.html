@@ -77,15 +77,37 @@
               <ion-col>
                   <ion-item>
                       <ion-label class="ctm-font" position="stacked">Elevasi</ion-label>
-                      <ion-input type="text" formControlName="elevasi" class="ctm-font" placeholder="Elevasi"></ion-input>
+                      <ion-input type="text" formControlName="elevasi" class="ctm-font" placeholder="Elevasi" ></ion-input>
+                      <button ion-button icon-only clear item-right (click)="handleElevasi($event,'elevasi')">
+                        <ion-icon name='camera-outline' icon-start></ion-icon>
+                      </button>
                   </ion-item>
+                  <ion-grid>
+                    <ion-col size="10"  *ngFor="let photo of elevasi">
+                        <ng-container [ngSwitch]="photo.nama">
+                            <img  *ngSwitchCase="'elevasi'" [src]="getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                            <ng-container *ngSwitchCase="'elevasi'" [ngTemplateOutlet]="input_elevasi"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid>  
               </ion-col>
+                <ng-template #input_elevasi>
+                    <ion-input type="text" formControlName="input_elevasi_keterangan"></ion-input>
+                </ng-template>
               <ion-col>
                   <ion-item>
                       <ion-label class="ctm-font" position="stacked">Topografi</ion-label>
                       <ion-input type="text" formControlName="topografi" class="ctm-font" placeholder="Topografi"></ion-input>
                   </ion-item>
               </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label class="ctm-font" position="stacked">Kadar Air</ion-label>
+                    <ion-input type="text" formControlName="kadar_air" class="ctm-font" placeholder="Kemiringan Lereng"></ion-input>
+                </ion-item>
+            </ion-col>
           </ion-row>
           <ion-row>
               <ion-col>

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
@@ -9,10 +9,10 @@ import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Port } from 'src/app/models/port';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { ActionSheetController, IonicModule } from '@ionic/angular';
 import { FaktorAlamAnomaliService } from 'src/app/services/faktor-alam-anomali/faktor-alam-anomali.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 @Component({
   selector: 'app-faktor-alam-anomali',
   templateUrl: './faktor-alam-anomali.page.html',
@@ -30,6 +30,9 @@ export class FaktorAlamAnomaliPage implements OnInit {
   cover: any = '';
   serangan_penyakit : any[] = [];
   serangan_hama : any[] = [];
+  option_grs_kuning : any[] = [];
+  option_bsk_pkl_batang : any[] = []
+  option_bsk_kuncup : any[] = []
 
   _allKebun : any[] = [];
   _allAfdelling : any[] = [];
@@ -45,6 +48,12 @@ export class FaktorAlamAnomaliPage implements OnInit {
 
   portsSubscription: any;
   
+  formGroup = new FormArray([
+    new FormArray([
+      new FormControl(true),
+      new FormControl(false),
+    ]),
+  ]);
 
   constructor(
     private fb: FormBuilder,
@@ -166,6 +175,7 @@ export class FaktorAlamAnomaliPage implements OnInit {
 
     await actionSheet.present();
   }
+
   public getSantizeUrl(url : string) {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
@@ -192,9 +202,9 @@ export class FaktorAlamAnomaliPage implements OnInit {
       if(jenis_serangan == "serangan_hama"){
         this.serangan_hama.push(savedFileImage)
         console.log("serangan hama", this.serangan_hama)
-      } else {
+      } else if(jenis_serangan == "serangan_penyakit"){
         this.serangan_penyakit.push(savedFileImage)
-        console.log("serangan penyakit", this.serangan_hama)
+        console.log("serangan_penyakit", this.serangan_penyakit)
       }
 
      
@@ -235,6 +245,19 @@ export class FaktorAlamAnomaliPage implements OnInit {
     this.takePicture(nama_serangga,jenis_serangan)
   }
 
+  handleAdd(event : any){
+    console.log("handle Add", event)
+    this.myForm.addControl('new', this.fb.control('', Validators.required));
+    const newElement = new FormArray([
+      new FormControl(Math.random() > 0.5),
+      new FormControl(Math.random() > 0.5),
+      new FormControl(Math.random() > 0.5),
+      new FormControl(Math.random() > 0.5),
+      new FormControl(Math.random() > 0.5),
+    ]);
+    this.myForm.push(newElement);
+  }
+
   handleKebun (event : any){
     let currentAfdelling = this._allAfdelling
     currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
@@ -254,7 +277,6 @@ export class FaktorAlamAnomaliPage implements OnInit {
     // https://devdactic.com/ionic-image-upload-capacitor
     
     console.log(
-
         this.myForm.value
       )
 

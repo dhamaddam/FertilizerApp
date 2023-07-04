@@ -77,13 +77,28 @@
             <ion-row class="ion-align-items-start">
                 <ion-col>
                     <ion-label class="ctm-font-2"> Pengendalian Gulma </ion-label>
-                    <ion-select class="ctm-font-2" formControlName="pengendalian" placeholder="Pilih Gulma">
+                    <button ion-button icon-only clear item-right (click)="handleCamera($event,'pengendalian_gulma')">
+                        <ion-icon name='camera-outline' icon-start></ion-icon>
+                    </button>
+                    <ion-textarea class="ctm-font-2" formControlName="jenis_gulma" placeholder="Type something here"></ion-textarea>
+                    
+                    <!-- <ion-select class="ctm-font-2" formControlName="pengendalian" placeholder="Pilih Gulma">
                         <ion-select-option *ngFor="let pengendalian of allPengendalianGulma">{{pengendalian?.name}}</ion-select-option>
-                    </ion-select>
+                    </ion-select> -->
+
+                    <ion-grid>
+                        <ion-col size="10"  *ngFor="let photo of pengendalian_gulma">
+                            <ng-container [ngSwitch]="photo.nama">
+                                <img  *ngSwitchCase="'pengendalian_gulma'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                <ng-container *ngSwitchCase="'pengendalian_gulma'" [ngTemplateOutlet]="input_pengendalian_gulma"></ng-container>
+                            </ng-container>
+                        </ion-col>
+                    </ion-grid> 
+                    <ng-template #input_pengendalian_gulma>
+                        <ion-input type="text" formControlName="pengendalian_gulma_keterangan"></ion-input>
+                    </ng-template>
                 </ion-col>
                 <ion-col>
-                    <ion-label class="ctm-font-2"> Jenis Gulma </ion-label>
-                    <ion-textarea class="ctm-font-2" formControlName="jenis_gulma" placeholder="Type something here"></ion-textarea>
                     <br />
                     <ion-label class="ctm-font-2"> Kualitas Perawatan </ion-label>
                     <ion-textarea class="ctm-font-2" formControlName="perawatan" placeholder="Type something here"></ion-textarea>
@@ -94,22 +109,52 @@
             <ion-row>
                 <ion-col>
                     <ion-label class="ctm-font-2"> Pengelolaan Tanah & Air </ion-label>
+                    <button ion-button icon-only clear item-right (click)="handleCamera($event,'pengelolaan_tanah_air')">
+                        <ion-icon name='camera-outline' icon-start></ion-icon>
+                    </button>
                     <ion-select formControlName="pengelolaan_tanah" class="ctm-font-2" placeholder="Pilih Kualitas" class="ctm-font-2">
-                        <ion-select-option value="1">Berat</ion-select-option>
-                        <ion-select-option value="2">Sedang</ion-select-option>
-                        <ion-select-option value="3">Ringan</ion-select-option>
-                        <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        <ion-select-option value="tapak_timbun">Tapak Timbun</ion-select-option>
+                        <ion-select-option value="terasan">Terasan</ion-select-option>
+                        <ion-select-option value="tapak_kuda">Tapak Kuda</ion-select-option>
+                        <ion-select-option value="tidak_ada">Tidak Ada</ion-select-option>
                     </ion-select>
+
+                    <ion-grid>
+                        <ion-col size="10"  *ngFor="let photo of pengelolaan_tanah_air">
+                            <ng-container [ngSwitch]="photo.nama">
+                                <img  *ngSwitchCase="'pengelolaan_tanah_air'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                <ng-container *ngSwitchCase="'pengelolaan_tanah_air'" [ngTemplateOutlet]="input_pengelolaan_tanah_air"></ng-container>
+                            </ng-container>
+                        </ion-col>
+                    </ion-grid> 
+    
+                    <ng-template #input_pengelolaan_tanah_air>
+                        <ion-input type="text" formControlName="pengelolaan_tanah_air_keterangan"></ion-input>
+                    </ng-template>
                 </ion-col>
 
                 <ion-col>
                     <ion-label class="ctm-font-2"> Kualitas Tunasan </ion-label>
+                    <button ion-button icon-only clear item-right (click)="handleCamera($event,'kualitas_tunasan')">
+                        <ion-icon name='camera-outline' icon-start></ion-icon>
+                    </button>
                     <ion-select formControlName="kualitas_tunasan" class="ctm-font-2" placeholder="Pilih Kualitas" class="ctm-font-2">
-                        <ion-select-option value="1">Berat</ion-select-option>
-                        <ion-select-option value="2">Sedang</ion-select-option>
-                        <ion-select-option value="3">Ringan</ion-select-option>
-                        <ion-select-option value="4">Tidak Ada</ion-select-option>
+                        <ion-select-option value="gondrong">Gondrong</ion-select-option>
+                        <ion-select-option value="normal">Normal</ion-select-option>
+                        <ion-select-option value="gundul">Gundul</ion-select-option>
                     </ion-select>
+
+                    <ion-grid>
+                        <ion-col size="10"  *ngFor="let photo of kualitas_tunasan">
+                            <ng-container [ngSwitch]="photo.nama">
+                                <img  *ngSwitchCase="'kualitas_tunasan'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                <ng-container *ngSwitchCase="'kualitas_tunasan'" [ngTemplateOutlet]="input_kualitas_tunasan"></ng-container>
+                            </ng-container>
+                        </ion-col>
+                    </ion-grid> 
+                    <ng-template #input_kualitas_tunasan>
+                        <ion-input type="text" formControlName="kualitas_tunasan_keterangan"></ion-input>
+                    </ng-template>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -136,13 +181,30 @@
             <ion-row>
                 <ion-col>
                     <ion-label class="ctm-font-2"> Cadangan Buah </ion-label>
+                    <button ion-button icon-only clear item-right (click)="handleCamera($event,'cadangan_buah')">
+                        <ion-icon name='camera-outline' icon-start></ion-icon>
+                    </button>
                     <ion-select formControlName="cadangan_buah" class="ctm-font-2" placeholder="Pilih Kualitas" class="ctm-font-2">
                         <ion-select-option value="1">Berat</ion-select-option>
                         <ion-select-option value="2">Sedang</ion-select-option>
                         <ion-select-option value="3">Ringan</ion-select-option>
                         <ion-select-option value="4">Tidak Ada</ion-select-option>
                     </ion-select>
+
+                    <ion-grid>
+                        <ion-col size="10"  *ngFor="let photo of cadangan_buah">
+                            <ng-container [ngSwitch]="photo.nama">
+                                <img  *ngSwitchCase="'cadangan_buah'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                                <ng-container *ngSwitchCase="'cadangan_buah'" [ngTemplateOutlet]="input_cadangan_buah"></ng-container>
+                            </ng-container>
+                        </ion-col>
+                    </ion-grid> 
+
+                    <ng-template #input_cadangan_buah>
+                        <ion-input type="text" formControlName="cadangan_buah_keterangan"></ion-input>
+                    </ng-template>
                 </ion-col>
+                  
                 <ion-col>
                 </ion-col>
             </ion-row>

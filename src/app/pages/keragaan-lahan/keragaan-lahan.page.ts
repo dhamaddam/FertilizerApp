@@ -10,6 +10,9 @@ import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.servic
 import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Port } from 'src/app/models/port';
+import { ActionSheetController, IonicModule } from '@ionic/angular';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 
 @Component({
@@ -22,6 +25,10 @@ export class KeragaanLahanPage implements OnInit {
   formTitle = "Form Isian Parameter Keragaan Lahan";
 
   myForm : any;
+  cover: any = '';
+  serangan_penyakit : any[] = [];
+  elevasi : any[] = [];
+
   isLoading: boolean = false;
   _allAfdelling : any[] = [];
   _allKebun : any[] = [];
@@ -43,9 +50,12 @@ export class KeragaanLahanPage implements OnInit {
     private fb: FormBuilder,
     private router:Router,
     private global : GlobalService,
+    private util: GlobalService,
     private companyServices: PerusahaanService,
-    private kondisiLahanServices : KondisiLahanService   
-  
+    private kondisiLahanServices : KondisiLahanService,
+    private actionSheetController: ActionSheetController,
+    public sanitizer: DomSanitizer
+   
   ) { }
 
   ngOnInit() {
@@ -63,6 +73,8 @@ export class KeragaanLahanPage implements OnInit {
       kemiringan_lereng: ['', ],
       teras: ['', ],
       saluran_irigasi: ['', ],
+      kadar_air: ['', ],
+      input_elevasi_keterangan : ['',]
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
@@ -111,6 +123,102 @@ export class KeragaanLahanPage implements OnInit {
         }
       })
       this.getAllData();
+  }
+  async takePicture(jenis_serangan : string) {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Choose from",
+      buttons: [{
+        text: "Camera",
+        icon: 'camera',
+        handler: () => {
+          console.log('camera clicked');
+          this.upload(CameraSource.Camera, jenis_serangan );
+        }
+      }, {
+        text: "Gallery",
+        icon: 'images',
+        handler: () => {
+          console.log('gallery clicked');
+          this.upload(CameraSource.Photos, jenis_serangan);
+        }
+      }, {
+        text: "Cancel",
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+
+    await actionSheet.present();
+  }
+
+  b64toBlob(b64Data: any, contentType = '', sliceSize = 512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+
+  async upload(source: CameraSource, jenis_inputan: string) {
+    try {
+      const image = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        quality: 70,
+        // resultType: CameraResultType.Base64
+        resultType : CameraResultType.Uri
+      });
+      
+      console.log('image output', image);
+      const fileName = Date.now() + '.jpeg';
+      
+      const savedFileImage = {
+        nama : jenis_inputan,
+        filepath: fileName,
+        webviewPath: image.webPath,
+      };
+
+      //serangan hama penyakit
+      if(jenis_inputan == "elevasi"){
+        this.elevasi.push(savedFileImage)
+        console.log("elevasi", this.elevasi)
+      } else {
+        this.serangan_penyakit.push(savedFileImage)
+        console.log("serangan penyakit", this.serangan_penyakit)
+      }
+
+     
+      if (image && image.base64String) {
+        const blobData = this.b64toBlob(image.base64String, `image/${image.format}`);
+        // this.util.showLoader()
+        console.log("blobData", blobData);
+      }
+    } catch (error) {
+      console.log(error);
+      this.util.apiErrorHandler(error);
+    }
+  }
+  public getSantizeUrl(url : string) {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  handleElevasi (event : any, jenis_inputan: string){
+    console.log("event handle elevasi",event)
+    this.takePicture(jenis_inputan)
   }
 
   async getAllData(){    

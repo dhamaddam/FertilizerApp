@@ -8,6 +8,7 @@ import {
   NavController, 
   ToastController } from '@ionic/angular';
 import { ComponentRef } from '@ionic/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Injectable({
@@ -23,6 +24,7 @@ export class GlobalService {
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
     private navCtrl: NavController, 
+    public sanitizer: DomSanitizer
   ) { }
 
   setLoader() {
@@ -106,7 +108,9 @@ export class GlobalService {
       default: return 'location-outline';
     }
   }
-
+  public getSantizeUrl(url : string) {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
   apiErrorHandler(err: any) {
     // console.log('Error got in service =>', err)
     if (err && err.status == 401 && err.error.error) {
