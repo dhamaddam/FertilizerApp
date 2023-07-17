@@ -252,6 +252,7 @@ export class ManagementKebunPage implements OnInit {
       this.global.hideLoader();
     }, 1000);
   }
+  
    placeData(param: any){
     try {
       let currentMkebun : ManagementKebun[] = []

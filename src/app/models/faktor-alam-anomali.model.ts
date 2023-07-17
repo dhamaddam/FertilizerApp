@@ -11,7 +11,6 @@ export class FaktorAlamAnomali {
         //top of parameter always used 
         public curah_hujan: string,
         public hari_hujan: string,
-        
         public serangan_hama: string,
         public serangan_penyakit: string,
        
