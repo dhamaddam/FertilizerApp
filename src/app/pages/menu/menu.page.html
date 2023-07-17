@@ -6,17 +6,44 @@
                 <ion-title>Menu</ion-title>
             </ion-toolbar>
         </ion-header>
-
         <ion-content>
+
+            <div *ngFor="let p of pagesEX"> 
+
+                <!-- Item With Label -->
+                <ion-item button *ngIf="p.hasChild === true && p.label === true" >
+                    <ion-label>{{ p.title }}</ion-label>
+                </ion-item>
+                <!-- Item with No Children -->
+                <ion-item button *ngIf="p.hasChild === false && p.label === false "  [routerLink]="p?.url" routerDirection="root"
+                routerLinkActive="active" (click)="p.open = !p.open" [class.parent-active]="p.open" detail="false">
+                    <ion-icon [name]="p?.icon" slot="start"></ion-icon>
+                    <ion-label>{{ p.title }}</ion-label>
+                </ion-item>
+                
+
+                <!-- Item with  Children -->
+                <ion-item button *ngIf="p.hasChild && p.label === false" (click)="p.open = !p.open" [class.parent-active]="p.open" detail="false">
+                    <ion-icon slot="start" name="arrow-forward" *ngIf="!p.open"></ion-icon>
+                    <ion-icon slot="start" name="arrow-down" *ngIf="p.open"></ion-icon>
+                    <ion-label>{{ p.title }}</ion-label>
+                </ion-item>
+                
+                <!-- Children List for clicked Item -->
+                <ion-list *ngIf="p.hasChild && p.open">
+                    <ion-menu-toggle>
+                        <ion-item *ngFor="let sub of p.children" class="sub-item" [routerLink]="sub?.url" routerDirection="root"
+                            routerLinkActive="active">
+                            <ion-icon [name]="sub?.icon" slot="start"></ion-icon>
+                            <ion-label>
+                            {{ sub?.title }}
+                            </ion-label>
+                        </ion-item>
+                    </ion-menu-toggle>
+                </ion-list>
+            </div>
+            
             <ion-list>
-                <ion-menu-toggle auto-hide="false" *ngFor="let p of pages">
-                    <ion-item [routerLink]="p.url" routerDirection="root" routerLinkActive="active-item">
-                        <ion-icon name="{{p.icon}}" slot="start"></ion-icon>
-                        <ion-label class="text-center">
-                            {{p.title}}
-                        </ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
                 <ion-item button click="logout()">
                     <ion-icon name="log-out" slot="start"></ion-icon>
                     <ion-button expand="full" (click)="logout()">Logout</ion-button>

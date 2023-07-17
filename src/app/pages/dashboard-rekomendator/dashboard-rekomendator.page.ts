@@ -37,8 +37,8 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   protasChart : any ;
   TotalBunchDataChart : any;
   isLoading: boolean = false;
-  companyId : number = 79
-  plantationId : number = 79
+  companyId : number = 0
+  plantationId : number = 0
 
   // companyProfile 
   _allAfdelling : any[] = [];
@@ -79,6 +79,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   allAWBAges : any[] = []
   allTotalBunchAges : any[] = []
   totalBunchAges : any[] = []
+  year_production : number = 0
 
    CHART_COLORS = {
     red: 'rgb(255, 99, 132)',
@@ -226,9 +227,12 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   handleKebun (event : any){
     let currentAfdelling = this._allAfdelling
     this.plantationId = event.detail.value
-    console.log("plantationId", this.plantationId)
     currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
     this.allAfdelling = currentAfdelling
+    this.getAllData()
+  }
+  handleTahun ( event : any){
+    this.year_production = event.detail.value
     this.getAllData()
   }
 
@@ -240,8 +244,8 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
         await this.companyServices.getAfdelling();
         await this.companyServices.getKebun();
         await this.companyServices.getPerusahaan();
-      // this.isLoading = false;
-      // this.global.hideLoader();
+      this.isLoading = false;
+      this.global.hideLoader();
     }, 1000);
   }
 
@@ -250,12 +254,12 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
     this.global.showLoader();
     setTimeout(async() => {
       await this.dashboarServices.getProductionYear(this.plantationId);
-      await this.dashboarServices.getCompositionChart(this.plantationId,2020);
-      await this.dashboarServices.getPlantProduction(this.plantationId,2021);
-      await this.dashboarServices.getCurahHariHujan(153,2021);
-      await this.dashboarServices.getAllProtas(this.plantationId,2021);
-      await this.dashboarServices.getAllTotalBunch(this.plantationId,2021);
-      await this.dashboarServices.getAllABW(this.plantationId,2021);
+      await this.dashboarServices.getCompositionChart(this.plantationId,this.year_production);
+      await this.dashboarServices.getPlantProduction(this.plantationId,this.year_production);
+      await this.dashboarServices.getCurahHariHujan(this.plantationId,this.year_production);
+      await this.dashboarServices.getAllProtas(this.plantationId,this.year_production);
+      await this.dashboarServices.getAllTotalBunch(this.plantationId,this.year_production);
+      await this.dashboarServices.getAllABW(this.plantationId,this.year_production);
       this.isLoading = false;
       this.global.hideLoader();
     }, 1000);
