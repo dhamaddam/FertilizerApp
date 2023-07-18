@@ -80,6 +80,26 @@ const routes: Routes = [
     path: 'view-faktor-alam-anomali',
     loadChildren: () => import('./pages/view-faktor-alam-anomali/view-faktor-alam-anomali.module').then( m => m.ViewFaktorAlamAnomaliPageModule)
   },
+  {
+    path: 'keragaan-tanah-jenis-tanah',
+    loadChildren: () => import('./pages/keragaan-tanah-jenis-tanah/keragaan-tanah-jenis-tanah.module').then( m => m.KeragaanTanahJenisTanahPageModule)
+  },
+  {
+    path: 'keragaan-tanah-kadar-hara-tanah',
+    loadChildren: () => import('./pages/keragaan-tanah-kadar-hara-tanah/keragaan-tanah-kadar-hara-tanah.module').then( m => m.KeragaanTanahKadarHaraTanahPageModule)
+  },
+  {
+    path: 'keragaan-tanah-sifat-fisik-tanah',
+    loadChildren: () => import('./pages/keragaan-tanah-sifat-fisik-tanah/keragaan-tanah-sifat-fisik-tanah.module').then( m => m.KeragaanTanahSifatFisikTanahPageModule)
+  },
+  {
+    path: 'keragaan-tanah-elevasi',
+    loadChildren: () => import('./pages/keragaan-tanah-elevasi/keragaan-tanah-elevasi.module').then( m => m.KeragaanTanahElevasiPageModule)
+  },
+  {
+    path: 'keragaan-tanah-topografi',
+    loadChildren: () => import('./pages/keragaan-tanah-topografi/keragaan-tanah-topografi.module').then( m => m.KeragaanTanahTopografiPageModule)
+  },
 ];
 
 @NgModule({

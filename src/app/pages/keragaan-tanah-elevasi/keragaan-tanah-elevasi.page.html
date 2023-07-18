@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar mode="md">
+      <ion-title>
+        {{formTitle}}
+      </ion-title>
+      <ion-buttons slot="start">
+          <ion-menu-button autoHide="true"></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin"> 
+    <div *ngIf="isLoading" class="ion-text-center alignSpinner">
+      <ion-spinner color="primary"></ion-spinner>
+    </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-list>
+              <ion-item>
+                  <ionic-selectable item-content placeholder="Pilih Perusahaan" formControlName="company" itemValueField="id" itemTextField="name" [items]="allCompany" (onSelect)="handleCompany($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
+                      <ng-template ionicSelectableItemTemplate let-port="item" let-isPortSelected="isItemSelected">
+                          {{port.name}} - {{port.id}}
+                      </ng-template>
+                  </ionic-selectable>
+              </ion-item>
+          </ion-list>
+        </ion-col>
+        <ion-col>
+            <ion-list>
+                <ion-item>
+                    <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                        <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.name}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </ion-col>
+        <ion-col>
+            <ion-list>
+                <ion-item>
+                    <ion-select formControlName="afdelling" placeholder="Pilih Afdelling">
+                        <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.name}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

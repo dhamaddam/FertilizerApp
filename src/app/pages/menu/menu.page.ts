@@ -90,7 +90,6 @@ export class MenuPage implements OnInit {
   ];
 
   pagesEX = [
-
     {
       id : 1,
       title: 'Dashboard',
@@ -146,17 +145,22 @@ export class MenuPage implements OnInit {
       children: [
         {
           title : 'Elevasi',
-          url: '/menu/keragaan-lahan-elevasi',
+          url: '/menu/keragaan-tanah-elevasi',
           icon: 'filter-outline'
         },
         {
-          title: 'Kadar Hara Tanah',
-          url: '/menu/keragaan-lahan-kadar-hara-tanah',
+          title: 'Topografi',
+          url: '/menu/keragaan-tanah-topografi',
           icon: 'filter-outline'
         },
         {
-          title: 'Sifat Fisik Tanah',
-          url: '/menu/keragaan-lahan-sifat-fisik-tanah',
+          title: 'Kemiringan Lereng',
+          url: '/menu/keragaan-tanah-kemiringan-lereng',
+          icon: 'filter-outline'
+        },
+        {
+          title: 'Teras',
+          url: '/menu/keragaan-tanah-teras',
           icon: 'filter-outline'
         },
        ]

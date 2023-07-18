@@ -58,6 +58,26 @@ const routes: Routes = [
       {
         path: 'view-management-kebun',
         loadChildren:() => import('../view-management-kebun/view-management-kebun.module').then( m => m.ViewManagementKebunPageModule)
+      }, 
+      {
+        path : 'keragaan-tanah-jenis-tanah',
+        loadChildren:() => import('../keragaan-tanah-jenis-tanah/keragaan-tanah-jenis-tanah.module').then(m => m.KeragaanTanahJenisTanahPageModule)
+      },
+      {
+        path : 'keragaan-tanah-kadar-hara-tanah',
+        loadChildren:() => import('../keragaan-tanah-kadar-hara-tanah/keragaan-tanah-kadar-hara-tanah.module').then(m => m.KeragaanTanahKadarHaraTanahPageModule)
+      },
+      {
+        path : 'keragaan-tanah-sifat-fisik-tanah',
+        loadChildren:() => import('../keragaan-tanah-sifat-fisik-tanah/keragaan-tanah-sifat-fisik-tanah.module').then(m => m.KeragaanTanahSifatFisikTanahPageModule)
+      },
+      {
+        path : 'keragaan-tanah-elevasi',
+        loadChildren:() => import('../keragaan-tanah-elevasi/keragaan-tanah-elevasi.module').then(m => m.KeragaanTanahElevasiPageModule)
+      },
+      {
+        path : 'keragaan-tanah-topografi',
+        loadChildren:() => import('../keragaan-tanah-topografi/keragaan-tanah-topografi.module').then(m => m.KeragaanTanahTopografiPageModule)
       }
     ]
   },

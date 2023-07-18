@@ -4,6 +4,7 @@ import { Subscription } from "rxjs";
 import { DashboardService } from "src/app/services/dashboard/dashboard.service";
 import { GlobalService } from "src/app/services/global/global.service";
 import colorLib from '@kurkle/color';
+import { AuthService } from "src/app/services/auth/auth.service";
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -30,7 +31,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
   protasChart : any ;
   TotalBunchDataChart : any;
   isLoading: boolean = false;
-
+  plantation_id : any = "";
   
   allProductionYearsSub : Subscription = new Subscription;
   allProductionYears : any[] = []
@@ -52,7 +53,8 @@ export class DashboardPage implements AfterViewInit, OnInit{
 
   allAWBSub : Subscription = new Subscription;
   allAWBData : any[] = []
-  
+  year_production : number = 0
+  temp : any;
 
   productivityAges : any[] = []
   allAWBAges : any[] = []
@@ -84,20 +86,40 @@ export class DashboardPage implements AfterViewInit, OnInit{
   constructor(
     private global : GlobalService,
     private dashboarServices : DashboardService,
+    private authServices : AuthService,
   ) { }
 
   ngOnInit() {
-    
-  }
-  
-  ngAfterViewInit() {
-
+    this.getAuth()
     this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
       if(data instanceof Array){
         this.allProductionYears = data
+        console.log("this.allProductionYears", this.allProductionYears)
       } else {
         this.allProductionYears = this.allProductionYears.concat(data)
       }
+    })
+    this.getYearData()
+  }
+  
+  
+  handleTahun ( event : any){
+    this.year_production = event.detail.value
+    this.getAllData()
+  }
+  async getAuth(){
+    const val = await this.authServices.getId();
+    if(val){
+      let data = JSON.parse(val)
+      console.log("this.plantation_id", data.plantation_id)
+      this.plantation_id = data.plantation_id
+    }
+    
+  }
+
+  ngAfterViewInit() {
+    this.allProductionYears.forEach( result => {
+      console.log("allProductionYears",result)
     })
 
     this.allCompositionChartSub = this.dashboarServices.allCompositionChart.subscribe(data => {
@@ -156,7 +178,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
         this.allAWBData = this.allAWBData.concat(data)
       }
     })
-    this.getAllData()
+    // this.getAllData()
 
   }
 
@@ -164,13 +186,24 @@ export class DashboardPage implements AfterViewInit, OnInit{
     this.isLoading = true;
     this.global.showLoader();
     setTimeout(async() => {
-      await this.dashboarServices.getProductionYear(79);
-      await this.dashboarServices.getCompositionChart(79,2021);
-      await this.dashboarServices.getPlantProduction(79,2021);
-      await this.dashboarServices.getCurahHariHujan(79,2021);
-      await this.dashboarServices.getAllProtas(79,2021);
-      await this.dashboarServices.getAllTotalBunch(79,2021);
-      await this.dashboarServices.getAllABW(79,2021);
+      await this.dashboarServices.getProductionYear(this.plantation_id);
+      await this.dashboarServices.getCompositionChart(this.plantation_id,this.year_production);
+      await this.dashboarServices.getPlantProduction(this.plantation_id,this.year_production);
+      await this.dashboarServices.getCurahHariHujan(this.plantation_id,this.year_production);
+      await this.dashboarServices.getAllProtas(this.plantation_id,this.year_production);
+      await this.dashboarServices.getAllTotalBunch(this.plantation_id,this.year_production);
+      await this.dashboarServices.getAllABW(this.plantation_id,this.year_production);
+      this.isLoading = false;
+      this.global.hideLoader();
+    }, 1000);
+  }
+
+  async getYearData(){
+    this.isLoading = true;
+    this.global.showLoader();
+    setTimeout(async() => {
+      await this.dashboarServices.getProductionYear(this.plantation_id);
+      console.log("getYearData", this.plantation_id )
       this.isLoading = false;
       this.global.hideLoader();
     }, 1000);

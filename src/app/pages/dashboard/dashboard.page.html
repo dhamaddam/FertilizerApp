@@ -12,7 +12,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-    
+    <ion-row>
+        <ion-col>
+            <ion-list>
+                <ion-item>
+                    <ion-select placeholder="Pilih Tahun" (ionChange)="handleTahun($event)">
+                        <ion-select-option *ngFor="let tahun of allProductionYears" value="{{tahun?.year}}">{{tahun?.year}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </ion-col>
+    </ion-row>
 
     <ion-card>
         <ion-card-header>
