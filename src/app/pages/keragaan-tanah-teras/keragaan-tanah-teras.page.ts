@@ -4,25 +4,24 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import * as moment from 'moment';
 import { Observable, Subscription, delay } from 'rxjs';
 import { Port } from 'src/app/models/port';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { KeragaanTanahService } from 'src/app/services/keragaan-tanah/keragaan-tanah.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
+import * as moment from 'moment';
 
 @Component({
-  selector: 'app-keragaan-tanah-elevasi',
-  templateUrl: './keragaan-tanah-elevasi.page.html',
-  styleUrls: ['./keragaan-tanah-elevasi.page.scss'],
+  selector: 'app-keragaan-tanah-teras',
+  templateUrl: './keragaan-tanah-teras.page.html',
+  styleUrls: ['./keragaan-tanah-teras.page.scss'],
 })
-export class KeragaanTanahElevasiPage implements OnInit {
+export class KeragaanTanahTerasPage implements OnInit {
 
-  formTitle = "Keragaan Tanah Elevasi";
-  myForm : any;
-  today: any = moment().format("YYYY-MM-DD");
+  formTitle  = "Teras "
+  isLoading : boolean = false;
+  myForm : any; 
   
-  isLoading: boolean = false;
   _allAfdelling : any[] = [];
   _allKebun : any[] = [];
   allCompany : any[] = [];
@@ -31,12 +30,10 @@ export class KeragaanTanahElevasiPage implements OnInit {
   allKebunSubs: Subscription = new Subscription;
   allAfdelling : any[] = [];
   allAfdellingSubs: Subscription = new Subscription;
-
-  allKondisiLahan : any[] = [];
-  allKondisiLahanSubs : Subscription = new Subscription; 
   
+  today: any = moment().format("YYYY-MM-DD");
   portsSubscription: any;
-  
+ 
   
   constructor(
     private fb: FormBuilder,
@@ -50,31 +47,15 @@ export class KeragaanTanahElevasiPage implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.myForm = this.fb.group({
       tanggal: [this.today, [Validators.required]],
       nomor_kcd: ['', [Validators.required]],
       kebun: ['', ],
       company: ['', ],
       afdelling:['',],
-      nomor_blok: ['', []],
-  
-      elevasi: ['', ],
-      topografi: ['', ],
-      kemiringan_lereng: ['', ],
-      teras: ['', ],
-      saluran_irigasi: ['', ],
-      kadar_air: ['', ],
-      input_elevasi_keterangan : ['',],
-      bulk_density : ['',],
-
-      //
-      electric_conductivity : ['',],
-      mechanical_strength : ['',],
-      water_holding_capacity : ['',],
-      moisture_soil : ['',],
-      hydraulic_conductivity : ['',],
-      solum_depth : ['',]
-      
+      nomor_blok: ['', ],
+      terrace : ['', ]
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
@@ -114,33 +95,13 @@ export class KeragaanTanahElevasiPage implements OnInit {
           this.allAfdelling = this.allAfdelling.concat(afdelling);
         }
       });
-    this.getAllData();
+      
+      this.getAllData();
+
   }
 
-  handleKebun (event : any){
-    let currentAfdelling = this._allAfdelling
-    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
-    this.allAfdelling = currentAfdelling
-  }
-
-  handleCompany (event : any){
-    console.log("Company", event.item.id)
-    let currentKebun = this._allKebun
-    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
-    this.allKebun = currentKebun
-  }
-
-  async getAllData(){ 
-    this.isLoading = true;
-    this.global.showLoader();
-    setTimeout(async() => {
-      await this.companyServices.getAfdelling();
-      await this.companyServices.getKebun();
-      await this.companyServices.getPerusahaan();
-     
-      this.isLoading = false;
-      this.global.hideLoader();
-    }, 1000);
+  lihatData(){
+    console.log("lihat data")
   }
 
   async saveData(){
@@ -157,9 +118,24 @@ export class KeragaanTanahElevasiPage implements OnInit {
     this.global.hideLoader();
   }
 
+
+  handleCompany (event : any){
+    console.log("Company", event.item.id)
+    let currentKebun = this._allKebun
+    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
+    this.allKebun = currentKebun
+  }
+
+  handleKebun (event : any){
+    let currentAfdelling = this._allAfdelling
+    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
+    this.allAfdelling = currentAfdelling
+  }
+
   searchPorts(event: { component: IonicSelectableComponent; text: string }) {
 
     let text = event.text.trim().toLowerCase();
+    console.log(event, 'isi text')
     event.component.startSearch();
 
     // Close any running subscription.
@@ -188,7 +164,6 @@ export class KeragaanTanahElevasiPage implements OnInit {
       event.component.endSearch();
     });
   }
-
   getPortsAsync(
     page?: number,
     size?: number,
@@ -198,6 +173,17 @@ export class KeragaanTanahElevasiPage implements OnInit {
       observer.next(this.getPorts(page, size));
       observer.complete();
     }).pipe(delay(timeout));
+  }
+
+  getPorts(page?: number, size?: number): Port[] {
+    let ports : any[] = [];
+    this.allCompany.forEach((port) => {
+      ports.push(port);
+    });
+    if (page && size) {
+      ports = ports.slice((page - 1) * size, (page - 1) * size + size);
+    }
+    return ports;
   }
 
   filterPorts(text: string) {
@@ -216,19 +202,17 @@ export class KeragaanTanahElevasiPage implements OnInit {
     });
   }
 
-  lihatData(){
-    // console.log("lihat data",this.allKategoriTanah.length)
-  }
-
-  getPorts(page?: number, size?: number): Port[] {
-    let ports : any[] = [];
-    this.allCompany.forEach((port) => {
-      ports.push(port);
-    });
-    if (page && size) {
-      ports = ports.slice((page - 1) * size, (page - 1) * size + size);
-    }
-    return ports;
+  async getAllData(){    
+    this.isLoading = true;
+    this.global.showLoader();
+    setTimeout(async() => {
+      await this.companyServices.getAfdelling();
+      await this.companyServices.getKebun();
+      await this.companyServices.getPerusahaan();
+     
+      this.isLoading = false;
+      this.global.hideLoader();
+    }, 1000);
   }
 
 }

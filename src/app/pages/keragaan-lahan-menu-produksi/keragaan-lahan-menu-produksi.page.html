@@ -16,6 +16,7 @@
     <div *ngIf="isLoading" class="ion-text-center alignSpinner">
       <ion-spinner color="primary"></ion-spinner>
     </div>
+
     <ion-grid>
       <ion-row>
           <ion-col>
@@ -72,7 +73,7 @@
           <ion-col>
               <ion-label>Tanggal</ion-label>
               <ion-item>
-                  <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                  <ion-input [readonly]="true" formControlName="tanggal" class="ion-text-end">
                   </ion-input>
               </ion-item>
           </ion-col>
@@ -82,14 +83,97 @@
 
     <ion-grid>
       <ion-row>
-        <ion-col>
-          <ion-list>
-            <ion-label>Topografi</ion-label>
-            <ion-item>
-              <ion-input type="text" formControlName="topography"></ion-input>
-            </ion-item>
-          </ion-list>
-        </ion-col>
+          <ion-col>
+              <ion-label>Tahun Tanam</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="planting_year" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Luas Lahan</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="land_area" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Jumlah Pohon</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="number_of_trees" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Tahun Produksi</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="production_year" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Target TBS</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="target_tbs" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Realisasi TBS</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="realization_tbs" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Target Jumlah Tandan</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="number_of_bunches_target" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label>Realisasi Jumlah Tandan</ion-label>
+              <ion-item>
+                  <ion-input [readonly]="true" formControlName="realization_of_bunches_target" class="ion-text-end">
+                  </ion-input>
+              </ion-item>
+          </ion-col>
       </ion-row>
     </ion-grid>
 
@@ -103,7 +187,7 @@
           </ion-col>
       </ion-row>
       <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim Data Tersimpan</ion-button>
-  </ion-grid>
+    </ion-grid>
 
   </form>
 </ion-content>

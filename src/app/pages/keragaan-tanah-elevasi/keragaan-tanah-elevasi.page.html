@@ -49,5 +49,53 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+
+        <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Nomor Blok</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="nomor_blok"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Nomor KCD</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="nomor_kcd"></ion-input>
+                  </ion-item>
+              </ion-col>
+              <ion-col>
+                  <ion-label>Tanggal</ion-label>
+                  <ion-item>
+                      <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                      </ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-label class="ctm-font-2">Elevasi</ion-label>
+                  <ion-item>
+                      <ion-input type="text" formControlName="elevasi"></ion-input>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+
+      <ion-grid>
+          <ion-row>
+              <ion-col>
+                  <ion-button type="submit" expand="full" color="primary" shape="round">Simpan</ion-button>
+              </ion-col>
+              <ion-col>
+                  <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+              </ion-col>
+          </ion-row>
+          <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim Data Tersimpan</ion-button>
+      </ion-grid>
+
   </form>
 </ion-content>

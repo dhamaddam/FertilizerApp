@@ -3,8 +3,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ActionSheetController } from '@ionic/angular';
+import { IonicSelectableComponent } from 'ionic-selectable';
 import * as moment from 'moment';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, delay } from 'rxjs';
+import { Port } from 'src/app/models/port';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { KeragaanTanahService } from 'src/app/services/keragaan-tanah/keragaan-tanah.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
@@ -15,9 +17,9 @@ import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.servic
   styleUrls: ['./keragaan-tanah-topografi.page.scss'],
 })
 export class KeragaanTanahTopografiPage implements OnInit {
+  myForm : any;
 
   formTitle = "Topografi"
-  myForm : any;
   isLoading: boolean = false;
   _allAfdelling : any[] = [];
   _allKebun : any[] = [];
@@ -54,7 +56,8 @@ export class KeragaanTanahTopografiPage implements OnInit {
       kebun: ['', ],
       company: ['', ],
       afdelling:['',],
-      nomor_blok: ['', []],
+      nomor_blok: ['', ],
+      topography : ['', ]
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
@@ -95,6 +98,89 @@ export class KeragaanTanahTopografiPage implements OnInit {
         }
       });
       this.getAllData();
+  }
+
+  handleCompany (event : any){
+    console.log("Company", event.item.id)
+    let currentKebun = this._allKebun
+    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
+    this.allKebun = currentKebun
+  }
+
+  handleKebun (event : any){
+    let currentAfdelling = this._allAfdelling
+    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
+    this.allAfdelling = currentAfdelling
+  }
+
+  searchPorts(event: { component: IonicSelectableComponent; text: string }) {
+
+    let text = event.text.trim().toLowerCase();
+    console.log(event, 'isi text')
+    event.component.startSearch();
+
+    // Close any running subscription.
+    if (this.portsSubscription) {
+      this.portsSubscription.unsubscribe();
+    }
+
+    if (!text) {
+      // Close any running subscription.
+      if (this.portsSubscription) {
+        this.portsSubscription.unsubscribe();
+      }
+
+      event.component.items = [];
+      event.component.endSearch();
+      return;
+    }
+
+    this.portsSubscription = this.getPortsAsync().subscribe((ports) => {
+      // Subscription will be closed when unsubscribed manually.
+      if (this.portsSubscription.closed) {
+        return;
+      }
+
+      event.component.items = this.filterPorts(text);
+      event.component.endSearch();
+    });
+  }
+  getPortsAsync(
+    page?: number,
+    size?: number,
+    timeout = 1000
+  ): Observable<Port[]> {
+    return new Observable<Port[]>((observer) => {
+      observer.next(this.getPorts(page, size));
+      observer.complete();
+    }).pipe(delay(timeout));
+  }
+
+  getPorts(page?: number, size?: number): Port[] {
+    let ports : any[] = [];
+    this.allCompany.forEach((port) => {
+      ports.push(port);
+    });
+    if (page && size) {
+      ports = ports.slice((page - 1) * size, (page - 1) * size + size);
+    }
+    return ports;
+  }
+
+  filterPorts(text: string) {
+    const element = '0';
+    return this.allCompany.filter((element) => {
+      if (element.name && element.name.toLowerCase().indexOf(text) !== -1) {
+        return (
+          element.name.toLowerCase().indexOf(text) !== -1 ||
+          element.id.toLowerCase().indexOf(text) !== -1 ||
+          element.name.toLowerCase().indexOf(text) !== -1
+        );
+      }
+      else {
+        return 0
+      }
+    });
   }
 
   lihatData(){

@@ -15,7 +15,6 @@ import { Port } from 'src/app/models/port';
 export class KeragaanTanahJenisTanahPage implements OnInit {
 
   formTitle  = "Jenis Tanah"
-
   isLoading: boolean = false;
   myForm : any;
   today: any = moment().format("YYYY-MM-DD");

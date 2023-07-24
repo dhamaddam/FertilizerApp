@@ -100,6 +100,22 @@ const routes: Routes = [
     path: 'keragaan-tanah-topografi',
     loadChildren: () => import('./pages/keragaan-tanah-topografi/keragaan-tanah-topografi.module').then( m => m.KeragaanTanahTopografiPageModule)
   },
+  {
+    path: 'keragaan-tanah-kemiringan-lereng',
+    loadChildren: () => import('./pages/keragaan-tanah-kemiringan-lereng/keragaan-tanah-kemiringan-lereng.module').then( m => m.KeragaanTanahKemiringanLerengPageModule)
+  },
+  {
+    path: 'keragaan-tanah-teras',
+    loadChildren: () => import('./pages/keragaan-tanah-teras/keragaan-tanah-teras.module').then( m => m.KeragaanTanahTerasPageModule)
+  },
+  {
+    path: 'keragaan-lahan-menu-produksi',
+    loadChildren: () => import('./pages/keragaan-lahan-menu-produksi/keragaan-lahan-menu-produksi.module').then( m => m.KeragaanLahanMenuProduksiPageModule)
+  },
+  {
+    path: 'keragaan-lahan-tanaman-pertumbuhan-tanaman',
+    loadChildren: () => import('./pages/keragaan-lahan-tanaman-pertumbuhan-tanaman/keragaan-lahan-tanaman-pertumbuhan-tanaman.module').then( m => m.KeragaanLahanTanamanPertumbuhanTanamanPageModule)
+  },
 ];
 
 @NgModule({

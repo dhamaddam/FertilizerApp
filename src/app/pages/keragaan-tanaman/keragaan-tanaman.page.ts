@@ -175,6 +175,10 @@ export class KeragaanTanamanPage implements OnInit {
     await actionSheet.present();
   }
 
+  lihatData(){
+    // console.log("lihat data",this.allKategoriTanah.length)
+  }
+
   async upload(source: CameraSource, jenis_inputan: string) {
     try {
       const image = await Camera.getPhoto({

@@ -15,11 +15,13 @@
                     <ion-label>{{ p.title }}</ion-label>
                 </ion-item>
                 <!-- Item with No Children -->
+                <ion-menu-toggle>
                 <ion-item button *ngIf="p.hasChild === false && p.label === false "  [routerLink]="p?.url" routerDirection="root"
                 routerLinkActive="active" (click)="p.open = !p.open" [class.parent-active]="p.open" detail="false">
                     <ion-icon [name]="p?.icon" slot="start"></ion-icon>
                     <ion-label>{{ p.title }}</ion-label>
                 </ion-item>
+                </ion-menu-toggle>
                 
 
                 <!-- Item with  Children -->

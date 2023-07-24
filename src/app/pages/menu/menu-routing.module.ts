@@ -78,7 +78,23 @@ const routes: Routes = [
       {
         path : 'keragaan-tanah-topografi',
         loadChildren:() => import('../keragaan-tanah-topografi/keragaan-tanah-topografi.module').then(m => m.KeragaanTanahTopografiPageModule)
-      }
+      },
+      {
+        path : 'keragaan-tanah-kemiringan-lereng',
+        loadChildren:() => import('../keragaan-tanah-kemiringan-lereng/keragaan-tanah-kemiringan-lereng-routing.module').then( m => m.KeragaanTanahKemiringanLerengPageRoutingModule)
+      }, 
+      {
+        path : 'keragaan-tanah-teras',
+        loadChildren:() => import('../keragaan-tanah-teras/keragaan-tanah-teras-routing.module').then( m => m.KeragaanTanahTerasPageRoutingModule)
+      }, 
+      {
+        path : 'keragaan-lahan-menu-produksi',
+        loadChildren:() => import('../keragaan-lahan-menu-produksi/keragaan-lahan-menu-produksi-routing.module').then( m => m.KeragaanLahanMenuProduksiPageRoutingModule)
+      },
+      {
+        path : 'keragaan-lahan-tanaman-pertumbuhan-tanaman',
+        loadChildren:() => import('../keragaan-lahan-tanaman-pertumbuhan-tanaman/keragaan-lahan-tanaman-pertumbuhan-tanaman.module').then( m => m.KeragaanLahanTanamanPertumbuhanTanamanPageModule)
+      },
     ]
   },
   {
