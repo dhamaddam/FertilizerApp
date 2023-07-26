@@ -1,20 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ActionSheetController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import * as moment from 'moment';
-import { Subscription, Observable, delay } from 'rxjs';
+import { Observable, Subscription, delay } from 'rxjs';
 import { Port } from 'src/app/models/port';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
 
-@Component({
-  selector: 'app-keragaan-lahan-tanaman-pertumbuhan-tanaman',
-  templateUrl: './keragaan-lahan-tanaman-pertumbuhan-tanaman.page.html',
-  styleUrls: ['./keragaan-lahan-tanaman-pertumbuhan-tanaman.page.scss'],
-})
-export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
+portsSubscription: Subscription;
 
-  formTitle = "Pertumbuhan Tanaman"
+
+@Component({
+  selector: 'app-keragaan-lahan-tanaman-indeks-luas-daun',
+  templateUrl: './keragaan-lahan-tanaman-indeks-luas-daun.page.html',
+  styleUrls: ['./keragaan-lahan-tanaman-indeks-luas-daun.page.scss'],
+})
+export class KeragaanLahanTanamanIndeksLuasDaunPage implements OnInit {
+
+  formTitle = "Indeks Luas Daun"
+  isLoading: boolean = false;
+  today: any = moment().format("YYYY-MM-DD");
+  
   _allAfdelling : any[] = [];
   _allKebun : any[] = [];
   allCompany : any[] = [];
@@ -23,33 +30,32 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
   allKebunSubs: Subscription = new Subscription;
   allAfdelling : any[] = [];
   allAfdellingSubs: Subscription = new Subscription;
-  isLoading: boolean = false;
-  portsSubscription: any;
-
   myForm : any;
-  today: any = moment().format("YYYY-MM-DD");
-  
+  portsSubscription: any;
   
   constructor(
     private fb: FormBuilder,
-    private global : GlobalService,
+    public global : GlobalService,
+    private actionSheetController: ActionSheetController,
     private companyServices: PerusahaanService,
   ) { }
 
   ngOnInit() {
+
     this.myForm = this.fb.group({
       tanggal: [this.today, [Validators.required]],
       nomor_kcd: ['', [Validators.required]],
       kebun: ['', ],
-      company: ['', ],
-      afdelling:['',],
-      nomor_blok: ['', []],
-      //only for keragaan tanah
-      plant_growth: ['', []],
+      nomor_blok: ['', ],
+      afdelling: ['', ],
+      pertumbuhan: ['', ],
+      company:['',],
+      index_luas_daun: ['', ],
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
       {
+        console.log('company :', company);
         if (company instanceof Array){
           this.allCompany = company;
         } else {
@@ -70,14 +76,13 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
         if (kebun instanceof Array){
           this.allKebun = kebun;
           this._allKebun = kebun
-        } else {
-          this.allKebun = this.allKebun.concat(kebun);
+        } else{
           this._allKebun = this._allKebun.concat(kebun);
-         }
+          this.allKebun = this.allKebun.concat(kebun);
+        }
       });
 
       this.allAfdellingSubs = this.companyServices.allAfdelling.subscribe(afdelling => {
-        console.log("isi from manag kebun",afdelling)
         if (afdelling instanceof Array){
           this.allAfdelling = afdelling;
           this._allAfdelling = afdelling;
@@ -85,8 +90,35 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
           this.allAfdelling = this.allAfdelling.concat(afdelling);
         }
       });
-
       this.getAllData();
+  }
+
+  handleCompany (event : any){
+    let currentKebun = this._allKebun
+    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
+    this.allKebun = currentKebun
+    console.log("ion all kebun",this.allKebun)
+    console.log('ionChange fired with value: ' + event.item.id);
+  }
+
+  handleKebun (event : any){
+    let currentAfdelling = this._allAfdelling
+    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
+    this.allAfdelling = currentAfdelling
+    console.log("ion all kebun",this.allAfdelling)
+    console.log('ionChange fired with value: ' + event.detail.value);
+  }
+  
+  async saveData(){ 
+    this.isLoading = true;
+    this.global.showLoader();
+    console.log(this.myForm.value)
+    this.isLoading = false;
+    this.global.hideLoader();
+  }
+
+  lihatData(){
+    console.log("lihat Data")
   }
 
   async getAllData(){    
@@ -96,30 +128,12 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
       await this.companyServices.getAfdelling();
       await this.companyServices.getKebun();
       await this.companyServices.getPerusahaan();
-     
+      console.log(this.allCompany);
+      console.log(this.allKebun);
+      console.log(this.allAfdelling);
       this.isLoading = false;
       this.global.hideLoader();
     }, 1000);
-  }
-
-  handleKebun (event : any){
-    let currentAfdelling = this._allAfdelling
-    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
-    this.allAfdelling = currentAfdelling
-  }
-
-  saveData(){
-    this.isLoading = true;
-    this.global.showLoader();
-    // console.log('isi storage ',this.allKondisiLahan)
-    // if(this.allKondisiLahan != null){
-    //   await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
-    //   this.getAllData();
-    // } else {
-    // }
-    // this.placeData(this.myForm.value)
-    this.isLoading = false;
-    this.global.hideLoader();
   }
 
   searchPorts(event: { component: IonicSelectableComponent; text: string }) {
@@ -155,28 +169,6 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
     });
   }
 
-  getPortsAsync(
-    page?: number,
-    size?: number,
-    timeout = 1000
-  ): Observable<Port[]> {
-    return new Observable<Port[]>((observer) => {
-      observer.next(this.getPorts(page, size));
-      observer.complete();
-    }).pipe(delay(timeout));
-  }
-  
-  lihatData(){
-    // console.log("lihat data",this.allKondisiLahan.length)
-  }
-
-  handleCompany (event : any){
-    console.log("Company", event.item.id)
-    let currentKebun = this._allKebun
-    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
-    this.allKebun = currentKebun
-  }
-
   filterPorts(text: string) {
     const element = '0';
     return this.allCompany.filter((element) => {
@@ -190,7 +182,20 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
       else {
         return 0
       }
+
+
     });
+  }
+
+  getPortsAsync(
+    page?: number,
+    size?: number,
+    timeout = 1000
+  ): Observable<Port[]> {
+    return new Observable<Port[]>((observer) => {
+      observer.next(this.getPorts(page, size));
+      observer.complete();
+    }).pipe(delay(timeout));
   }
 
   getPorts(page?: number, size?: number): Port[] {

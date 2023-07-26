@@ -2,19 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import * as moment from 'moment';
-import { Subscription, Observable, delay } from 'rxjs';
+import { Observable, Subscription, delay } from 'rxjs';
 import { Port } from 'src/app/models/port';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
 
 @Component({
-  selector: 'app-keragaan-lahan-tanaman-pertumbuhan-tanaman',
-  templateUrl: './keragaan-lahan-tanaman-pertumbuhan-tanaman.page.html',
-  styleUrls: ['./keragaan-lahan-tanaman-pertumbuhan-tanaman.page.scss'],
+  selector: 'app-keragaan-lahan-tanaman-aktivitas-fotosintesis',
+  templateUrl: './keragaan-lahan-tanaman-aktivitas-fotosintesis.page.html',
+  styleUrls: ['./keragaan-lahan-tanaman-aktivitas-fotosintesis.page.scss'],
 })
-export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
+export class KeragaanLahanTanamanAktivitasFotosintesisPage implements OnInit {
 
-  formTitle = "Pertumbuhan Tanaman"
+  formTitle = "Aktivitas Fotosintesis"
+  isLoading: boolean = false;
+  myForm : any;
+  today: any = moment().format("YYYY-MM-DD");
+  
+
   _allAfdelling : any[] = [];
   _allKebun : any[] = [];
   allCompany : any[] = [];
@@ -23,12 +28,7 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
   allKebunSubs: Subscription = new Subscription;
   allAfdelling : any[] = [];
   allAfdellingSubs: Subscription = new Subscription;
-  isLoading: boolean = false;
   portsSubscription: any;
-
-  myForm : any;
-  today: any = moment().format("YYYY-MM-DD");
-  
   
   constructor(
     private fb: FormBuilder,
@@ -37,6 +37,7 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.myForm = this.fb.group({
       tanggal: [this.today, [Validators.required]],
       nomor_kcd: ['', [Validators.required]],
@@ -44,8 +45,19 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
       company: ['', ],
       afdelling:['',],
       nomor_blok: ['', []],
+      
       //only for keragaan tanah
-      plant_growth: ['', []],
+      texture: ['', []],
+      maturity: ['', []],
+      soil_type: ['', []],
+
+      elevasi: ['', ],
+      topografi: ['', ],
+      kemiringan_lereng: ['', ],
+      teras: ['', ],
+      saluran_irigasi: ['', ],
+      kadar_air: ['', ],
+      input_elevasi_keterangan : ['',]
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
@@ -85,41 +97,13 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
           this.allAfdelling = this.allAfdelling.concat(afdelling);
         }
       });
-
-      this.getAllData();
-  }
-
-  async getAllData(){    
-    this.isLoading = true;
-    this.global.showLoader();
-    setTimeout(async() => {
-      await this.companyServices.getAfdelling();
-      await this.companyServices.getKebun();
-      await this.companyServices.getPerusahaan();
-     
-      this.isLoading = false;
-      this.global.hideLoader();
-    }, 1000);
+    
   }
 
   handleKebun (event : any){
     let currentAfdelling = this._allAfdelling
     currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
     this.allAfdelling = currentAfdelling
-  }
-
-  saveData(){
-    this.isLoading = true;
-    this.global.showLoader();
-    // console.log('isi storage ',this.allKondisiLahan)
-    // if(this.allKondisiLahan != null){
-    //   await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
-    //   this.getAllData();
-    // } else {
-    // }
-    // this.placeData(this.myForm.value)
-    this.isLoading = false;
-    this.global.hideLoader();
   }
 
   searchPorts(event: { component: IonicSelectableComponent; text: string }) {
@@ -165,7 +149,6 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
       observer.complete();
     }).pipe(delay(timeout));
   }
-  
   lihatData(){
     // console.log("lihat data",this.allKondisiLahan.length)
   }
@@ -193,6 +176,20 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
     });
   }
 
+  saveData(){
+    this.isLoading = true;
+    this.global.showLoader();
+    // console.log('isi storage ',this.allKondisiLahan)
+    // if(this.allKondisiLahan != null){
+    //   await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
+    //   this.getAllData();
+    // } else {
+    // }
+    // this.placeData(this.myForm.value)
+    this.isLoading = false;
+    this.global.hideLoader();
+  }
+
   getPorts(page?: number, size?: number): Port[] {
     let ports : any[] = [];
     this.allCompany.forEach((port) => {
@@ -205,5 +202,4 @@ export class KeragaanLahanTanamanPertumbuhanTanamanPage implements OnInit {
 
     return ports;
   }
-
 }

@@ -30,7 +30,6 @@ const routes: Routes = [
         path: 'keragaan-lahan',
         loadChildren: () => import('../keragaan-lahan/keragaan-lahan.module').then( m => m.KeragaanLahanPageModule)
       },
-
       {
         path: 'faktor-alam-anomali',
         loadChildren: () => import('../faktor-alam-anomali/faktor-alam-anomali.module').then( m => m.FaktorAlamAnomaliPageModule)
@@ -95,6 +94,28 @@ const routes: Routes = [
         path : 'keragaan-lahan-tanaman-pertumbuhan-tanaman',
         loadChildren:() => import('../keragaan-lahan-tanaman-pertumbuhan-tanaman/keragaan-lahan-tanaman-pertumbuhan-tanaman.module').then( m => m.KeragaanLahanTanamanPertumbuhanTanamanPageModule)
       },
+      {
+        path : 'keragaan-lahan-tanaman-defisiensi-hara-tanaman',
+        loadChildren:() => import('../keragaan-lahan-tanaman-defisiensi-hara-tanaman/keragaan-lahan-tanaman-defisiensi-hara-tanaman.module').then( m => m.KeragaanLahanTanamanDefisiensiHaraTanamanPageModule)
+      },
+      {
+        path : 'keragaan-lahan-tanaman-indeks-luas-daun',
+        loadChildren:() => import('../keragaan-lahan-tanaman-indeks-luas-daun/keragaan-lahan-tanaman-indeks-luas-daun.module').then( m => m.KeragaanLahanTanamanIndeksLuasDaunPageModule)
+      },
+      {
+        path : 'keragaan-lahan-tanaman-stress-air-tanaman',
+        loadChildren:() => import('../keragaan-lahan-tanaman-stress-air-tanaman/keragaan-lahan-tanaman-stress-air-tanaman.module').then( m => m.KeragaanLahanTanamanStressAirTanamanPageModule)
+      },
+      {
+        path : 'keragaan-lahan-tanaman-aktivitas-fotosintesis',
+        loadChildren:() => import('../keragaan-lahan-tanaman-aktivitas-fotosintesis/keragaan-lahan-tanaman-aktivitas-fotosintesis.module').then( m => m.KeragaanLahanTanamanAktivitasFotosintesisPageModule)
+      },
+      {
+        path : 'keragaan-lahan-tanaman-kandungan-klorofil-daun',
+        loadChildren:() => import('../keragaan-lahan-tanaman-kandungan-klorofil-daun/keragaan-lahan-tanaman-kandungan-klorofil-daun.module').then( m => m.KeragaanLahanTanamanKandunganKlorofilDaunPageModule)
+      },
+      // 
+
     ]
   },
   {

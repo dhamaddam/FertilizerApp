@@ -1,0 +1,383 @@
+<ion-header [translucent]="true">
+  <ion-toolbar mode="md">
+      <ion-title>
+        {{formTitle}}
+      </ion-title>
+      <ion-buttons slot="start">
+          <ion-menu-button autoHide="true"></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin"> 
+    <div *ngIf="isLoading" class="ion-text-center alignSpinner">
+      <ion-spinner color="primary"></ion-spinner>
+    </div> 
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-list>
+                  <ion-item>
+                      <ionic-selectable item-content placeholder="Pilih Perusahaan" formControlName="company" itemValueField="id" itemTextField="name" [items]="allCompany" (onSelect)="handleCompany($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
+                          <ng-template ionicSelectableItemTemplate let-port="item" let-isPortSelected="isItemSelected">
+                              {{port.name}} - {{port.id}}
+                          </ng-template>
+                      </ionic-selectable>
+                  </ion-item>
+              </ion-list>
+          </ion-col>
+          <ion-col>
+              <ion-list>
+                  <ion-item>
+                      <ion-select formControlName="kebun" placeholder="Pilih Kebun" (ionChange)="handleKebun($event)">
+                          <ion-select-option *ngFor="let kebun of allKebun" value="{{kebun?.id}}">{{kebun?.name}}</ion-select-option>
+                      </ion-select>
+                  </ion-item>
+              </ion-list>
+          </ion-col>
+          <ion-col>
+              <ion-list>
+                  <ion-item>
+                      <ion-select formControlName="afdelling" placeholder="Pilih Afdelling">
+                          <ion-select-option *ngFor="let afdelling of allAfdelling" value="{{afdelling?.id}}">{{afdelling?.name}}</ion-select-option>
+                      </ion-select>
+                  </ion-item>
+              </ion-list>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid>
+      <ion-row>
+          <ion-col >
+              <ion-label class="ctm-font-2">Nomor Blok</ion-label>
+              <ion-item>
+                  <ion-input type="text" formControlName="nomor_blok"></ion-input>
+              </ion-item>
+          </ion-col>
+          <ion-col >
+              <ion-label class="ctm-font-2">Nomor KCD</ion-label>
+              <ion-item>
+                  <ion-input type="text" formControlName="nomor_kcd"></ion-input>
+              </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-label>Tanggal</ion-label>
+                <ion-item>
+                    <ion-input [readonly]="true" formControlName="tanggal" id="date" class="ion-text-end">
+                    </ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-label class="ctm-font-2">N: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="n"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'n')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of n">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'n'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'n'" [ngTemplateOutlet]="input_n"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid>
+                <ng-template #input_n>
+                    <ion-input type="text" formControlName="n_keterangan"></ion-input>
+                </ng-template>
+          </ion-col>
+
+          <ion-col>
+              <ion-label class="ctm-font-2">P: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="p"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'p')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of p">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'p'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'p'" [ngTemplateOutlet]="input_k"></ng-container>
+                    </ng-container>
+                </ion-col>
+            </ion-grid>
+            <ng-template #input_p>
+                <ion-input type="text" formControlName="p_keterangan"></ion-input>
+            </ng-template>
+          </ion-col>
+          <ion-col>
+              <ion-label class="ctm-font-2">K: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="k"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'k')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of k">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'k'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'k'" [ngTemplateOutlet]="input_k"></ng-container>
+                    </ng-container>
+                </ion-col>
+            </ion-grid>
+            <ng-template #input_k>
+                <ion-input type="text" formControlName="k_keterangan"></ion-input>
+            </ng-template>
+          </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+              <ion-label class="ctm-font-2">Ca: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="ca"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'ca')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of ca">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'ca'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'ca'" [ngTemplateOutlet]="input_ca"></ng-container>
+                    </ng-container>
+                </ion-col>
+            </ion-grid>
+            <ng-template #input_ca>
+                <ion-input type="text" formControlName="ca_keterangan"></ion-input>
+            </ng-template>
+          </ion-col>
+          <ion-col>
+              <ion-label class="ctm-font-2">Mg: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="mg"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'mg')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of mg">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'mg'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'mg'" [ngTemplateOutlet]="input_mg"></ng-container>
+                    </ng-container>
+                </ion-col>
+            </ion-grid>
+            <ng-template #input_mg>
+                <ion-input type="text" formControlName="mg_keterangan"></ion-input>
+            </ng-template>
+          </ion-col>
+          <ion-col>
+
+              <ion-label class="ctm-font-2">C: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="c"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'c')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+                <ion-grid>
+                    <ion-col size="10"  *ngFor="let photo of c">
+                        <ng-container [ngSwitch]="photo.nama">
+                            <img  *ngSwitchCase="'c'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                            <ng-container *ngSwitchCase="'c'" [ngTemplateOutlet]="input_c"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid>
+                <ng-template #input_c>
+                    <ion-input type="text" formControlName="c_keterangan"></ion-input>
+                </ng-template>
+          </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+              <ion-label class="ctm-font-2">Fe: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="fe"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'fe')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+                <ion-grid>
+                    <ion-col size="10"  *ngFor="let photo of fe">
+                        <ng-container [ngSwitch]="photo.nama">
+                            <img  *ngSwitchCase="'fe'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                            <ng-container *ngSwitchCase="'fe'" [ngTemplateOutlet]="input_fe"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid>
+                <ng-template #input_fe>
+                    <ion-input type="text" formControlName="fe_keterangan"></ion-input>
+                </ng-template>
+          </ion-col>
+          <ion-col>
+              <ion-label class="ctm-font-2">Mn: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="mn"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'mn')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of mn">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'mn'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'mn'" [ngTemplateOutlet]="input_mn"></ng-container>
+                    </ng-container>
+                </ion-col>
+              </ion-grid>
+              <ng-template #input_mn>
+                <ion-input type="text" formControlName="mn_keterangan"></ion-input>
+             </ng-template>
+          </ion-col>
+
+          <ion-col>
+              <ion-label class="ctm-font-2">Zn : </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="zn"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                  <button ion-button icon-only clear item-right (click)="handleCamera($event,'zn')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                  </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of zn">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'zn'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'zn'" [ngTemplateOutlet]="input_zn"></ng-container>
+                    </ng-container>
+                </ion-col>
+              </ion-grid> 
+                <ng-template #input_zn>
+                    <ion-input type="text" formControlName="zn_keterangan"></ion-input>
+                </ng-template>
+          </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+              <ion-label class="ctm-font-2">Cu: </ion-label>
+              <ion-item class="ctm-font-2">
+                    <ion-select formControlName="cu"  placeholder="Rendah">
+                        <ion-select-option value="1">Berat</ion-select-option>
+                        <ion-select-option value="2">Sedang</ion-select-option>
+                        <ion-select-option value="3">Ringan</ion-select-option>
+                        <ion-select-option value="4">Tidak Ada</ion-select-option>
+                    </ion-select>
+                    <button ion-button icon-only clear item-right (click)="handleCamera($event,'cu')">
+                        <ion-icon name='camera-outline' icon-start></ion-icon>
+                    </button>
+              </ion-item>
+              <ion-grid>
+                <ion-col size="10"  *ngFor="let photo of cu">
+                    <ng-container [ngSwitch]="photo.nama">
+                        <img  *ngSwitchCase="'cu'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                        <ng-container *ngSwitchCase="'cu'" [ngTemplateOutlet]="input_cu"></ng-container>
+                    </ng-container>
+                </ion-col>
+              </ion-grid> 
+                <ng-template #input_cu>
+                    <ion-input type="text" formControlName="cu_keterangan"></ion-input>
+                </ng-template>
+          </ion-col>
+          <ion-col>
+              <ion-label class="ctm-font-2">Ph: </ion-label>
+              <ion-item class="ctm-font-2">
+                  <ion-select formControlName="ph"  placeholder="Rendah">
+                      <ion-select-option value="1">Berat</ion-select-option>
+                      <ion-select-option value="2">Sedang</ion-select-option>
+                      <ion-select-option value="3">Ringan</ion-select-option>
+                      <ion-select-option value="4">Tidak Ada</ion-select-option>
+                  </ion-select>
+                <button ion-button icon-only clear item-right (click)="handleCamera($event,'ph')">
+                    <ion-icon name='camera-outline' icon-start></ion-icon>
+                </button>
+              </ion-item>
+                <ion-grid>
+                    <ion-col size="10"  *ngFor="let photo of ph">
+                        <ng-container [ngSwitch]="photo.nama">
+                            <img  *ngSwitchCase="'ph'" [src]="this.global.getSantizeUrl(photo.webviewPath)" onError="this.src='assets/logo-PPKS.png'"  alt="" >
+                            <ng-container *ngSwitchCase="'ph'" [ngTemplateOutlet]="input_ph"></ng-container>
+                        </ng-container>
+                    </ion-col>
+                </ion-grid> 
+                <ng-template #input_ph>
+                    <ion-input type="text" formControlName="ph_keterangan"></ion-input>
+                </ng-template>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+          <ion-col>
+              <ion-button type="submit" expand="full" color="primary" shape="round">Simpan</ion-button>
+          </ion-col>
+          <ion-col>
+              <ion-button expand="full" color="medium" shape="round">Kembali</ion-button>
+          </ion-col>
+      </ion-row>
+      <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim Data Tersimpan</ion-button>
+    </ion-grid>
+
+  </form>
+</ion-content>

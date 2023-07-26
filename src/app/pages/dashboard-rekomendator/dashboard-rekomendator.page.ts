@@ -145,6 +145,14 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
           this.allAfdelling = this.allAfdelling.concat(afdelling);
         }
       });
+      
+      this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
+        if(data instanceof Array){
+          this.allProductionYears = data
+        } else {
+          this.allProductionYears = this.allProductionYears.concat(data)
+        }
+      })
       this.getAllDataCompany();
   }
 

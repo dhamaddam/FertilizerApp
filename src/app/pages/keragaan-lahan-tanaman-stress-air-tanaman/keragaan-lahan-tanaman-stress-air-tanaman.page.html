@@ -12,10 +12,11 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin"> 
+  <form (ngSubmit)="saveData()" [formGroup]="myForm" class="ion-margin">
     <div *ngIf="isLoading" class="ion-text-center alignSpinner">
       <ion-spinner color="primary"></ion-spinner>
     </div>
+
     <ion-grid>
       <ion-row>
           <ion-col>
@@ -64,10 +65,10 @@
                   <ion-input type="text" formControlName="nomor_kcd"></ion-input>
               </ion-item>
           </ion-col>
-        </ion-row>
-      </ion-grid>
-   
-  <ion-grid>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
       <ion-row>
           <ion-col>
               <ion-label>Tanggal</ion-label>
@@ -79,21 +80,18 @@
       </ion-row>
   </ion-grid>
 
-    <ion-grid>
-      <ion-row>
-          <ion-col>
-            <ion-list>
-                <ion-item>
-                    <ion-select formControlName="plant_growth" placeholder="Pertumbuhan Tanaman">
-                      <ion-select-option value="jagur">Jagur</ion-select-option>
-                      <ion-select-option value="kerdil">Kerdil</ion-select-option>
-                    </ion-select>
-                </ion-item>
-            </ion-list>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-label>Stress Air Tanaman</ion-label>
+          <ion-item>
+            <ion-input type="text" formControlName="water_stress"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-grid>
     <ion-row>
@@ -106,6 +104,6 @@
     </ion-row>
     <ion-button expand="full" (click)="lihatData()" color="primary" shape="round" expand="block">Kirim Data Tersimpan</ion-button>
   </ion-grid>
-
+  
   </form>
 </ion-content>
