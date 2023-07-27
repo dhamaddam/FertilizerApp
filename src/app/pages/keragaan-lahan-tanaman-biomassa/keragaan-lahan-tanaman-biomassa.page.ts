@@ -8,19 +8,13 @@ import { GlobalService } from 'src/app/services/global/global.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
 
 @Component({
-  selector: 'app-keragaan-lahan-tanaman-kandungan-klorofil-daun',
-  templateUrl: './keragaan-lahan-tanaman-kandungan-klorofil-daun.page.html',
-  styleUrls: ['./keragaan-lahan-tanaman-kandungan-klorofil-daun.page.scss'],
+  selector: 'app-keragaan-lahan-tanaman-biomassa',
+  templateUrl: './keragaan-lahan-tanaman-biomassa.page.html',
+  styleUrls: ['./keragaan-lahan-tanaman-biomassa.page.scss'],
 })
-export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
+export class KeragaanLahanTanamanBiomassaPage implements OnInit {
 
-
-  formTitle = "Kandungan Klorofil"
-  isLoading: boolean = false;
-  myForm : any;
-  today: any = moment().format("YYYY-MM-DD");
-  
-
+  formTitle = "Biomassa"
   _allAfdelling : any[] = [];
   _allKebun : any[] = [];
   allCompany : any[] = [];
@@ -29,7 +23,11 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
   allKebunSubs: Subscription = new Subscription;
   allAfdelling : any[] = [];
   allAfdellingSubs: Subscription = new Subscription;
+  isLoading: boolean = false;
   portsSubscription: any;
+
+  myForm : any;
+  today: any = moment().format("YYYY-MM-DD");
   
   constructor(
     private fb: FormBuilder,
@@ -46,7 +44,7 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
       afdelling:['',],
       nomor_blok: ['', []],
       //only for keragaan tanah
-      chlorophyll: ['', []],
+      biomassa: ['', []],
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
@@ -86,7 +84,6 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
           this.allAfdelling = this.allAfdelling.concat(afdelling);
         }
       });
-      
       this.getAllData();
   }
 
@@ -103,6 +100,12 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
     }, 1000);
   }
 
+  handleKebun (event : any){
+    let currentAfdelling = this._allAfdelling
+    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
+    this.allAfdelling = currentAfdelling
+  }
+
   saveData(){
     this.isLoading = true;
     this.global.showLoader();
@@ -115,23 +118,6 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
     // this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
-  }
-
-  lihatData(){
-    // console.log("lihat data",this.allKondisiLahan.length)
-  }
-
-  handleKebun (event : any){
-    let currentAfdelling = this._allAfdelling
-    currentAfdelling = currentAfdelling.filter(x => x.plantation_id == event.detail.value);
-    this.allAfdelling = currentAfdelling
-  }
-
-  handleCompany (event : any){
-    console.log("Company", event.item.id)
-    let currentKebun = this._allKebun
-    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
-    this.allKebun = currentKebun
   }
 
   searchPorts(event: { component: IonicSelectableComponent; text: string }) {
@@ -167,22 +153,6 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
     });
   }
 
-  filterPorts(text: string) {
-    const element = '0';
-    return this.allCompany.filter((element) => {
-      if (element.name && element.name.toLowerCase().indexOf(text) !== -1) {
-        return (
-          element.name.toLowerCase().indexOf(text) !== -1 ||
-          element.id.toLowerCase().indexOf(text) !== -1 ||
-          element.name.toLowerCase().indexOf(text) !== -1
-        );
-      }
-      else {
-        return 0
-      }
-    });
-  }
-
   getPortsAsync(
     page?: number,
     size?: number,
@@ -207,5 +177,31 @@ export class KeragaanLahanTanamanKandunganKlorofilDaunPage implements OnInit {
     return ports;
   }
   
+  filterPorts(text: string) {
+    const element = '0';
+    return this.allCompany.filter((element) => {
+      if (element.name && element.name.toLowerCase().indexOf(text) !== -1) {
+        return (
+          element.name.toLowerCase().indexOf(text) !== -1 ||
+          element.id.toLowerCase().indexOf(text) !== -1 ||
+          element.name.toLowerCase().indexOf(text) !== -1
+        );
+      }
+      else {
+        return 0
+      }
+    });
+  }
+
+  lihatData (){
+    console.log("lihatData")
+  }
+
+  handleCompany (event : any){
+    console.log("Company", event.item.id)
+    let currentKebun = this._allKebun
+    currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
+    this.allKebun = currentKebun
+  }
 
 }

@@ -47,7 +47,6 @@ export class KeragaanLahanMenuProduksiPage implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.myForm = this.fb.group({
       tanggal: [this.today, [Validators.required]],
       nomor_kcd: ['', [Validators.required]],
@@ -64,7 +63,6 @@ export class KeragaanLahanMenuProduksiPage implements OnInit {
       realization_tbs : ['',],
       number_of_bunches_target : ['',],
       realization_of_bunches_target : ['',],
-
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>

@@ -136,6 +136,11 @@ const routes: Routes = [
     path: 'keragaan-lahan-tanaman-kandungan-klorofil-daun',
     loadChildren: () => import('./pages/keragaan-lahan-tanaman-kandungan-klorofil-daun/keragaan-lahan-tanaman-kandungan-klorofil-daun.module').then( m => m.KeragaanLahanTanamanKandunganKlorofilDaunPageModule)
   },
+  {
+    path: 'keragaan-lahan-tanaman-biomassa',
+    loadChildren: () => import('./pages/keragaan-lahan-tanaman-biomassa/keragaan-lahan-tanaman-biomassa.module').then( m => m.KeragaanLahanTanamanBiomassaPageModule)
+  },
+  
 ];
 
 @NgModule({

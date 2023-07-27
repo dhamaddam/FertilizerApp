@@ -37,7 +37,6 @@ export class KeragaanLahanTanamanAktivitasFotosintesisPage implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.myForm = this.fb.group({
       tanggal: [this.today, [Validators.required]],
       nomor_kcd: ['', [Validators.required]],
@@ -51,13 +50,7 @@ export class KeragaanLahanTanamanAktivitasFotosintesisPage implements OnInit {
       maturity: ['', []],
       soil_type: ['', []],
 
-      elevasi: ['', ],
-      topografi: ['', ],
-      kemiringan_lereng: ['', ],
-      teras: ['', ],
-      saluran_irigasi: ['', ],
-      kadar_air: ['', ],
-      input_elevasi_keterangan : ['',]
+      photosynthesis_activity: ['', ],
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
