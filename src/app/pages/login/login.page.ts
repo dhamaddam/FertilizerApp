@@ -31,8 +31,7 @@ export class LoginPage implements OnInit {
   result = null;
 
   ngOnInit() {
-    
-    this.isLoggedin();
+    this.isLoggedin()
     this.myForm = this.fb.group({
       email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -64,8 +63,16 @@ export class LoginPage implements OnInit {
   async isLoggedin(){
     try {
       this.global.showLoader();
-      const val = await this.authServices.getId();
-      if (val){
+      let val = await this.authServices.getId();
+      let result  =  JSON.parse(JSON.stringify(val))
+      result = JSON.parse(result)
+      console.log("val showLoader", result.role_id)
+      
+      if (result.role_id == 2){
+        this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
+      } else if (result.role_id == 3){
+        this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
+      } else if (result.role_id == 1){
         this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
       }
     } catch (error) {
@@ -75,3 +82,4 @@ export class LoginPage implements OnInit {
     this.global.hideLoader();
   }
 }
+

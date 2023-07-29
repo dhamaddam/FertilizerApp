@@ -128,7 +128,7 @@ export class GlobalService {
     } else if (err.status == 401) {
       this.errorToast('Unauthorized Request!');
       localStorage.removeItem('token');
-      localStorage.removeItem('uid');
+      localStorage.removeItem('uidFertilizer');
       this.navCtrl.navigateRoot('/login');
       return false;
     } else if (err.status == 500) {

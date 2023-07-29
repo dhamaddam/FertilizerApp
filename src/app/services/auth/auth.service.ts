@@ -65,21 +65,28 @@ result : any = ''
     await loading.dismiss();
   }
 
+  checkLogin (role_id : number ){
+    if (role_id == 2){
+      this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
+    } else if (role_id == 3){
+      this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
+    }
+  }
   register(){
 
   }
 
   setUserData(uid : any) {
-    this.storage.setStorage('uid', uid);
+    this.storage.setStorage('uidFertilizer', uid);
   }
 
   async getId (){
-    return (await this.storage.getStorage('uid')).value;
+    return (await this.storage.getStorage('uidFertilizer')).value;
   }
 
   resetPassword(){}
 
   async logout(){
-    return await this.storage.removeStorage('uid');
+    return await this.storage.removeStorage('uidFertilizer');
   }
 }

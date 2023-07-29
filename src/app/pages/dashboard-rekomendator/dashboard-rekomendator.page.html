@@ -18,7 +18,7 @@
                 <ion-item>
                     <ionic-selectable item-content placeholder="Pilih Perusahaan" itemValueField="id" itemTextField="name" [items]="allCompany" (onSelect)="handleCompany($event)" [canSearch]="true" (onSearch)="searchPorts($event)">
                         <ng-template ionicSelectableItemTemplate let-port="item" let-isPortSelected="isItemSelected">
-                            {{port.name}} - {{port.id}}
+                            {{port.name}}
                         </ng-template>
                     </ionic-selectable>
                 </ion-item>
@@ -37,7 +37,7 @@
             <ion-list>
                 <ion-item>
                     <ion-select placeholder="Pilih Tahun" (ionChange)="handleTahun($event)">
-                        <ion-select-option *ngFor="let tahun of allProductionYears" value="{{tahun?.year}}">{{tahun?.year}}</ion-select-option>
+                        <ion-select-option *ngFor="let tahun of allProductionYears" value="{{tahun?.year}}"> {{tahun?.year}} </ion-select-option>
                     </ion-select>
                 </ion-item>
             </ion-list>

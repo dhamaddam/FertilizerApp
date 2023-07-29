@@ -38,7 +38,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   TotalBunchDataChart : any;
   isLoading: boolean = false;
   companyId : number = 0
-  plantationId : number = 0
+  plantationId : number = 79
 
   // companyProfile 
   _allAfdelling : any[] = [];
@@ -154,9 +154,12 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
         }
       })
       this.getAllDataCompany();
+      this.getAllData();
   }
 
   ngAfterViewInit() {
+
+    console.log("allProductionYears", this.allProductionYears)
     this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
       if(data instanceof Array){
         this.allProductionYears = data
@@ -164,7 +167,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
         this.allProductionYears = this.allProductionYears.concat(data)
       }
     })
-
+    
     this.allCompositionChartSub = this.dashboarServices.allCompositionChart.subscribe(data => {
       if(data instanceof Array){
         this.allCompositionChart = data 
@@ -258,9 +261,10 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   }
 
   async getAllData (){
-    this.isLoading = true;
-    this.global.showLoader();
+    // this.isLoading = true;
+    // this.global.showLoader();
     setTimeout(async() => {
+      console.log("plantationId", this.plantationId)
       await this.dashboarServices.getProductionYear(this.plantationId);
       await this.dashboarServices.getCompositionChart(this.plantationId,this.year_production);
       await this.dashboarServices.getPlantProduction(this.plantationId,this.year_production);

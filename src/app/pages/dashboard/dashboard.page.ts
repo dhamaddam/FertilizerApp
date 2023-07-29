@@ -31,7 +31,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
   protasChart : any ;
   TotalBunchDataChart : any;
   isLoading: boolean = false;
-  plantation_id : any = "";
+  plantation_id : number = 0 ;
   
   allProductionYearsSub : Subscription = new Subscription;
   allProductionYears : any[] = []
@@ -91,6 +91,63 @@ export class DashboardPage implements AfterViewInit, OnInit{
 
   ngOnInit() {
     this.getAuth()
+    this.allCompositionChartSub = this.dashboarServices.allCompositionChart.subscribe(data => {
+      if(data instanceof Array){
+        this.allCompositionChart = data 
+        this.ComposisiChartMethod();
+      } else {
+        this.allCompositionChart = this.allCompositionChart.concat(data)
+      }
+    })
+
+    this.allProductionChartSub = this.dashboarServices.allPlantProduction.subscribe(data => {
+      if(data instanceof Object){
+        this.allProductionChart = data 
+        this.plantProductionChartMethode();
+      } else {
+        this.allProductionChart = this.allCompositionChart.concat(data)
+      }
+    })
+
+    this.allCurahhariHujanSub = this.dashboarServices.allCurahhariHujan.subscribe(data => {
+      if(data instanceof Object){
+        this.allCurahHariHujan = data 
+        this.curahHariHujanChartMethode();
+      } else {
+        this.allCurahHariHujan = this.allCurahHariHujan.concat(data)
+      }
+    })
+
+    this.allProductivityChartSub = this.dashboarServices.allProtas.subscribe(data => {
+      if (data instanceof Object){
+        this.allProductivityChart = data.productivities
+        this.productivityAges = data.ages
+        this.productivityChartMethode()
+      } else {
+        this.allProductionChart = this.allProductionChart.concat(data)
+      }
+    })
+
+    this.allTotalBunchDataSub = this.dashboarServices.allTotalBunch.subscribe(data => {
+      if (data instanceof Object){
+        this.allTotalBunchDataChart = data.total_bunch_per_trees
+        this.allTotalBunchAges = data.ages
+        this.jumlahTandanPohonPerTahunChartMethode()
+      } else {
+        this.allTotalBunchDataChart = this.allTotalBunchDataChart.concat(data)
+      }
+    })
+
+    this.allAWBSub = this.dashboarServices.allABW.subscribe(data => {
+      if (data instanceof Object){
+        this.allAWBData = data.awb
+        this.allAWBAges = data.ages
+        this.AWBChart()
+      } else {
+        this.allAWBData = this.allAWBData.concat(data)
+      }
+    })
+
     this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
       if(data instanceof Array){
         this.allProductionYears = data
@@ -100,6 +157,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
       }
     })
     this.getYearData()
+    this.getAllData()
   }
   
   
@@ -118,9 +176,6 @@ export class DashboardPage implements AfterViewInit, OnInit{
   }
 
   ngAfterViewInit() {
-    this.allProductionYears.forEach( result => {
-      console.log("allProductionYears",result)
-    })
 
     this.allCompositionChartSub = this.dashboarServices.allCompositionChart.subscribe(data => {
       if(data instanceof Array){
@@ -178,14 +233,14 @@ export class DashboardPage implements AfterViewInit, OnInit{
         this.allAWBData = this.allAWBData.concat(data)
       }
     })
-    // this.getAllData()
-
+    this.getAllData()
   }
 
   async getAllData (){
-    this.isLoading = true;
-    this.global.showLoader();
+    // this.isLoading = true;
+    // this.global.showLoader();
     setTimeout(async() => {
+      this.plantation_id = 79
       await this.dashboarServices.getProductionYear(this.plantation_id);
       await this.dashboarServices.getCompositionChart(this.plantation_id,this.year_production);
       await this.dashboarServices.getPlantProduction(this.plantation_id,this.year_production);
@@ -199,8 +254,8 @@ export class DashboardPage implements AfterViewInit, OnInit{
   }
 
   async getYearData(){
-    this.isLoading = true;
-    this.global.showLoader();
+    // this.isLoading = true;
+    // this.global.showLoader();
     setTimeout(async() => {
       await this.dashboarServices.getProductionYear(this.plantation_id);
       console.log("getYearData", this.plantation_id )
