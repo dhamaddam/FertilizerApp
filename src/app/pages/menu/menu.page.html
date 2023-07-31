@@ -1,15 +1,21 @@
 <ion-split-pane contentId="content">
     <ion-menu contentId="content" menuId="first">
-
         <ion-header>
-            <ion-toolbar color="primary">
-                <ion-title>Menu</ion-title>
-            </ion-toolbar>
+            <div style="height: 180px; transform: rotate(-15deg); border-radius: 10px 10px 10px 50px;
+                margin-left: -18px; margin-top: -58px; margin-bottom: 60px; width: 350px; box-shadow: 8px 1px 10px; background-color: green;">
+                <div style="position: absolute; top: 38px; left: 15px; display: flex; align-items: center;">
+                </div>
+            </div>
+            <div style="position: absolute; top: 38px; left: 15px; display: flex; align-items: center;">
+                <ion-label>
+                    <h2>{{username}}</h2>
+                    <h3>{{role_name}}</h3>
+                    <h4>{{company_name}}</h4>
+                </ion-label>
+            </div>
         </ion-header>
         <ion-content>
-
             <div *ngFor="let p of pagesEX"> 
-
                 <!-- Item With Label -->
                 <ion-item button *ngIf="p.hasChild === true && p.label === true" >
                     <ion-label>{{ p.title }}</ion-label>

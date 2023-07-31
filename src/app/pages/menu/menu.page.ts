@@ -9,6 +9,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class MenuPage implements OnInit {
 
+  username : string = ""
+  role_name : string = ""
+  company_name : string = ""
   pages = [
     {
       id : 1,
@@ -407,16 +410,21 @@ export class MenuPage implements OnInit {
   }
 
   async check_login (){
-
     const val = await this.authServices.getId();
-    
     if (val){
       let data = JSON.parse(val)
 
       if (data.role_id == 2 ){ // rekomendator
         // this.pages = this.pages_rekomendator
+        this.username = data.name
+        this.role_name = data.role_name
+        this.company_name = data.company_name
       } else {
         // this.pages = this.pages
+        this.username = data.name
+        this.role_name = data.role_name
+        this.company_name = data.company_name
+        
       }
       
     }

@@ -10,11 +10,90 @@ import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { Port } from 'src/app/models/port';
 
+const getOrCreateLegendList = (chart : any, id : any) => {
+  const legendContainer = document.getElementById(id);
+  let listContainer = legendContainer?.querySelector('ul');
+
+  if (!listContainer) {
+    listContainer = document.createElement('ul');
+    listContainer.style.display = 'flex';
+    listContainer.style.flexDirection = 'row';
+    listContainer.style.margin = '0';
+    listContainer.style.padding = '0';
+
+    legendContainer?.appendChild(listContainer);
+  }
+
+  return listContainer;
+};
+
+const htmlLegendPlugin = { 
+  id: 'htmlLegend',
+  afterUpdate(chart : any, args : any, options : any) {
+    const ul = getOrCreateLegendList(chart, options.containerID);
+
+    // Remove old legend items
+    while (ul.firstChild) {
+      ul.firstChild.remove();
+    }
+
+    // Reuse the built-in legendItems generator
+    const items = chart.options.plugins.legend.labels.generateLabels(chart);
+
+    items.forEach((item : any) => {
+      const li = document.createElement('li');
+      li.style.alignItems = 'center';
+      li.style.cursor = 'pointer';
+      li.style.display = 'flex';
+      li.style.flexDirection = 'row';
+      li.style.marginLeft = '10px';
+
+      li.onclick = () => {
+        const {type} = chart.config;
+        if (type === 'pie' || type === 'doughnut') {
+          // Pie and doughnut charts only have a single dataset and visibility is per item
+          chart.toggleDataVisibility(item.index);
+        } else {
+          chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
+        }
+        chart.update();
+      };
+
+      // Color box
+      const boxSpan = document.createElement('span');
+      boxSpan.style.background = item.fillStyle;
+      boxSpan.style.borderColor = item.strokeStyle;
+      boxSpan.style.borderWidth = item.lineWidth + 'px';
+      boxSpan.style.display = 'inline-block';
+      boxSpan.style.flexShrink = '0';
+      boxSpan.style.height = '20px';
+      boxSpan.style.marginRight = '10px';
+      boxSpan.style.width = '20px';
+
+      // Text
+      const textContainer = document.createElement('p');
+      textContainer.style.color = item.fontColor;
+      textContainer.style.margin = '0';
+      textContainer.style.padding = '0';
+      textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
+
+      const text = document.createTextNode(item.text);
+      textContainer.appendChild(text);
+
+      li.appendChild(boxSpan);
+      li.appendChild(textContainer);
+      ul.appendChild(li);
+    });
+  }
+};
+
+
 @Component({
   selector: 'app-dashboard-rekomendator',
   templateUrl: './dashboard-rekomendator.page.html',
   styleUrls: ['./dashboard-rekomendator.page.scss'],
 })
+
 export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
 
   @ViewChild("barCanvas") barCanvas: any;
@@ -26,6 +105,8 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   @ViewChild("plantProductionCanvas") plantProductionCanvas: any;
   @ViewChild("curahHariHujanCanvas") curahHariHujanCanvas : any;
  
+ 
+
   plantProductionChart: any;
   awbChart : any;
   TotalBunchChart : any;
@@ -39,6 +120,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   isLoading: boolean = false;
   companyId : number = 0
   plantationId : number = 79
+  year_production : number = 2019
 
   // companyProfile 
   _allAfdelling : any[] = [];
@@ -79,7 +161,6 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   allAWBAges : any[] = []
   allTotalBunchAges : any[] = []
   totalBunchAges : any[] = []
-  year_production : number = 0
 
    CHART_COLORS = {
     red: 'rgb(255, 99, 132)',
@@ -159,7 +240,6 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    console.log("allProductionYears", this.allProductionYears)
     this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
       if(data instanceof Array){
         this.allProductionYears = data
@@ -182,7 +262,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
         this.allProductionChart = data 
         this.plantProductionChartMethode()
       } else {
-        this.allProductionChart = this.allCompositionChart.concat(data)
+        this.allProductionChart = this.allProductionChart.concat(data)
       }
     })
 
@@ -260,7 +340,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
     }, 1000);
   }
 
-  async getAllData (){
+  async getAllData(){
     // this.isLoading = true;
     // this.global.showLoader();
     setTimeout(async() => {
@@ -381,6 +461,17 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
           }]
         }, 
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+                font: {
+                  size: 10
+                },
+              },
+              display : true,
+            }
+          },
           animations: {
             tension: {
               duration: 1000,
@@ -457,6 +548,7 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
     if(!this.protasChart){
       this.protasChart = new Chart(this.protasCanvas.nativeElement, {
         type: 'line',
+        plugins: [htmlLegendPlugin],
         data: {
           labels: this.productivityAges,
           datasets: [
@@ -469,12 +561,32 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
           ]
         },
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+              },
+              display : true,
+            }
+          },
           scales: {
+            x: {
+              title: {
+                color: this.NAMED_COLORS[1],
+                display: true,
+                text: 'Umur (tahun)'
+              }
+            },
             'left-y-axis': {
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                title : {
+                  text : 'ton TBS / ha',
+                  display: true,
+                  color : this.NAMED_COLORS[2]
+                }
             },
-          }
+          },
         },
       });
     }
@@ -522,12 +634,35 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
           ]
         },
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+                font : {
+                  size : 10,
+                },
+              },
+              display : true,
+            }
+          },
           scales: {
+            x: {
+              title: {
+                color: this.NAMED_COLORS[1],
+                display: true,
+                text: 'Umur (tahun)'
+              }
+            },
             'left-y-axis': {
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                title : {
+                  text : 'tandan / pohon',
+                  display: true,
+                  color : this.NAMED_COLORS[2]
+                }
             },
-          }
+          },
         },
       });
     }
@@ -577,12 +712,35 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
           ]
         },
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+                font : {
+                  size : 10,
+                },
+              },
+              display : true,
+            }
+          },
           scales: {
+            x: {
+              title: {
+                color: this.NAMED_COLORS[1],
+                display: true,
+                text: 'Umur (tahun)'
+              }
+            },
             'left-y-axis': {
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                title : {
+                  text : 'kg / tandan',
+                  display: true,
+                  color : this.NAMED_COLORS[2]
+                }
             },
-          }
+          },
         },
       });
     }
@@ -639,26 +797,51 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
             datasets: []
           }, 
           options: {
+            plugins : {
+              legend : {
+                labels : {
+                  boxWidth : 10,
+                  font : {
+                    size : 10,
+                  },
+                },
+                display : true,
+              }
+            },
             scales: {
+              x: {
+                title: {
+                  color: this.NAMED_COLORS[1],
+                  display: true,
+                  text: 'Tahun'
+                }
+              },
               'left-y-axis': {
                   type: 'linear',
-                  position: 'left'
+                  position: 'left',
+                  title : {
+                    text : 'ton TBS / ha',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               },
               'right-y-axis': {
                   type: 'linear',
-                  position: 'right'
+                  position: 'right',
+                  title : {
+                    text : 'Persentase (%)',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               }
-            }
+            },
           }
         }); 
     } 
     var i : number = 0;
-    for(i = 0; i < 10; i++){
+    for(i = 0; i < this.plantProductionChart.data.labels.length; i++){
       this.plantProductionChart.data.datasets.pop();
-      this.plantProductionChart.data.labels.pop();
     }
-    this.plantProductionChart.data.labels = production_year
-
     this.plantProductionChart.update()
       
       const newDataset = {
@@ -733,14 +916,42 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
             }]
           }, 
           options: {
+            plugins : {
+              legend : {
+                labels : {
+                  boxWidth : 10,
+                  font : {
+                    size : 10,
+                  },
+                },
+                display : true,
+              }
+            },
             scales: {
+              x: {
+                title: {
+                  color: this.NAMED_COLORS[1],
+                  display: true,
+                  text: 'Month'
+                }
+              },
               'left-y-axis': {
                   type: 'linear',
-                  position: 'left'
+                  position: 'left',
+                  title : {
+                    text : 'Curah Hujan (mm)',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               },
               'right-y-axis': {
                   type: 'linear',
-                  position: 'right'
+                  position: 'right',
+                  title : {
+                    text : 'Hari Hujan (hari)',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               }
             }
           }

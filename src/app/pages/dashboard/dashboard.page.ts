@@ -5,6 +5,7 @@ import { DashboardService } from "src/app/services/dashboard/dashboard.service";
 import { GlobalService } from "src/app/services/global/global.service";
 import colorLib from '@kurkle/color';
 import { AuthService } from "src/app/services/auth/auth.service";
+import { PerusahaanService } from "src/app/services/perusahaan/perusahaan.service";
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -33,6 +34,17 @@ export class DashboardPage implements AfterViewInit, OnInit{
   isLoading: boolean = false;
   plantation_id : number = 0 ;
   
+  // companyProfile 
+  _allAfdelling : any[] = [];
+  _allKebun : any[] = [];
+  allCompany : any[] = [];
+  allCompanySubs: Subscription = new Subscription;
+  allKebun : any[] = [];
+  allKebunSubs: Subscription = new Subscription;
+  allAfdelling : any[] = [];
+  allAfdellingSubs: Subscription = new Subscription;
+
+
   allProductionYearsSub : Subscription = new Subscription;
   allProductionYears : any[] = []
 
@@ -81,95 +93,85 @@ export class DashboardPage implements AfterViewInit, OnInit{
     this.CHART_COLORS.grey,
   ];
 
-  
-
   constructor(
     private global : GlobalService,
     private dashboarServices : DashboardService,
     private authServices : AuthService,
+    private companyServices: PerusahaanService,
   ) { }
 
   ngOnInit() {
     this.getAuth()
-    this.allCompositionChartSub = this.dashboarServices.allCompositionChart.subscribe(data => {
-      if(data instanceof Array){
-        this.allCompositionChart = data 
-        this.ComposisiChartMethod();
-      } else {
-        this.allCompositionChart = this.allCompositionChart.concat(data)
-      }
-    })
+    this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
+      {
+        if (company instanceof Array){
+          this.allCompany = company;
+        } else {
+          // if(company?.delete){
+          //   this.allCompany= this.allCompany.filter(x => x.id != company.id);
+          // }
+          // else if (company?.update){
+          //   const index = this.allCompany.findIndex(x => x.id == company.id);
+          //   this.allCompany[index] = company;
+          // } else {
+          //   this.allCompany = this.allCompany.concat(company);
+          // }
+          this.allCompany = this.allCompany.concat(company);
+        }
+      });
 
-    this.allProductionChartSub = this.dashboarServices.allPlantProduction.subscribe(data => {
-      if(data instanceof Object){
-        this.allProductionChart = data 
-        this.plantProductionChartMethode();
-      } else {
-        this.allProductionChart = this.allCompositionChart.concat(data)
-      }
-    })
+      this.allKebunSubs = this.companyServices.allKebun.subscribe(kebun => {
+        if (kebun instanceof Array){
+          this.allKebun = kebun;
+          this._allKebun = kebun
+        } else {
+          this.allKebun = this.allKebun.concat(kebun);
+          this._allKebun = this._allKebun.concat(kebun);
+         }
+      });
 
-    this.allCurahhariHujanSub = this.dashboarServices.allCurahhariHujan.subscribe(data => {
-      if(data instanceof Object){
-        this.allCurahHariHujan = data 
-        this.curahHariHujanChartMethode();
-      } else {
-        this.allCurahHariHujan = this.allCurahHariHujan.concat(data)
-      }
-    })
-
-    this.allProductivityChartSub = this.dashboarServices.allProtas.subscribe(data => {
-      if (data instanceof Object){
-        this.allProductivityChart = data.productivities
-        this.productivityAges = data.ages
-        this.productivityChartMethode()
-      } else {
-        this.allProductionChart = this.allProductionChart.concat(data)
-      }
-    })
-
-    this.allTotalBunchDataSub = this.dashboarServices.allTotalBunch.subscribe(data => {
-      if (data instanceof Object){
-        this.allTotalBunchDataChart = data.total_bunch_per_trees
-        this.allTotalBunchAges = data.ages
-        this.jumlahTandanPohonPerTahunChartMethode()
-      } else {
-        this.allTotalBunchDataChart = this.allTotalBunchDataChart.concat(data)
-      }
-    })
-
-    this.allAWBSub = this.dashboarServices.allABW.subscribe(data => {
-      if (data instanceof Object){
-        this.allAWBData = data.awb
-        this.allAWBAges = data.ages
-        this.AWBChart()
-      } else {
-        this.allAWBData = this.allAWBData.concat(data)
-      }
-    })
-
-    this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
-      if(data instanceof Array){
-        this.allProductionYears = data
-        console.log("this.allProductionYears", this.allProductionYears)
-      } else {
-        this.allProductionYears = this.allProductionYears.concat(data)
-      }
-    })
-    this.getYearData()
-    this.getAllData()
+      this.allAfdellingSubs = this.companyServices.allAfdelling.subscribe(afdelling => {
+        if (afdelling instanceof Array){
+          this.allAfdelling = afdelling;
+          this._allAfdelling = afdelling;
+        } else {
+          this.allAfdelling = this.allAfdelling.concat(afdelling);
+        }
+      });
+      
+      this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
+        if(data instanceof Array){
+          this.allProductionYears = data
+        } else {
+          this.allProductionYears = this.allProductionYears.concat(data)
+        }
+      })
+      this.getAllDataCompany();
+      this.getAllData();
   }
   
+  async getAllDataCompany(){
+    // this.isLoading = true;
+    // this.global.showLoader();
+
+      setTimeout(async() => {
+        await this.companyServices.getAfdelling();
+        await this.companyServices.getKebun();
+        await this.companyServices.getPerusahaan();
+      this.isLoading = false;
+      this.global.hideLoader();
+    }, 1000);
+  }
   
   handleTahun ( event : any){
     this.year_production = event.detail.value
+    console.log("year_production",this.year_production)
     this.getAllData()
   }
   async getAuth(){
     const val = await this.authServices.getId();
     if(val){
       let data = JSON.parse(val)
-      console.log("this.plantation_id", data.plantation_id)
       this.plantation_id = data.plantation_id
     }
     
@@ -177,6 +179,13 @@ export class DashboardPage implements AfterViewInit, OnInit{
 
   ngAfterViewInit() {
 
+    this.allProductionYearsSub = this.dashboarServices.allProductionYear.subscribe(data => {
+      if(data instanceof Array){
+        this.allProductionYears = data
+      } else {
+        this.allProductionYears = this.allProductionYears.concat(data)
+      }
+    })
     this.allCompositionChartSub = this.dashboarServices.allCompositionChart.subscribe(data => {
       if(data instanceof Array){
         this.allCompositionChart = data 
@@ -191,7 +200,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
         this.allProductionChart = data 
         this.plantProductionChartMethode();
       } else {
-        this.allProductionChart = this.allCompositionChart.concat(data)
+        this.allProductionChart = this.allProductionChart.concat(data)
       }
     })
 
@@ -236,7 +245,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
     this.getAllData()
   }
 
-  async getAllData (){
+  async getAllData(){
     // this.isLoading = true;
     // this.global.showLoader();
     setTimeout(async() => {
@@ -254,11 +263,10 @@ export class DashboardPage implements AfterViewInit, OnInit{
   }
 
   async getYearData(){
-    // this.isLoading = true;
-    // this.global.showLoader();
+    this.isLoading = true;
+    this.global.showLoader();
     setTimeout(async() => {
       await this.dashboarServices.getProductionYear(this.plantation_id);
-      console.log("getYearData", this.plantation_id )
       this.isLoading = false;
       this.global.hideLoader();
     }, 1000);
@@ -297,6 +305,17 @@ export class DashboardPage implements AfterViewInit, OnInit{
           }]
         }, 
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+                font: {
+                  size: 10
+                },
+              },
+              display : true,
+            }
+          },
           animations: {
             tension: {
               duration: 1000,
@@ -309,70 +328,55 @@ export class DashboardPage implements AfterViewInit, OnInit{
         },
       });
     } 
+    else {
+      var i : number = 0;
+      //remove datasets
+     for(i = 0; i < this.doughnutChart.data.labels.length; i++){
+        //remove data labels
+       this.doughnutChart.data.labels.pop()
+       this.doughnutChart.data.datasets.pop();
+     }
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     this.doughnutChart.data.labels.pop()
+     
+     for(i = 0; i < composition_label.length; i++){
+        //add the new one 
+        this.doughnutChart.data.labels.push(composition_label[i])
+     }
+
+     const newDataset = {
+       label: "of Area",
+       backgroundColor: [
+         'rgba(255, 159, 64, 0.2)',
+         'rgba(255, 99, 132, 0.2)',
+         'rgba(54, 162, 235, 0.2)',
+         'rgba(255, 206, 86, 0.2)',
+         'rgba(75, 192, 192, 0.2)'
+       ],
+       hoverBackgroundColor: [
+         '#FFCE56',
+         '#FF6384',
+         '#36A2EB',
+         '#FFCE56',
+         '#FF6384'
+       ],
+       data: composition_area,
+       yAxisID: 'left-y-axis'
+     };
+     this.doughnutChart.data.datasets.push(newDataset);
+     this.doughnutChart.update()
+   }
   }
   transparentize(value : any, opacity : any) {
     var alpha = opacity === undefined ? 0.5 : 1 - opacity;
     return colorLib(value).alpha(alpha).rgbString();
-  }
-  BarChartMethode(){
-    let production_year : any[] = []
-    let production_area : any[] = []
-    let production_ffb_target : any[] = []
-    let production_ffb_realization : any[] = []
-    let production_rkap : any[] = []
-    let production_real : any[] = []
-    let production_percentage : any[] = []
-
-    this.allProductionChart.forEach(result => {
-      production_year.push(result.year)
-      production_area.push(result.area)
-      production_ffb_target.push(result.ffb_target)
-      production_ffb_realization.push(result.ffb_realization)
-      production_rkap.push(result.rkap)
-      production_real.push(result.real)
-      production_percentage.push(result.percentage)
-    })
-
-    this.barChart = new Chart(this.barCanvas.nativeElement, {
-      type: "bar",
-      data: {
-        labels: production_year ,
-        datasets: [
-          {
-            label: "# Produksi",
-            data: production_rkap,
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
-            ],
-            borderColor: [
-              "rgba(255,99,132,1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
-            ],
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        animations: {
-          tension: {
-            duration: 1000,
-            easing: 'linear',
-            from: 1,
-            to: 0,
-            loop: true
-          }
-        },
-      }
-    });
   }
 
   productivityChartMethode(){
@@ -400,19 +404,37 @@ export class DashboardPage implements AfterViewInit, OnInit{
           ]
         },
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+              },
+              display : true,
+            }
+          },
           scales: {
+            x: {
+              title: {
+                color: this.NAMED_COLORS[1],
+                display: true,
+                text: 'Umur (tahun)'
+              }
+            },
             'left-y-axis': {
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                title : {
+                  text : 'ton TBS / ha',
+                  display: true,
+                  color : this.NAMED_COLORS[2]
+                }
             },
-          }
+          },
         },
       });
     }
-    
-
     var i : number = 0;
-    for(i = 0; i < this.protasChart.data.datasets.length; i++){
+    for(i = 0; i < this.protasChart.data.labels.length; i++){
       this.protasChart.data.datasets.pop();
     }
 
@@ -427,10 +449,10 @@ export class DashboardPage implements AfterViewInit, OnInit{
       };
       this.protasChart.data.datasets.push(newDataset);
     })
+    this.protasChart.update();
   }
 
   jumlahTandanPohonPerTahunChartMethode(){
-
     let total_bunch_name : any [] = []
     let total_bunch_data : any [] = []
     this.allTotalBunchDataChart.forEach(result => {
@@ -453,19 +475,42 @@ export class DashboardPage implements AfterViewInit, OnInit{
           ]
         },
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+                font : {
+                  size : 10,
+                },
+              },
+              display : true,
+            }
+          },
           scales: {
+            x: {
+              title: {
+                color: this.NAMED_COLORS[1],
+                display: true,
+                text: 'Umur (tahun)'
+              }
+            },
             'left-y-axis': {
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                title : {
+                  text : 'tandan / pohon',
+                  display: true,
+                  color : this.NAMED_COLORS[2]
+                }
             },
-          }
+          },
         },
       });
     }
     
 
     var i : number = 0;
-    for(i = 0; i < this.TotalBunchChart.data.datasets.length; i++){
+    for(i = 0; i < this.TotalBunchChart.data.labels.length; i++){
       this.TotalBunchChart.data.datasets.pop();
     }
 
@@ -480,6 +525,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
       };
       this.TotalBunchChart.data.datasets.push(newDataset);
     })
+    this.TotalBunchChart.update()
   }
 
   AWBChart(){
@@ -500,26 +546,49 @@ export class DashboardPage implements AfterViewInit, OnInit{
           datasets: [
             {
               data: awb_bunch_data,
-              label: 'Left dataset',
+              label: 'AWB Default',
               yAxisID: 'left-y-axis'
             },
             
           ]
         },
         options: {
+          plugins : {
+            legend : {
+              labels : {
+                boxWidth : 10,
+                font : {
+                  size : 10,
+                },
+              },
+              display : true,
+            }
+          },
           scales: {
+            x: {
+              title: {
+                color: this.NAMED_COLORS[1],
+                display: true,
+                text: 'Umur (tahun)'
+              }
+            },
             'left-y-axis': {
                 type: 'linear',
-                position: 'left'
+                position: 'left',
+                title : {
+                  text : 'kg / tandan',
+                  display: true,
+                  color : this.NAMED_COLORS[2]
+                }
             },
-          }
+          },
         },
       });
     }
     
 
     var i : number = 0;
-    for(i = 0; i < this.awbChart.data.datasets.length; i++){
+    for(i = 0; i < this.awbChart.data.labels.length; i++){
       this.awbChart.data.datasets.pop();
     }
 
@@ -534,6 +603,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
       };
       this.awbChart.data.datasets.push(newDataset);
     })
+    this.awbChart.update()
   }
 
   namedColor(index : any) {
@@ -549,8 +619,7 @@ export class DashboardPage implements AfterViewInit, OnInit{
     let production_rkap : any[] = []
     let production_real : any[] = []
     let production_percentage : any[] = []
-
-
+  
     this.allProductionChart.forEach(result => {
       production_year.push(result.year)
       production_area.push(result.area)
@@ -560,52 +629,94 @@ export class DashboardPage implements AfterViewInit, OnInit{
       production_real.push(result.real)
       production_percentage.push(result.percentage)
     })
+  
     if(!this.plantProductionChart){
       this.plantProductionChart = new Chart(this.plantProductionCanvas.nativeElement,
         {
           type: 'scatter',
           data:{
             labels : production_year,
-            datasets: [{
-              type: 'bar',
-              label: 'RKAP',
-              data: production_rkap,
-              yAxisID: 'left-y-axis',
-              borderColor: 'rgb(255, 99, 132)',
-              backgroundColor: 'rgba(255, 99, 132, 0.2)'
-            }, 
-            {
-              type: 'bar',
-              label: 'Real',
-              data : production_real,
-              yAxisID: 'left-y-axis',
-              borderColor: 'rgb(185, 99, 132)',
-              backgroundColor: 'rgba(54, 162, 235, 0.2)'
-            },
-            {
-              type: 'line',
-              label: 'RKAP vs Real',
-              data: production_percentage,
-              yAxisID: 'right-y-axis',
-              fill: true,
-              borderColor: 'rgb(54, 162, 235)'
-            }]
+            datasets: []
           }, 
           options: {
+            plugins : {
+              legend : {
+                labels : {
+                  boxWidth : 10,
+                  font : {
+                    size : 10,
+                  },
+                },
+                display : true,
+              }
+            },
             scales: {
+              x: {
+                title: {
+                  color: this.NAMED_COLORS[1],
+                  display: true,
+                  text: 'Tahun'
+                },
+              },
               'left-y-axis': {
                   type: 'linear',
-                  position: 'left'
+                  position: 'left',
+                  title : {
+                    text : 'ton TBS / ha',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               },
               'right-y-axis': {
                   type: 'linear',
-                  position: 'right'
+                  position: 'right',
+                  title : {
+                    text : 'Persentase (%)',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               }
-            }
+            },
           }
         }); 
     }
-   
+
+    var i : number = 0;
+    for(i = 0; i < this.plantProductionChart.data.labels.length; i++){
+      this.plantProductionChart.data.datasets.pop();
+    }
+    this.plantProductionChart.update()
+      
+      const newDataset = {
+          type: 'bar',
+          label: 'RKAP',
+          data: production_rkap,
+          yAxisID: 'left-y-axis',
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)'
+      };
+      this.plantProductionChart.data.datasets.push(newDataset);
+
+      const newDataset1 = {
+        type: 'bar',
+        label: 'Real',
+        data : production_real,
+        yAxisID: 'left-y-axis',
+        borderColor: 'rgb(185, 99, 132)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)'
+      };
+      this.plantProductionChart.data.datasets.push(newDataset1);
+      
+      const newDataset2 = {
+        type: 'line',
+        label: 'RKAP vs Real',
+        data: production_percentage,
+        yAxisID: 'right-y-axis',
+        fill: true,
+        borderColor: 'rgb(54, 162, 235)'
+      };
+      this.plantProductionChart.data.datasets.push(newDataset2);
+      this.plantProductionChart.update();
   }
 
   curahHariHujanChartMethode(){
@@ -643,19 +754,74 @@ export class DashboardPage implements AfterViewInit, OnInit{
             }]
           }, 
           options: {
+            plugins : {
+              legend : {
+                labels : {
+                  boxWidth : 10,
+                  font : {
+                    size : 10,
+                  },
+                },
+                display : true,
+              }
+            },
             scales: {
+              x: {
+                title: {
+                  color: this.NAMED_COLORS[1],
+                  display: true,
+                  text: 'Month'
+                }
+              },
               'left-y-axis': {
                   type: 'linear',
-                  position: 'left'
+                  position: 'left',
+                  title : {
+                    text : 'Curah Hujan (mm)',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               },
               'right-y-axis': {
                   type: 'linear',
-                  position: 'right'
+                  position: 'right',
+                  title : {
+                    text : 'Hari Hujan (hari)',
+                    display: true,
+                    color : this.NAMED_COLORS[2]
+                  }
               }
             }
           }
         }); 
     }
+    var i : number = 0
+    for(i = 0; i < this.curahHariHujanChart.data.labels.length; i++){
+      //add the new one 
+      this.curahHariHujanChart.data.datasets.pop();
+    }
+    const newDataset = {
+      type: 'bar',
+      label: 'Curah Hujan',
+      data: rainfall_rainfall,
+      yAxisID: 'left-y-axis',
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.2)'
+    };
+    this.curahHariHujanChart.data.datasets.push(newDataset);
+
+    const newDataset1 = {
+      type: 'line',
+      label: 'Hari Hujan',
+      data: rainfall_rainy_day,
+      yAxisID: 'right-y-axis',
+      fill: true,
+      borderColor: 'rgb(54, 162, 235)'
+    };
+    this.curahHariHujanChart.data.datasets.push(newDataset1);
+
+    this.curahHariHujanChart.update()
+
   }
 
 

@@ -109,7 +109,6 @@ export class ManagementKebunPage implements OnInit {
       });
 
       this.allAfdellingSubs = this.companyServices.allAfdelling.subscribe(afdelling => {
-        console.log("isi from manag kebun",afdelling)
         if (afdelling instanceof Array){
           this.allAfdelling = afdelling;
           this._allAfdelling = afdelling;
@@ -142,10 +141,9 @@ export class ManagementKebunPage implements OnInit {
     this.isSubmitted = !this.isSubmitted;
   }
   lihatData(){
-    console.log("lihat data",this.allManagementKebun.length)
+    // console.log("lihat data",this.allManagementKebun.length)
   }
   handleCamera(event : any, jenis_inputan : string){
-    console.log("event handle stress air",event)
     this.takePicture(jenis_inputan)
   }
 
