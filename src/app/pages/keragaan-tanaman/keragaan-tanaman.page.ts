@@ -86,7 +86,6 @@ export class KeragaanTanamanPage implements OnInit {
       zn: ['', ],
       cu: ['', ],
       ph: ['', ],
-      keragaan_tanaman: ['', ],
       bangunan_konservasi: ['', ],
       penanggulan_gulma: ['', ],
       topografi: ['', ],

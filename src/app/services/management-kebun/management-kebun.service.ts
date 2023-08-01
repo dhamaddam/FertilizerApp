@@ -22,7 +22,7 @@ export class ManagementKebunService {
   constructor(
     private api : DatabaseService,
     private storage : StorageService
-    ) { }
+   ) { }
 
   get allPengendalianGulma(){
     return this._allPengendalianGulma.asObservable();

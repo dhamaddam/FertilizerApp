@@ -1,0 +1,46 @@
+export class KeragaanTanahKadarHaraTanah{
+    
+    constructor(
+        public user_id: string,
+        public company: string,
+        public kebun: string,
+        public afdelling: string,
+        public nomor_blok: string,
+        public nomor_kcd: string,
+        public tanggal: string,
+        //top of parameter always used 
+        
+        public pertumbuhan: string,
+        public index_luas_daun: string,
+        public n: string,
+        public p: string,
+        public k: string,
+        public ca: string,
+        public mg: string,
+        public c: string,
+        public fe: string,
+        public mn: string,
+        public zn: string,
+        public cu: string,
+        public ph: string,
+        public bangunan_konservasi: string,
+        public penanggulan_gulma: string,
+        public stress_air: string,
+        public stress_air_keterangan: string,
+        public ph_keterangan: string,
+        public cu_keterangan: string,
+        public zn_keterangan: string,
+        public fe_keterangan: string,
+        public c_keterangan: string,
+        public mg_keterangan: string,
+        public mn_keterangan: string,
+        public ca_keterangan: string,
+        public k_keterangan: string,
+        public p_keterangan: string,
+        public n_keterangan: string,
+        public salinity: string,
+        public organic_material: string,
+        public ph_pictures: any[] = [],
+    ) {}
+
+}

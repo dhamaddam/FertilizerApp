@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CameraSource, Camera, CameraResultType } from '@capacitor/camera';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 import { ActionSheetController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import * as moment from 'moment';
 import { Observable, Subscription, delay } from 'rxjs';
+import { KeragaanTanahKadarHaraTanah } from 'src/app/models/keragaan-tanah-kadar-hara-tanah.model';
 import { Port } from 'src/app/models/port';
 import { GlobalService } from 'src/app/services/global/global.service';
+import { KeragaanTanahService } from 'src/app/services/keragaan-tanah/keragaan-tanah.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
 
 @Component({
@@ -34,6 +37,8 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
   allKondisiLahan : any[] = [];
   allKondisiLahanSubs : Subscription = new Subscription; 
 
+  allKadarHaraTanah : any[] = [];
+  allKadarHaraTanahSubs : Subscription = new Subscription; 
 
   portsSubscription: any;
 
@@ -58,6 +63,7 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     private fb: FormBuilder,
     private actionSheetController: ActionSheetController,
     private companyServices: PerusahaanService,
+    private keragaanTanahServices : KeragaanTanahService,
   ) { }
 
   ngOnInit() {
@@ -70,10 +76,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
       nomor_blok: ['', []],
       
       //only for keragaan tanah
-      texture: ['', []],
-      maturity: ['', []],
-      soil_type: ['', []],
-
       pertumbuhan: ['', ],
       index_luas_daun: ['', ],
       n: ['', ],
@@ -87,10 +89,8 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
       zn: ['', ],
       cu: ['', ],
       ph: ['', ],
-      keragaan_tanaman: ['', ],
       bangunan_konservasi: ['', ],
       penanggulan_gulma: ['', ],
-      topografi: ['', ],
       stress_air : ['',],
       stress_air_keterangan : ['',],
       ph_keterangan : ['',],
@@ -104,11 +104,8 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
       k_keterangan : ['',],
       p_keterangan : ['',],
       n_keterangan : ['',],
-
-      //add new 
-      salinity : ['',], 
-      organic_material : ['',], 
-
+      salinity : ['',],
+      organic_material: ['',],
     });
 
     this.allCompanySubs = this.companyServices.allCompany.subscribe(company =>
@@ -149,6 +146,30 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
         }
       });
 
+      this.allKadarHaraTanahSubs = this.keragaanTanahServices.allDataKadarHara.subscribe( result => {
+        if (result instanceof Array){
+          console.log('result allManagementKebun',result)
+          this.allKadarHaraTanah = result;
+        } else {
+          this.allKadarHaraTanah = this.allKadarHaraTanah.concat(result);
+        }
+      })
+
+      this.getAllData()
+  }
+
+  async getAllData(){    
+    this.isLoading = true;
+    this.global.showLoader();
+    setTimeout(async() => {
+      await this.companyServices.getAfdelling();
+      await this.companyServices.getKebun();
+      await this.companyServices.getPerusahaan();
+      await this.keragaanTanahServices.getKadarHaraTanahData();
+    
+      this.isLoading = false;
+      this.global.hideLoader();
+    }, 1000);
   }
 
   handleCamera(event : any, jenis_inputan : string){
@@ -179,6 +200,8 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     await actionSheet.present();
   }
 
+
+  
   async upload(source: CameraSource, jenis_inputan: string) {
     try {
       const image = await Camera.getPhoto({
@@ -187,15 +210,24 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
         // resultType: CameraResultType.Base64
         resultType : CameraResultType.Uri
       });
-      
-      console.log('image output', image);
+
       const fileName = Date.now() + '.jpeg';
+      const base64Data = await base64FromPath(image.webPath!);
       
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Data,
+      });
+
       const savedFileImage = {
         nama : jenis_inputan,
         filepath: fileName,
         webviewPath: image.webPath,
+        savedFileUri : savedFile.uri
       };
+
+      console.log("savedFile",savedFileImage)
 
       //serangan jenis inputan
       if(jenis_inputan == "stress_air"){
@@ -243,12 +275,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
         console.log("serangan penyakit", this.serangan_penyakit)
       }
 
-     
-      if (image && image.base64String) {
-        const blobData = this.b64toBlob(image.base64String, `image/${image.format}`);
-        // this.util.showLoader()
-        console.log("blobData", blobData);
-      }
     } catch (error) {
       console.log(error);
       this.global.apiErrorHandler(error);
@@ -278,15 +304,74 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
   saveData(){
     this.isLoading = true;
     this.global.showLoader();
+    console.log(this.myForm.value)
+    console.log('isi Storage', this.allKadarHaraTanah)
     // console.log('isi storage ',this.allKondisiLahan)
     // if(this.allKondisiLahan != null){
     //   await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
     //   this.getAllData();
     // } else {
     // }
-    // this.placeData(this.myForm.value)
+    this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
+  }
+
+  placeData(param : any){
+    try{
+      //save to Local Database.
+      let currentKadarHaraTanah : KeragaanTanahKadarHaraTanah[] = []
+      currentKadarHaraTanah.push(
+        new KeragaanTanahKadarHaraTanah(
+          param.user_id,
+          param.company,
+          param.kebun,
+          param.afdelling,
+          param.nomor_blok,
+          param.nomor_kcd,
+          param.tanggal,
+          //Main parameter
+          param.pertumbuhan,
+          param.index_luas_daun,
+          param.n,
+          param.p,
+          param.k,
+          param.ca,
+          param.mg,
+          param.c,
+          param.fe,
+          param.mn,
+          param.zn,
+          param.cu,
+          param.ph,
+          param.bangunan_konservasi,
+          param.penanggulan_gulma,
+          param.stress_air,
+          param.stress_air_keterangan,
+          param.ph_keterangan,
+          param.cu_keterangan,
+          param.zn_keterangan,
+          param.fe_keterangan,
+          param.c_keterangan,
+          param.mg_keterangan,
+          param.mn_keterangan,
+          param.ca_keterangan,
+          param.k_keterangan,
+          param.p_keterangan,
+          param.n_keterangan,
+          param.salinity,
+          param.organic_material,
+          this.ph 
+        )
+      )
+      setTimeout(async() => {
+        await this.keragaanTanahServices.saveKadarHaraTanahLocal(currentKadarHaraTanah)
+        this.isLoading = false;
+        this.global.hideLoader();
+      }, 1000);
+    } catch (error) {
+      throw(error);
+    }
   }
 
   handleKebun (event : any){
@@ -377,3 +462,21 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     return ports;
   }
 }
+
+export async function base64FromPath(path: string): Promise<string> {
+  const response = await fetch(path);
+  const blob = await response.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result);
+      } else {
+        reject('method did not return a string');
+      }
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
