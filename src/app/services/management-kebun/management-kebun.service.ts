@@ -50,22 +50,13 @@ export class ManagementKebunService {
     if(data) this.new_model = data;
 
     let status: any = await this.getManagementKebun();
-
     if(status?.value == null){
-      this.storage.setStorage('managementKebun', JSON.stringify(this.currentValue));
-      console.log("saveManagementKebunLocal new_model",this.new_model)
-      this.currentValue = [this.new_model];
-      this.storage.setStorage('managementKebun', JSON.stringify(this.currentValue));
+       this.storage.setStorage('managementKebun', JSON.stringify(this.currentValue));
     }
     else {
       this._modelManagementKebun.subscribe(result => {
-        if(result == null){
-          this.currentValue = this.new_model;
-        } else {
-           this.currentValue = [...result ,this.new_model]
-        }
+        this.currentValue = [...result ,this.new_model]
       })
-      console.log("after add model",this.currentValue)
       this.storage.setStorage('managementKebun', JSON.stringify(this.currentValue));  
     }
   }

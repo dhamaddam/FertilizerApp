@@ -70,19 +70,21 @@ export class KeragaanTanahService {
   }
 
   async saveKadarHaraTanahLocal(data : any){
-    
-    this.getKadarHaraTanahData()
-
+    this.new_model = []
     let status: any = await this.getKadarHaraTanah();
+    let data_status: any = await this.getKadarHaraTanahData()
+    console.log("data_status",data_status)
+    
+    if(data) this.new_model = data
       if(status?.value == null){
-        this.storage.setStorage('kadarHaraTanah', JSON.stringify(data))
+        this.storage.setStorage('kadarHaraTanah', JSON.stringify([this.new_model]))
       } else {
         this._modelKadarHaraTanah.subscribe(result => {
           console.log('status result',result)
-          this.currentValue = [...result, data]
+          this.currentValue = [...result, this.new_model]
       })
-        console.log("after add model",this.currentValue)
-        this.storage.setStorage('kadarHaraTanah', JSON.stringify(this.currentValue));
+      //put all data in kadarHaraTanah
+      this.storage.setStorage('kadarHaraTanah', JSON.stringify(this.currentValue));
     }
   }
 

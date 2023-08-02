@@ -176,6 +176,7 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     console.log("event handle stress air",event)
     this.takePicture(jenis_inputan)
   }
+  
 
   async takePicture(jenis_serangan : string) {
     const actionSheet = await this.actionSheetController.create({
@@ -200,8 +201,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     await actionSheet.present();
   }
 
-
-  
   async upload(source: CameraSource, jenis_inputan: string) {
     try {
       const image = await Camera.getPhoto({
@@ -306,12 +305,14 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     this.global.showLoader();
     console.log(this.myForm.value)
     console.log('isi Storage', this.allKadarHaraTanah)
+    
     // console.log('isi storage ',this.allKondisiLahan)
     // if(this.allKondisiLahan != null){
     //   await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
     //   this.getAllData();
     // } else {
     // }
+
     this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
@@ -324,7 +325,7 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
       currentKadarHaraTanah.push(
         new KeragaanTanahKadarHaraTanah(
           param.user_id,
-          param.company,
+          param.company.id,
           param.kebun,
           param.afdelling,
           param.nomor_blok,
