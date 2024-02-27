@@ -141,7 +141,7 @@ export class ManagementKebunPage implements OnInit {
     this.isSubmitted = !this.isSubmitted;
   }
   lihatData(){
-    // console.log("lihat data",this.allManagementKebun.length)
+    console.log("lihat data",this.allManagementKebun.length)
   }
   handleCamera(event : any, jenis_inputan : string){
     this.takePicture(jenis_inputan)
@@ -202,8 +202,6 @@ export class ManagementKebunPage implements OnInit {
         this.cadangan_buah.push(savedFileImage)
         console.log("cadangan_buah", this.cadangan_buah)
       }
-     
-
      
       if (image && image.base64String) {
         const blobData = this.b64toBlob(image.base64String, `image/${image.format}`);

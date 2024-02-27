@@ -41,7 +41,7 @@ export class PerusahaanService {
     try {
       let kebun : any = this.api.getKebun().then( async (res : any) => {
         const data = JSON.parse(res)
-        this._allGarden.next(data.data);
+        this._allGarden.next(data.data.plantation);
       })  
     } catch (error) {
       console.log(error);
@@ -53,7 +53,7 @@ export class PerusahaanService {
     try {
       let perusahaan : any = this.api.getPerusahaan().then( async (res : any) => {
         const data = JSON.parse(res)
-        await this._allCompany.next(data.data)
+        await this._allCompany.next(data.data.company)
       })
     } catch (error) {
       console.log(error);
@@ -65,7 +65,7 @@ export class PerusahaanService {
     try {
       let afdelling : any = this.api.getAfdellingbyKebun(54).then(async (res:any) =>{
         const data = JSON.parse(res)
-        await this._allAfdelling.next(data.data);
+        await this._allAfdelling.next(data.data.afdeling);
       });
      
     } catch (error) {

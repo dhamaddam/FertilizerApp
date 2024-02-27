@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { CameraSource, Camera, CameraResultType } from '@capacitor/camera';
-import { Directory, Filesystem } from '@capacitor/filesystem';
+import { CameraSource, Camera, CameraResultType, Photo } from '@capacitor/camera';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { ActionSheetController } from '@ionic/angular';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import * as moment from 'moment';
-import { Observable, Subscription, delay } from 'rxjs';
+import { Observable, Subscription, delay, last } from 'rxjs';
 import { KeragaanTanahKadarHaraTanah } from 'src/app/models/keragaan-tanah-kadar-hara-tanah.model';
 import { Port } from 'src/app/models/port';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { KeragaanTanahService } from 'src/app/services/keragaan-tanah/keragaan-tanah.service';
 import { PerusahaanService } from 'src/app/services/perusahaan/perusahaan.service';
+import { Capacitor } from '@capacitor/core';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-keragaan-tanah-kadar-hara-tanah',
@@ -56,11 +58,11 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
   p : any[] = []
   n : any[] = []
   serangan_penyakit : any[] = [];
-
   
   constructor(
     public global : GlobalService,
     private fb: FormBuilder,
+    platform: Platform,
     private actionSheetController: ActionSheetController,
     private companyServices: PerusahaanService,
     private keragaanTanahServices : KeragaanTanahService,
@@ -137,7 +139,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
       });
 
       this.allAfdellingSubs = this.companyServices.allAfdelling.subscribe(afdelling => {
-        console.log("isi from manag kebun",afdelling)
         if (afdelling instanceof Array){
           this.allAfdelling = afdelling;
           this._allAfdelling = afdelling;
@@ -148,7 +149,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
 
       this.allKadarHaraTanahSubs = this.keragaanTanahServices.allDataKadarHara.subscribe( result => {
         if (result instanceof Array){
-          console.log('result allManagementKebun',result)
           this.allKadarHaraTanah = result;
         } else {
           this.allKadarHaraTanah = this.allKadarHaraTanah.concat(result);
@@ -173,7 +173,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
   }
 
   handleCamera(event : any, jenis_inputan : string){
-    console.log("event handle stress air",event)
     this.takePicture(jenis_inputan)
   }
   
@@ -210,7 +209,7 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
         resultType : CameraResultType.Uri
       });
 
-      const fileName = Date.now() + '.jpeg';
+      const fileName = Date.now() + '.jpg';
       const base64Data = await base64FromPath(image.webPath!);
       
       const savedFile = await Filesystem.writeFile({
@@ -225,8 +224,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
         webviewPath: image.webPath,
         savedFileUri : savedFile.uri
       };
-
-      console.log("savedFile",savedFileImage)
 
       //serangan jenis inputan
       if(jenis_inputan == "stress_air"){
@@ -273,7 +270,6 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
         this.serangan_penyakit.push(savedFileImage)
         console.log("serangan penyakit", this.serangan_penyakit)
       }
-
     } catch (error) {
       console.log(error);
       this.global.apiErrorHandler(error);
@@ -304,15 +300,13 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
     this.isLoading = true;
     this.global.showLoader();
     console.log(this.myForm.value)
-    console.log('isi Storage', this.allKadarHaraTanah)
-    
+    console.log('isi storage', this.allKadarHaraTanah)
     // console.log('isi storage ',this.allKondisiLahan)
     // if(this.allKondisiLahan != null){
     //   await this.kondisiLahanServices.saveKondisiLahanLocal(this.myForm.value)
     //   this.getAllData();
     // } else {
     // }
-
     this.placeData(this.myForm.value)
     this.isLoading = false;
     this.global.hideLoader();
@@ -362,7 +356,7 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
           param.n_keterangan,
           param.salinity,
           param.organic_material,
-          this.ph 
+          this.ph
         )
       )
       setTimeout(async() => {
@@ -442,11 +436,77 @@ export class KeragaanTanahKadarHaraTanahPage implements OnInit {
   }
   
   lihatData(){
-    console.log("lihat data",this.allKondisiLahan.length)
+    this.allKadarHaraTanah.forEach(data => {
+      data = JSON.parse(JSON.stringify(data))
+
+      data.forEach((file : any) => {
+      
+        let stringT = file.ph_pictures[0].webviewPath
+        stringT = stringT.split('/')
+
+        
+
+        let stringUri = file.ph_pictures[0].savedFileUri
+        let stringUNI = ""
+        stringUri = stringUri.split('/')
+
+        let i = 0;
+        stringUri.forEach((arr:any) => {
+          i++
+          if(stringUri.length == i ){
+            stringUNI += "/"+stringT[stringT.length-1]
+          } else {
+            if(arr == ""){
+              stringUNI += arr
+            } else if( i == 1){
+              stringUNI += arr+"//"
+            }
+            else {
+              stringUNI += "/"+arr
+            }
+          }
+        })
+        this.readAsBase64(stringUri)
+      });
+
+    })
   }
 
+  private async readAsBase64(photoFilepath : any) {
+    // Fetch the photo, read as a blob, then convert to base64 format
+    let base64Data : string;
+    // "hybrid" will detect Cordova or Capacitor;
+       // Display the new image by rewriting the 'file://' path to HTTP
+      // Details: https://ionicframework.com/docs/building/webview#file-protocol
+      // return {
+      //   filepath: photoFilepath,
+      //   webviewPath: Capacitor.convertFileSrc(photoFilepath),
+      // };
+      const file = await Filesystem.readFile({
+        path: Capacitor.convertFileSrc(photoFilepath),
+        // path: photoFilepath,
+        directory: Directory.Data,
+      });
+
+      console.log("file allKadarHaraTanah",file)
+      // Web platform only: Load the photo as base64 data
+      // let photoWebviewPath = `data:image/jpeg;base64,${file.data}`;
+      // const response = await fetch(photoWebviewPath);
+      // const blob = await response.blob();
+      // return await this.convertBlobToBase64(blob) as string;
+  }
+
+  private convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+        resolve(reader.result);
+    };
+    reader.readAsDataURL(blob);
+  });
+  
+
   handleCompany (event : any){
-    console.log("Company", event.item.id)
     let currentKebun = this._allKebun
     currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
     this.allKebun = currentKebun

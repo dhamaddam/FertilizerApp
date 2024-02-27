@@ -311,6 +311,8 @@ export class DashboardRekomendatorPage implements OnInit, AfterViewInit {
   handleCompany (event : any){
     this.companyId = event.item.id
     let currentKebun = this._allKebun
+    console.log("currentKebun",currentKebun)
+    console.log("this.companyId",this.companyId)
     currentKebun = currentKebun.filter(x => x.company_id == event.item.id);
     this.allKebun = currentKebun
    }

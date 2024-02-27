@@ -74,7 +74,7 @@ export class KeragaanTanahService {
     let status: any = await this.getKadarHaraTanah();
     let data_status: any = await this.getKadarHaraTanahData()
     console.log("data_status",data_status)
-    
+
     if(data) this.new_model = data
       if(status?.value == null){
         this.storage.setStorage('kadarHaraTanah', JSON.stringify([this.new_model]))
@@ -86,6 +86,11 @@ export class KeragaanTanahService {
       //put all data in kadarHaraTanah
       this.storage.setStorage('kadarHaraTanah', JSON.stringify(this.currentValue));
     }
+  }
+  uploadImageKadarhara(){
+    // const blobData = this.b64toBlob(image.base64String, `image/${image.format}`);
+      
+    this.api.uploadImage("blobData", '.jpg').then((data) => { })
   }
 
   get allDataKadarHara() {

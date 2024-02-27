@@ -22,27 +22,42 @@ result : any = ''
     await loading.present();
 
     this.DB.getLogin(email, password).then (async (res : any) => {
-      console.log("isi auth service",res);
+      
       const data = JSON.parse(res)
-      console.log(data.status)
 
-      if(data.status == true){ 
+      if(data.meta.status === 'success'){ 
+
         await loading.dismiss();
-        let result =  data.data
-        console.log("result", result)
+
+        let result =  data.data.user
+        result.access_token = data.data.access_token
+        result.token_type = data.data.token_type
+
         this.setUserData(JSON.stringify(result))
-        if (result.role_id == 2){
+        
+        if (result.role === 'Administrator'){
           this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
-        } else if (result.role_id == 3){
+        } 
+        else if (result.role === 'Rekomendator'){
           this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
-        } else {
+        } 
+        else {
           this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
         }
        
       }
-      else if (data.status == false){
+      else if (data.meta.status === 'error'){
+
+        await loading.dismiss();
+        const alert = await this.alertController.create({
+                  header: 'Login failed',
+                  message: data.error,
+                  buttons: ['OK'],
+                });
+        await alert.present();
         this.router.navigateByUrl('/login', { replaceUrl: true });
       }
+
       else {
         await loading.dismiss();
         const alert = await this.alertController.create({
@@ -50,30 +65,21 @@ result : any = ''
                   message: 'Mohon maaf akun Anda Belum di Verifikasi',
                   buttons: ['OK'],
                 });
+
         await alert.present();
       }
     }).catch ( async (e) => {
       await loading.dismiss();
-        const alert = await this.alertController.create({
-          header: 'Login failed',
-          message: JSON.stringify(e),
-          buttons: ['OK'],
-        });
-        await alert.present();
+      const data = JSON.parse(JSON.stringify(e))
+      const alert = await this.alertController.create({
+        header: 'Login failed',
+        message: data.error.error,
+        buttons: ['OK'],
+      });
+      await alert.present();
       throw(e)
     })
     await loading.dismiss();
-  }
-
-  checkLogin (role_id : number ){
-    if (role_id == 2){
-      this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
-    } else if (role_id == 3){
-      this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
-    }
-  }
-  register(){
-
   }
 
   setUserData(uid : any) {

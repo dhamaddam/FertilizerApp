@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -12,6 +12,7 @@ import { GlobalService } from 'src/app/services/global/global.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
+
 export class LoginPage implements OnInit {
 
   myForm: any;
@@ -31,7 +32,7 @@ export class LoginPage implements OnInit {
   result = null;
 
   ngOnInit() {
-    this.isLoggedin()
+    // this.isLoggedin()
     this.myForm = this.fb.group({
       email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -66,13 +67,12 @@ export class LoginPage implements OnInit {
       let val = await this.authServices.getId();
       let result  =  JSON.parse(JSON.stringify(val))
       result = JSON.parse(result)
-      console.log("val showLoader", result.role_id)
       
-      if (result.role_id == 2){
+      if (result.role === 'Administrator'){
         this.router.navigateByUrl('/menu/dashboard-rekomendator', { replaceUrl: true });
-      } else if (result.role_id == 3){
+      } else if (result.role === 'Rekomendator'){
         this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
-      } else if (result.role_id == 1){
+      } else{
         this.router.navigateByUrl('/menu/dashboard', { replaceUrl: true });
       }
     } catch (error) {

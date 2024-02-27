@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { MenuPage } from './menu.page';
+import { AuthGuard } from 'src/app/guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -10,7 +11,8 @@ const routes: Routes = [
     children : [
       {
         path: 'dashboard',
-        loadChildren: () => import('../dashboard/dashboard.module').then( m => m.DashboardPageModule)
+        loadChildren: () => import('../dashboard/dashboard.module').then( m => m.DashboardPageModule),
+        canLoad:[AuthGuard]
       },
       {
         path: 'management-kebun',
@@ -36,7 +38,7 @@ const routes: Routes = [
       },
       {
         path: 'dashboard-rekomendator',
-        loadChildren: () => import('../dashboard-rekomendator/dashboard-rekomendator.module').then( m => m.DashboardRekomendatorPageModule)
+        loadChildren: () => import('../dashboard-rekomendator/dashboard-rekomendator.module').then( m => m.DashboardRekomendatorPageModule),
       },
       {
         path: 'view-faktor-alam-anomali',
@@ -123,7 +125,7 @@ const routes: Routes = [
   },
   {
     path:'',
-    redirectTo:'/login',
+    redirectTo:'login',
     pathMatch:'full'
   }
 ];

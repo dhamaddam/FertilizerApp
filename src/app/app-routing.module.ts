@@ -13,10 +13,8 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo:'/menu/dashboard',
     pathMatch:'full',
-    canLoad:[AuthGuard]
-
   },
   {
     path: 'list',
@@ -41,7 +39,7 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardPageModule),
-    canLoad : [AuthGuard]
+    canLoad:[AuthGuard]
   },
   {
     path: 'management-kebun',
@@ -62,7 +60,6 @@ const routes: Routes = [
   {
     path: 'dashboard-rekomendator',
     loadChildren: () => import('./pages/dashboard-rekomendator/dashboard-rekomendator.module').then( m => m.DashboardRekomendatorPageModule),
-    canLoad : [AuthGuard]
   },
   {
     path: 'view-keragaan-tanah',

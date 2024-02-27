@@ -46,7 +46,7 @@ export class DashboardService {
     try{
       let compositionData : any = this.api.getCompositionChart(plantation_id, year).then(async (params:any) => {
         const data = JSON.parse(params)
-        await this._allCompositionChart.next(data.data)
+        await this._allCompositionChart.next(data.data.plant_compositions)
       })
     } catch(error){
       console.log(error)
@@ -57,7 +57,7 @@ export class DashboardService {
     try{
       let productionYear : any = this.api.getProductionYear(plantation_id).then(async (params:any) => {
         const data = JSON.parse(params)
-        await this._allProductionYear.next(data.data)
+        await this._allProductionYear.next(data.data.production_years)
       })
     } catch (error){
       console.log(error)
@@ -69,7 +69,7 @@ export class DashboardService {
     try {
       let plantProduction : any = this.api.getPlantProductionChart(plantation_id, year).then(async (params:any) => {
         const data = JSON.parse(params)
-        await this._allPlantProduction.next(data.data)
+        await this._allPlantProduction.next(data.data.plant_production)
       })
     } catch (error){
       console.log(error)
@@ -81,7 +81,7 @@ export class DashboardService {
     try {
       let curahhariHujan : any = this.api.getRainFall(plantation_id, year).then(async (params : any) =>{
         const data = JSON.parse(params)
-        await this._allCurahhariHujan.next(data.data)
+        await this._allCurahhariHujan.next(data.data.rainfall_chart)
       } )
     } catch (error){
       console.log(error)
@@ -93,7 +93,7 @@ export class DashboardService {
     try {
       let protas : any = this.api.getProtas(plantation_id, year).then( async (params : any) => {
         const data = JSON.parse(params)
-        await this._allProtas.next(data.data)
+        await this._allProtas.next(data.data.productivity_chart)
       })
     } catch (error) {
       console.log(error)
@@ -105,7 +105,7 @@ export class DashboardService {
     try {
       let protas : any = this.api.getTotalBunch(plantation_id, year).then( async (params : any) => {
         const data = JSON.parse(params)
-        await this._allTotalBunch.next(data.data)
+        await this._allTotalBunch.next(data.data.total_bunch_per_trees)
       })
     } catch (error) {
       console.log(error)
@@ -117,7 +117,7 @@ export class DashboardService {
     try {
       let protas : any = this.api.getAllABW(plantation_id, year).then( async (params : any) => {
         const data = JSON.parse(params)
-        await this._allABW.next(data.data)
+        await this._allABW.next(data.data.awb_chart)
       })
     } catch (error) {
       console.log(error)

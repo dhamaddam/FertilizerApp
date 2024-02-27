@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient,HttpErrorResponse,HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Perusahaan } from '../models/perusahaan.model';
 import { ManagementKebun } from 'src/app/models/management-kebun.model';
@@ -13,14 +13,16 @@ myImage = null;
 baseUrl: any = '';
 key : any = '';
 baseUrlUPDKP : any = '';
+baseUrlImage : any = '';
 key_updkp : any = '';
 
   constructor(
     public http: HttpClient
   ) {
-    this.baseUrl = environment.baseUrl + '/api/v1/'
+    this.baseUrl = environment.baseUrl + 'api/'
     this.key = environment.key
     this.key_updkp = environment.key_updkp
+    this.baseUrlImage = environment.baseUrlImage
   }
 
   getViewListContent : any[] = [
@@ -268,12 +270,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'plantations/get', params, httpHeader).subscribe(result => {
+      this.http.get(this.baseUrl+'plantation', httpHeader).subscribe(result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -326,12 +328,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'companies/get',params, httpHeader).subscribe(result => {
+      this.http.get(this.baseUrl+'company', httpHeader).subscribe(result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -358,12 +360,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'afdeling/get', params, httpHeader).subscribe(result => {
+      this.http.get(this.baseUrl+'afdeling', httpHeader).subscribe(result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -385,7 +387,7 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
@@ -420,24 +422,15 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'login', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'auth/sign-in', params, httpHeader).subscribe( (result) => {
         resolve(JSON.stringify(result))
-      },
-        err => {
-            if (err.status == 400) {
-              console.log("BAD REQUEST!");
-            } else if (err.status == 401) { 
-              console.log("password incorect!");
-            } else if (err.status == 404) { 
-              console.log("password or Username incorect!");
-            } else {
-              console.log(err)
-            }
-            reject(err);
+      }, (error: HttpErrorResponse) => {
+          console.error("error",error.status)
+          reject(error)
         })
     })
   }
@@ -450,11 +443,11 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/production_years', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/production-years', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -480,11 +473,11 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/plant_composition_chart_data', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/plant-composition-chart-data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -511,12 +504,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/plant_production_chart_data', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/plant-production-chart-data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -543,12 +536,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/rainfall_chart_data', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/rainfall-chart-data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -576,12 +569,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/productivity_chart_data', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/productivity-chart-data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -609,12 +602,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/total_bunch_per_tree_chart_data', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/total-bunch-per-tree-chart-data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -641,12 +634,12 @@ key_updkp : any = '';
     const httpHeader = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'key': this.key
+        'x-api-key': this.key
       })
     };
 
     return new Promise((resolve, reject) => {
-      this.http.post(this.baseUrl+'dashboards/abw_chart_data', params, httpHeader).subscribe( result => {
+      this.http.post(this.baseUrl+'dashboard/awb-chart-data', params, httpHeader).subscribe( result => {
         resolve(JSON.stringify(result))
       },
         err => {
@@ -662,6 +655,18 @@ key_updkp : any = '';
             reject(err);
         })
     })
-
   }
+
+  public uploadImage(blobData: any, ext: any): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      const formData = new FormData();
+      formData.append('file', blobData, `image.${ext}`);
+      this.http.post(this.baseUrlImage+ "/api/uploadFile/upload", formData).subscribe((data) => {
+        resolve(data);
+      }, error => {
+        reject(error);
+      });
+    });
+  }
+
 }
